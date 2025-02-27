@@ -326,10 +326,6 @@
       transition: all 0.3s ease;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
     }
-    /* Added aria-label and placeholder for accessibility */
-    .price-input input[aria-label] {
-      /* any additional styling if needed */
-    }
     .price-input input:focus {
       outline: none;
       border-color: var(--accent-color);
@@ -587,8 +583,7 @@
 
         <div class="price-input">
           <span>$</span>
-          <!-- Added aria-label and placeholder for accessibility -->
-          <input type="number" value="25" min="0" aria-label="Price" placeholder="Enter price" />
+          <input type="number" value="25" min="0" title="Price" />
         </div>
 
         <a href="#" class="cta-button">Download Now</a>
@@ -601,7 +596,7 @@
         </p>
 
         <form class="email-form">
-          <input type="email" placeholder="Your email address" />
+          <input type="email" placeholder="Your email address" title="Email Address" />
           <button type="submit" class="submit-button">Subscribe</button>
         </form>
       </div>
@@ -634,6 +629,14 @@
   <script type="module">
     if (typeof HTMLElement === 'undefined') {
       globalThis.HTMLElement = class {};
+    }
+  </script>
+
+  <!-- Define HarmonicCompressorGraph if not defined -->
+  <script type="module">
+    if (typeof HarmonicCompressorGraph === 'undefined') {
+      class HarmonicCompressorGraph {}
+      window.HarmonicCompressorGraph = HarmonicCompressorGraph;
     }
   </script>
 
