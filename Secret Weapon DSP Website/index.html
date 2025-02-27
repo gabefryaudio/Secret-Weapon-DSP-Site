@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secret Weapon DSP - UPPERCOMP</title>
+  <!-- Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <!-- Font Awesome (updated CDN) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+    integrity="sha512-lG9C+Qh7hCXS6ETqE9Xd9Q5H8u0lk//Sezyw8W13ty2Z85CPG7cmWOTKMIm//lm4Yz8WQkX8xkGpC8N8bHIpGA=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <style>
+    :root {
+      --main-bg-color: #1a1a1a; /* darker background from the plugin UI */
+      --accent-color: #2E7D32;   /* green accent, same as plugin meters */
+      --text-color: #ccc;
+      --secondary-bg: #1e1e1e;
+      --header-font: 'Audiowide', sans-serif;
+      --body-font: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--body-font);
+      background-color: var(--main-bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header {
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      width: 180px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-color);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: var(--header-font);
+      font-size: 5rem;
+      margin-bottom: 20px;
+      letter-spacing: 4px;
+      text-shadow: 0 0 10px rgba(46,125,50,0.3);
+    }
+
+    .hero p {
+      font-size: 1.5rem;
+      max-width: 700px;
+      margin: 0 auto 40px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: #000;
+      padding: 15px 30px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      /* More intense glow around the button */
+      box-shadow: 0 0 15px rgba(46,125,50,0.7);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      /* Even stronger glow on hover */
+      box-shadow: 0 0 25px rgba(46,125,50,1);
+    }
+
+    /* Plugin Showcase Section */
+    .plugin-showcase {
+      padding: 80px 0;
+      display: flex;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .plugin-image {
+      flex: 1;
+      text-align: center;
+    }
+
+    .plugin-image img {
+      max-width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border-radius: 10px;
+    }
+
+    .plugin-details {
+      flex: 1;
+    }
+
+    h2 {
+      font-family: var(--header-font);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 80px 0;
+      background-color: var(--secondary-bg);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .feature-card {
+      background-color: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(46,125,50,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-color), transparent);
+      opacity: 0.7;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--accent-color);
+      text-shadow: 0 0 6px rgba(46,125,50,0.7);
+      display: flex;
+      align-items: center;
+    }
+
+    .feature-card h3::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: var(--accent-color);
+      border-radius: 50%;
+      margin-right: 10px;
+      box-shadow: 0 0 8px rgba(46,125,50,0.8);
+    }
+
+    /* Demo Section */
+    .demo-section {
+      padding: 80px 0;
+    }
+
+    .demo-container {
+      background-color: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 10px;
+      margin-top: 40px;
+      border: 1px solid rgba(46,125,50,0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(46,125,50,0.05) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .track-selector {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .track-button {
+      padding: 10px 20px;
+      background-color: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 5px;
+      color: var(--text-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .track-button:hover,
+    .track-button.active {
+      background-color: var(--accent-color);
+      color: #000;
+      box-shadow: 0 0 10px rgba(46,125,50,0.5);
+    }
+
+    .track-button.active {
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .plugin-waveform {
+      height: 150px;
+      background-color: rgba(0,0,0,0.3);
+      margin: 20px 0;
+      position: relative;
+      overflow: hidden;
+      border-radius: 5px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .waveform-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg,
+        rgba(46,125,50,0) 0%,
+        rgba(46,125,50,0.3) 50%,
+        rgba(46,125,50,0) 100%
+      );
+      animation: waveformMove 2s infinite linear;
+    }
+
+    @keyframes waveformMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .demo-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .play-button {
+      width: 60px;
+      height: 60px;
+      background-color: var(--accent-color);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(46,125,50,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(46,125,50,0.6);
+    }
+
+    .play-button::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      border-left: 20px solid #000;
+      margin-left: 5px;
+    }
+
+    /* Download Section */
+    .download-section {
+      padding: 80px 0;
+      text-align: center;
+      background-color: var(--secondary-bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, rgba(46,125,50,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .pricing-box {
+      max-width: 500px;
+      margin: 40px auto;
+      background-color: rgba(0,0,0,0.2);
+      padding: 40px;
+      border-radius: 10px;
+      border: 1px solid rgba(46,125,50,0.2);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .pricing-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    .pricing-box::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(46,125,50,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Use the body font (Inter) to avoid "cartoony" look */
+    .pricing-title {
+      font-family: var(--body-font);
+      font-size: 2rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-shadow: none;
+    }
+
+    .price-input {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .price-input span {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+
+    .price-input input {
+      width: 150px;
+      padding: 15px;
+      border: 2px solid rgba(46,125,50,0.3);
+      border-radius: 5px;
+      font-size: 1.5rem;
+      background-color: rgba(0,0,0,0.2);
+      color: var(--text-color);
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .price-input input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .newsletter {
+      max-width: 500px;
+      margin: 60px auto 0;
+      text-align: center;
+    }
+
+    /* "Stay Updated" in body font with no glow */
+    .newsletter h3 {
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+      font-family: var(--body-font);
+      font-weight: 600;
+      color: var(--accent-color);
+      text-shadow: none;
+    }
+
+    .newsletter p {
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+
+    .email-form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .email-form input {
+      flex: 1;
+      padding: 15px;
+      border: 2px solid rgba(46,125,50,0.2);
+      border-radius: 5px;
+      background-color: rgba(0,0,0,0.2);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .email-form input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* "Subscribe" button with less letter spacing and no heavy glow */
+    .submit-button {
+      padding: 15px 20px;
+      background-color: var(--accent-color);
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(46,125,50,0.5);
+      letter-spacing: 0.5px;
+    }
+
+    .submit-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(46,125,50,0.8);
+    }
+
+    /* Footer */
+    footer {
+      padding: 60px 0;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      background-color: var(--accent-color);
+      color: #000;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(46,125,50,0.5);
+    }
+
+    @media (max-width: 768px) {
+      .plugin-showcase {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 3rem;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+      }
+
+      .plugin-details {
+        text-align: center;
+      }
+
+      .email-form {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <nav>
+        <img
+          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/refs/heads/main/Secret%20Weapon%20DSP%20logo%20(straight).svg"
+          alt="Secret Weapon DSP Logo"
+          class="logo"
+        />
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#demo">Demo</a>
+          <a href="#download">Download</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>UPPERCOMP</h1>
+      <p>A punchy, dense and vibrant compressor inspired by classic British hardware and modern VCA technology.</p>
+      <a href="#download" class="cta-button">Download Now</a>
+    </div>
+  </section>
+
+  <!-- Plugin Showcase Section -->
+  <section class="plugin-showcase">
+    <div class="container">
+      <div class="plugin-image">
+        <img src=https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png alt="Uppercomp Plugin Interface" />
+      </div>
+      <div class="plugin-details">
+        <h2>MEET UPPERCOMP</h2>
+        <p>
+          UPPERCOMP delivers the punch and density of classic hardware compressors with modern flexibility. 
+          It combines the character of vintage British preamps with the precision of DBX gold can VCAs, 
+          creating a compressor that brings life and energy to any source.
+        </p>
+        <p>
+          Whether you're looking to add punch to drums, glue to a mix, or character to vocals, 
+          UPPERCOMP delivers with an intuitive interface and a sound that stands out in the digital realm.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2>FEATURES</h2>
+      <p>
+        UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings 
+        analog character to your digital workflow.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>Vintage British Preamp</h3>
+          <p>
+            The front-end is modeled after classic British console preamps, adding subtle harmonic 
+            richness before compression even begins.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>DBX Gold Can VCA</h3>
+          <p>
+            The compression circuit is inspired by the sought-after DBX gold can VCAs, delivering 
+            that familiar punch and control that made them legendary.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Diode-Based Envelope</h3>
+          <p>
+            A state space half-wave rectifier diode-based envelope follower creates colorful, 
+            characterful compression unlike flat digital algorithms.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Parallel Processing</h3>
+          <p>
+            Built-in saturation mix and compression mix controls let you dial in the perfect blend 
+            of clean and processed signal.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Advanced Controls</h3>
+          <p>
+            Lookahead functionality and sidechain filtering give you precise control over 
+            compression behavior and character.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Versatile Applications</h3>
+          <p>
+            While it excels on drums, UPPERCOMP enhances any source that benefits from punchy, 
+            character-rich compression.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Section -->
+  <section class="demo-section" id="demo">
+    <div class="container">
+      <h2>HEAR IT IN ACTION</h2>
+      <p>
+        Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear 
+        how it transforms your tracks.
+      </p>
+
+      <div class="demo-container">
+        <div class="track-selector">
+          <button class="track-button active">Drums</button>
+          <button class="track-button">Bass</button>
+          <button class="track-button">Vocals</button>
+          <button class="track-button">Guitar</button>
+          <button class="track-button">Full Mix</button>
+        </div>
+
+        <div class="plugin-waveform">
+          <div class="waveform-animation"></div>
+        </div>
+
+        <div class="demo-controls">
+          <button class="play-button"></button>
+          <div>
+            <p>Drums - "Pocket Groove"</p>
+            <p>0:00 / 0:30 - Toggle processing with button below</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download Section -->
+  <section class="download-section" id="download">
+    <div class="container">
+      <h2>GET UPPERCOMP</h2>
+      <p>
+        Download UPPERCOMP and experience the punch and character that will elevate your mixes.
+      </p>
+
+      <div class="pricing-box">
+        <h3 class="pricing-title">Pay What You Think It's Worth</h3>
+        <p>
+          We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal, 
+          support future development at a price that feels right.
+        </p>
+
+        <div class="price-input">
+          <span>$</span>
+          <input type="number" value="25" min="0" />
+        </div>
+
+        <a href="#" class="cta-button">Download Now</a>
+      </div>
+
+      <div class="newsletter">
+        <h3>Stay Updated</h3>
+        <p>
+          Sign up to receive updates about UPPERCOMP and future Secret Weapon DSP releases.
+        </p>
+
+        <form class="email-form">
+          <input type="email" placeholder="Your email address" />
+          <button type="submit" class="submit-button">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="container">
+      <div class="social-links">
+        <!-- Updated social icons with Font Awesome -->
+        <a href="#" class="social-icon" title="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#" class="social-icon" title="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#" class="social-icon" title="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="#" class="social-icon" title="TikTok">
+          <i class="fab fa-tiktok"></i>
+        </a>
+      </div>
+      <p>&copy; 2025 Secret Weapon DSP. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
