@@ -6,17 +6,10 @@
   <title>Secret Weapon DSP - UPPERCOMP</title>
 
   <!-- Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <!-- Font Awesome -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-    referrerpolicy="no-referrer"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" referrerpolicy="no-referrer" />
 
   <style>
     :root {
@@ -424,11 +417,7 @@
   <header>
     <div class="container">
       <nav>
-        <img
-          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/982f039366c6c304936ee785c468ab4f6e541343/Secret%20Weapon%20DSP%20logo.svg"
-          alt="Secret Weapon DSP Logo"
-          class="logo"
-        />
+        <img src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/982f039366c6c304936ee785c468ab4f6e541343/Secret%20Weapon%20DSP%20logo.svg" alt="Secret Weapon DSP Logo" class="logo" />
         <div class="nav-links">
           <a href="#features">Features</a>
           <a href="#demo">Demo</a>
@@ -452,10 +441,7 @@
   <section class="plugin-showcase">
     <div class="container">
       <div class="plugin-image">
-        <img
-          src="https://rawcdn.githack.com/gabefryaudio/Secret-Weapon-DSP-Site/498c915ed108abff9404d50353e1d67b3498bf4b/Uppercomp_images/Uppercomp_still_1.png"
-          alt="Uppercomp Plugin Interface"
-        />
+        <img src="https://rawcdn.githack.com/gabefryaudio/Secret-Weapon-DSP-Site/498c915ed108abff9404d50353e1d67b3498bf4b/Uppercomp_images/Uppercomp_still_1.png" alt="Uppercomp Plugin Interface" />
       </div>
       <div class="plugin-details">
         <h2>MEET UPPERCOMP</h2>
@@ -574,7 +560,7 @@
         </p>
         <div class="price-input">
           <span>$</span>
-          <input type="number" value="25" min="0" title="Enter your price"/>
+          <input type="number" value="25" min="0" title="Enter your price" />
         </div>
         <a href="#" class="cta-button">Download Now</a>
       </div>
@@ -628,12 +614,12 @@
     window.addEventListener('DOMContentLoaded', async () => {
       audioCtx = new AudioContext();
       try {
-        // Create the worklet patch connection.
+        // Create the worklet patch connection using the manifest ID.
         compressorConnection = await createAudioWorkletNodePatchConnection(
           audioCtx,
           "com.SecretWeaponDSP.Uppercomp"
         );
-        // Connect the underlying AudioWorkletNode to the destination.
+        // IMPORTANT: Use the underlying node property for connecting.
         compressorConnection.node.connect(audioCtx.destination);
       } catch (err) {
         console.error("Error loading Uppercomp worklet:", err);
@@ -653,7 +639,7 @@
           const audioBuffer = await loadSample(url);
           const source = audioCtx.createBufferSource();
           source.buffer = audioBuffer;
-          // Connect sample source to the worklet node.
+          // Connect the source to the underlying AudioWorkletNode.
           source.connect(compressorConnection.node);
           source.start();
         } catch (e) {
@@ -665,9 +651,7 @@
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
-          // Remove 'active' class from all buttons.
           trackButtons.forEach(b => b.classList.remove('active'));
-          // Add 'active' class to the clicked button.
           btn.classList.add('active');
           const text = btn.textContent.trim();
           if (text === 'Kick (Sub)') {
@@ -696,7 +680,7 @@
     });
   </script>
 
-  <!-- Load UI modules (if your patch provides a UI) -->
+  <!-- Load UI modules (if provided) -->
   <script type="module" src="./Uppercomp_WAM/compui.js"></script>
   <script type="module" src="./Uppercomp_WAM/index.js"></script>
 </body>
