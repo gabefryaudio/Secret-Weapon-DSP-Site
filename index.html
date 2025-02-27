@@ -633,8 +633,8 @@
           audioCtx,
           "com.SecretWeaponDSP.Uppercomp"
         );
-        // Connect the worklet node to the AudioContext destination.
-        compressorConnection.node.connect(audioCtx.destination);
+        // Use the connection object itself (not a nonexistent "node" property) to connect.
+        compressorConnection.connect(audioCtx.destination);
       } catch (err) {
         console.error("Error loading Uppercomp worklet:", err);
       }
@@ -653,7 +653,8 @@
           const audioBuffer = await loadSample(url);
           const source = audioCtx.createBufferSource();
           source.buffer = audioBuffer;
-          source.connect(compressorConnection.node);
+          // Connect source to the connection object directly.
+          source.connect(compressorConnection);
           source.start();
         } catch (e) {
           console.error("Error loading/playing sample:", e);
