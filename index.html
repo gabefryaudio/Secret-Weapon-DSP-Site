@@ -625,7 +625,7 @@
   </footer>
 
   <!--
-    Inline module to help patch DOM-related issues in worklet modules.
+    Inline module to patch DOM-related issues in worklet modules.
     If HTMLElement is undefined in the AudioWorklet global scope, we define a dummy.
   -->
   <script type="module">
@@ -635,20 +635,19 @@
   </script>
 
   <!-- WAM Integration Scripts -->
-  <!-- The worklet file is loaded via the AudioWorklet API as a module -->
+  <!-- Load the worklet module and initialize via the provided connection API -->
   <script type="module">
+    import { createAudioWorkletNodePatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     let audioCtx;
-    let compressorNode;
-
+    let compressorConnection;
     window.addEventListener('DOMContentLoaded', async () => {
       audioCtx = new AudioContext();
 
       try {
-        // Load the AudioWorklet module as an ES module.
-        await audioCtx.audioWorklet.addModule('./Uppercomp_WAM/cmaj_Uppercomp.js', { type: 'module' });
-        // Create the AudioWorkletNode using the registered processor name.
-        compressorNode = new AudioWorkletNode(audioCtx, 'cmaj_Uppercomp-processor');
-        compressorNode.connect(audioCtx.destination);
+        // Use the provided API to initialize the worklet connection.
+        compressorConnection = await createAudioWorkletNodePatchConnection(audioCtx, "uppercomp");
+        // Connect the worklet node to the AudioContext destination.
+        compressorConnection.node.connect(audioCtx.destination);
       } catch (err) {
         console.error("Error loading Uppercomp worklet:", err);
       }
@@ -667,7 +666,7 @@
           const audioBuffer = await loadSample(url);
           const source = audioCtx.createBufferSource();
           source.buffer = audioBuffer;
-          source.connect(compressorNode);
+          source.connect(compressorConnection.node);
           source.start();
         } catch (e) {
           console.error("Error loading/playing sample:", e);
@@ -678,9 +677,9 @@
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
-          // Remove 'active' class from all buttons.
+          // Remove 'active' from all buttons.
           trackButtons.forEach(b => b.classList.remove('active'));
-          // Add 'active' class to the clicked button.
+          // Add 'active' to the clicked button.
           btn.classList.add('active');
 
           const text = btn.textContent.trim();
