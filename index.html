@@ -6,17 +6,10 @@
   <title>Secret Weapon DSP - UPPERCOMP</title>
 
   <!-- Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <!-- Font Awesome -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-    referrerpolicy="no-referrer"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" referrerpolicy="no-referrer" />
 
   <style>
     :root {
@@ -343,11 +336,7 @@
       color: var(--accent-color);
     }
     .newsletter p { margin-bottom: 20px; font-size: 1rem; }
-    .email-form {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
+    .email-form { display: flex; gap: 10px; justify-content: center; }
     .email-form input {
       flex: 1;
       padding: 15px;
@@ -567,7 +556,7 @@
         </p>
         <div class="price-input">
           <span>$</span>
-          <input type="number" value="25" min="0" title="Enter your price" />
+          <input type="number" value="25" min="0" title="Price" placeholder="Price"/>
         </div>
         <a href="#" class="cta-button">Download Now</a>
       </div>
@@ -577,7 +566,7 @@
           Sign up to receive updates about UPPERCOMP and future Secret Weapon DSP releases.
         </p>
         <form class="email-form">
-          <input type="email" placeholder="Your email address" title="Your email address" />
+          <input type="email" placeholder="Your email address" title="Email Address" />
           <button type="submit" class="submit-button">Subscribe</button>
         </form>
       </div>
@@ -588,18 +577,10 @@
   <footer id="contact">
     <div class="container">
       <div class="social-links">
-        <a href="#" class="social-icon" title="Facebook">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="#" class="social-icon" title="Instagram">
-          <i class="fab fa-instagram"></i>
-        </a>
-        <a href="#" class="social-icon" title="YouTube">
-          <i class="fab fa-youtube"></i>
-        </a>
-        <a href="#" class="social-icon" title="TikTok">
-          <i class="fab fa-tiktok"></i>
-        </a>
+        <a href="#" class="social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
       </div>
       <p>&copy; 2025 Secret Weapon DSP. All rights reserved.</p>
     </div>
@@ -621,7 +602,7 @@
       audioCtx = new AudioContext();
 
       try {
-        // Initialize the worklet connection by passing the manifest ID.
+        // Initialize the worklet connection using the manifest ID.
         compressorConnection = await createAudioWorkletNodePatchConnection(audioCtx, "com.SecretWeaponDSP.Uppercomp");
         // Use the underlying audioNode property for connection.
         compressorConnection.audioNode.connect(audioCtx.destination);
@@ -654,9 +635,7 @@
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
-          // Remove 'active' class from all buttons.
           trackButtons.forEach(b => b.classList.remove('active'));
-          // Add 'active' class to the clicked button.
           btn.classList.add('active');
 
           const text = btn.textContent.trim();
@@ -676,7 +655,7 @@
         });
       });
 
-      // Optional play-button: resume the AudioContext.
+      // Optional play-button to resume AudioContext.
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
@@ -686,7 +665,7 @@
     });
   </script>
 
-  <!-- Load UI modules (compui.js and index.js) as ES modules -->
+  <!-- Load UI modules as ES modules -->
   <script type="module" src="./Uppercomp_WAM/compui.js"></script>
   <script type="module" src="./Uppercomp_WAM/index.js"></script>
 </body>
