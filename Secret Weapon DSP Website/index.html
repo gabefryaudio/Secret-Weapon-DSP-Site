@@ -109,13 +109,11 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      /* More intense glow around the button */
       box-shadow: 0 0 15px rgba(46,125,50,0.7);
     }
 
     .cta-button:hover {
       transform: translateY(-3px);
-      /* Even stronger glow on hover */
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
 
@@ -464,7 +462,6 @@
       box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
     }
 
-    /* "Subscribe" button with less letter spacing and no heavy glow */
     .submit-button {
       padding: 15px 20px;
       background-color: var(--accent-color);
@@ -575,7 +572,7 @@
   <section class="plugin-showcase">
     <div class="container">
       <div class="plugin-image">
-        <img src=https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png alt="Uppercomp Plugin Interface" />
+        <img src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png" alt="Uppercomp Plugin Interface" />
       </div>
       <div class="plugin-details">
         <h2>MEET UPPERCOMP</h2>
@@ -663,6 +660,7 @@
       </p>
 
       <div class="demo-container">
+        <!-- Track selector UI -->
         <div class="track-selector">
           <button class="track-button active">Drums</button>
           <button class="track-button">Bass</button>
@@ -744,5 +742,86 @@
       <p>&copy; 2025 Secret Weapon DSP. All rights reserved.</p>
     </div>
   </footer>
+
+  <!-- =====================
+       WAM Integration Scripts
+       ===================== -->
+  <!-- 1) Load your WAM plugin scripts from the 'Uppercomp WAM' folder -->
+  <script src="./Uppercomp WAM/cmaj_Uppercomp.js"></script>
+  <script src="./Uppercomp WAM/compui.js"></script>
+  <script src="./Uppercomp WAM/index.js"></script>
+
+  <!-- 2) Main script to set up the AudioContext and wire up track buttons -->
+  <script>
+    let audioCtx;
+    let compressorNode;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Create an AudioContext
+      audioCtx = new AudioContext();
+
+      // Load the AudioWorklet code for your compressor
+      // 'cmaj_Uppercomp.js' must registerProcessor('cmaj_Uppercomp-processor', ...)
+      await audioCtx.audioWorklet.addModule('./Uppercomp WAM/cmaj_Uppercomp.js');
+
+      // Create the AudioWorkletNode using the processor name from cmaj_Uppercomp.js
+      compressorNode = new AudioWorkletNode(audioCtx, 'cmaj_Uppercomp-processor');
+      compressorNode.connect(audioCtx.destination);
+
+      // Simple helper to load a WAV file
+      async function loadSample(url) {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        return audioCtx.decodeAudioData(arrayBuffer);
+      }
+
+      // Function to actually play a sample through the compressor
+      async function playSample(url) {
+        // Ensure the context is running (user gesture required on some browsers)
+        await audioCtx.resume();
+
+        const audioBuffer = await loadSample(url);
+        const source = audioCtx.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(compressorNode);
+        source.start();
+      }
+
+      // Attach event listeners to track buttons
+      const trackButtons = document.querySelectorAll('.track-button');
+      trackButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          // Visual feedback: remove 'active' from all track buttons
+          trackButtons.forEach(b => b.classList.remove('active'));
+          // Set 'active' on the clicked one
+          btn.classList.add('active');
+
+          // Decide which file to load based on the button text
+          // Adjust file paths to match your actual audio folder & filenames
+          const text = btn.textContent.trim();
+          if (text === 'Drums') {
+            playSample('./Audio Files/Drums.wav');
+          } else if (text === 'Bass') {
+            playSample('./Audio Files/Bass.wav');
+          } else if (text === 'Vocals') {
+            playSample('./Audio Files/Vocals.wav');
+          } else if (text === 'Guitar') {
+            playSample('./Audio Files/Guitar.wav');
+          } else if (text === 'Full Mix') {
+            playSample('./Audio Files/FullMix.wav');
+          }
+        });
+      });
+
+      // Optional: handle the "play-button" if you want to do something special
+      const playBtn = document.querySelector('.play-button');
+      if (playBtn) {
+        playBtn.addEventListener('click', async () => {
+          // Could resume context or toggle playback. For now, just resume:
+          await audioCtx.resume();
+        });
+      }
+    });
+  </script>
 </body>
 </html>
