@@ -326,6 +326,10 @@
       transition: all 0.3s ease;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
     }
+    /* Added aria-label and placeholder for accessibility */
+    .price-input input[aria-label] {
+      /* any additional styling if needed */
+    }
     .price-input input:focus {
       outline: none;
       border-color: var(--accent-color);
@@ -583,7 +587,8 @@
 
         <div class="price-input">
           <span>$</span>
-          <input type="number" value="25" min="0" />
+          <!-- Added aria-label and placeholder for accessibility -->
+          <input type="number" value="25" min="0" aria-label="Price" placeholder="Enter price" />
         </div>
 
         <a href="#" class="cta-button">Download Now</a>
@@ -642,8 +647,8 @@
       audioCtx = new AudioContext();
 
       try {
-        // Use the provided API to initialize the worklet connection.
-        compressorConnection = await createAudioWorkletNodePatchConnection(audioCtx, "uppercomp");
+        // Pass the manifest ID as the second parameter.
+        compressorConnection = await createAudioWorkletNodePatchConnection(audioCtx, "com.SecretWeaponDSP.Uppercomp");
         // Connect the worklet node to the AudioContext destination.
         compressorConnection.node.connect(audioCtx.destination);
       } catch (err) {
