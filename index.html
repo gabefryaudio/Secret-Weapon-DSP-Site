@@ -624,10 +624,8 @@
     </div>
   </footer>
 
-  <!--
-    Inline module to patch DOM-related issues in worklet modules.
-    If HTMLElement is undefined in the AudioWorklet global scope, we define a dummy.
-  -->
+  <!-- Inline module to patch DOM-related issues in worklet modules.
+       If HTMLElement is undefined in the AudioWorklet global scope, we define a dummy. -->
   <script type="module">
     if (typeof HTMLElement === 'undefined') {
       globalThis.HTMLElement = class {};
