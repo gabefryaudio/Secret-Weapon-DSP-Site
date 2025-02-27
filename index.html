@@ -4,87 +4,72 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
-
   <!-- Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
-
-  <!-- Font Awesome (SRI removed) -->
+  <!-- Font Awesome (SRI removed for compatibility) -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-    referrerpolicy="no-referrer"
   />
-
   <style>
     :root {
-      --main-bg-color: #1a1a1a; /* darker background from the plugin UI */
-      --accent-color: #2E7D32;   /* green accent, same as plugin meters */
+      --main-bg-color: #1a1a1a;
+      --accent-color: #2E7D32;
       --text-color: #ccc;
       --secondary-bg: #1e1e1e;
       --header-font: 'Audiowide', sans-serif;
       --body-font: 'Inter', sans-serif;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: var(--body-font);
       background-color: var(--main-bg-color);
       color: var(--text-color);
       line-height: 1.6;
     }
-
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
     }
-
     /* Header */
     header {
       padding: 20px 0;
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-
     .logo {
       width: 180px;
     }
-
     .nav-links {
       display: flex;
       gap: 30px;
     }
-
     .nav-links a {
       color: var(--text-color);
       text-decoration: none;
       font-weight: 500;
       transition: color 0.3s ease;
     }
-
     .nav-links a:hover {
       color: var(--accent-color);
     }
-
     /* Hero Section */
     .hero {
       padding: 80px 0;
       text-align: center;
     }
-
     h1 {
       font-family: var(--header-font);
       font-size: 5rem;
@@ -92,13 +77,11 @@
       letter-spacing: 4px;
       text-shadow: 0 0 10px rgba(46,125,50,0.3);
     }
-
     .hero p {
       font-size: 1.5rem;
       max-width: 700px;
       margin: 0 auto 40px;
     }
-
     .cta-button {
       display: inline-block;
       background-color: var(--accent-color);
@@ -112,12 +95,10 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       box-shadow: 0 0 15px rgba(46,125,50,0.7);
     }
-
     .cta-button:hover {
       transform: translateY(-3px);
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
-
     /* Plugin Showcase Section */
     .plugin-showcase {
       padding: 80px 0;
@@ -125,41 +106,34 @@
       align-items: center;
       gap: 50px;
     }
-
     .plugin-image {
       flex: 1;
       text-align: center;
     }
-
     .plugin-image img {
       max-width: 100%;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border-radius: 10px;
     }
-
     .plugin-details {
       flex: 1;
     }
-
     h2 {
       font-family: var(--header-font);
       font-size: 2.5rem;
       margin-bottom: 20px;
     }
-
     /* Features Section */
     .features {
       padding: 80px 0;
       background-color: var(--secondary-bg);
     }
-
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
       margin-top: 40px;
     }
-
     .feature-card {
       background-color: rgba(255,255,255,0.05);
       padding: 30px;
@@ -169,7 +143,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .feature-card::before {
       content: '';
       position: absolute;
@@ -180,12 +153,10 @@
       background: linear-gradient(90deg, var(--accent-color), transparent);
       opacity: 0.7;
     }
-
     .feature-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 20px rgba(0,0,0,0.3);
     }
-
     .feature-card h3 {
       font-size: 1.5rem;
       margin-bottom: 15px;
@@ -194,7 +165,6 @@
       display: flex;
       align-items: center;
     }
-
     .feature-card h3::before {
       content: '';
       display: inline-block;
@@ -205,12 +175,10 @@
       margin-right: 10px;
       box-shadow: 0 0 8px rgba(46,125,50,0.8);
     }
-
     /* Demo Section */
     .demo-section {
       padding: 80px 0;
     }
-
     .demo-container {
       background-color: rgba(255,255,255,0.05);
       padding: 30px;
@@ -221,7 +189,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .demo-container::after {
       content: '';
       position: absolute;
@@ -232,14 +199,12 @@
       background: linear-gradient(135deg, rgba(46,125,50,0.05) 0%, transparent 100%);
       pointer-events: none;
     }
-
     .track-selector {
       display: flex;
       gap: 15px;
       flex-wrap: wrap;
       margin-bottom: 20px;
     }
-
     .track-button {
       padding: 10px 20px;
       background-color: rgba(255,255,255,0.1);
@@ -250,18 +215,15 @@
       transition: all 0.3s ease;
       border: 1px solid transparent;
     }
-
     .track-button:hover,
     .track-button.active {
       background-color: var(--accent-color);
       color: #000;
       box-shadow: 0 0 10px rgba(46,125,50,0.5);
     }
-
     .track-button.active {
       border: 1px solid rgba(255,255,255,0.2);
     }
-
     .plugin-waveform {
       height: 150px;
       background-color: rgba(0,0,0,0.3);
@@ -271,7 +233,6 @@
       border-radius: 5px;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
     }
-
     .waveform-animation {
       position: absolute;
       top: 0;
@@ -285,18 +246,15 @@
       );
       animation: waveformMove 2s infinite linear;
     }
-
     @keyframes waveformMove {
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
     }
-
     .demo-controls {
       display: flex;
       align-items: center;
       gap: 20px;
     }
-
     .play-button {
       width: 60px;
       height: 60px;
@@ -310,12 +268,10 @@
       align-items: center;
       justify-content: center;
     }
-
     .play-button:hover {
       transform: scale(1.05);
       box-shadow: 0 0 20px rgba(46,125,50,0.6);
     }
-
     .play-button::after {
       content: '';
       display: block;
@@ -326,7 +282,6 @@
       border-left: 20px solid #000;
       margin-left: 5px;
     }
-
     /* Download Section */
     .download-section {
       padding: 80px 0;
@@ -335,7 +290,6 @@
       position: relative;
       overflow: hidden;
     }
-
     .download-section::before {
       content: '';
       position: absolute;
@@ -346,7 +300,6 @@
       background: radial-gradient(circle at center, rgba(46,125,50,0.1) 0%, transparent 70%);
       pointer-events: none;
     }
-
     .pricing-box {
       max-width: 500px;
       margin: 40px auto;
@@ -359,12 +312,10 @@
       overflow: hidden;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-
     .pricing-box:hover {
       transform: translateY(-5px);
       box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     }
-
     .pricing-box::after {
       content: '';
       position: absolute;
@@ -375,16 +326,13 @@
       background: linear-gradient(135deg, rgba(46,125,50,0.05) 0%, transparent 70%);
       pointer-events: none;
     }
-
     .pricing-title {
       font-family: var(--body-font);
       font-size: 2rem;
       margin-bottom: 20px;
       font-weight: 600;
       letter-spacing: 0.5px;
-      text-shadow: none;
     }
-
     .price-input {
       display: flex;
       align-items: center;
@@ -392,13 +340,11 @@
       gap: 10px;
       margin-bottom: 30px;
     }
-
     .price-input span {
       font-size: 1.5rem;
       font-weight: bold;
       color: var(--accent-color);
     }
-
     .price-input input {
       width: 150px;
       padding: 15px;
@@ -411,39 +357,32 @@
       transition: all 0.3s ease;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
     }
-
     .price-input input:focus {
       outline: none;
       border-color: var(--accent-color);
       box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
     }
-
     .newsletter {
       max-width: 500px;
       margin: 60px auto 0;
       text-align: center;
     }
-
     .newsletter h3 {
       margin-bottom: 20px;
       font-size: 1.6rem;
       font-family: var(--body-font);
       font-weight: 600;
       color: var(--accent-color);
-      text-shadow: none;
     }
-
     .newsletter p {
       margin-bottom: 20px;
       font-size: 1rem;
     }
-
     .email-form {
       display: flex;
       gap: 10px;
       justify-content: center;
     }
-
     .email-form input {
       flex: 1;
       padding: 15px;
@@ -454,13 +393,11 @@
       transition: all 0.3s ease;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
     }
-
     .email-form input:focus {
       outline: none;
       border-color: var(--accent-color);
       box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
     }
-
     .submit-button {
       padding: 15px 20px;
       background-color: var(--accent-color);
@@ -473,26 +410,22 @@
       box-shadow: 0 0 8px rgba(46,125,50,0.5);
       letter-spacing: 0.5px;
     }
-
     .submit-button:hover {
       transform: translateY(-2px);
       box-shadow: 0 0 15px rgba(46,125,50,0.8);
     }
-
     /* Footer */
     footer {
       padding: 60px 0;
       text-align: center;
       border-top: 1px solid rgba(255,255,255,0.1);
     }
-
     .social-links {
       display: flex;
       justify-content: center;
       gap: 20px;
       margin-bottom: 30px;
     }
-
     .social-icon {
       width: 40px;
       height: 40px;
@@ -506,32 +439,26 @@
       font-size: 1.2rem;
       transition: all 0.3s ease;
     }
-
     .social-icon:hover {
       background-color: var(--accent-color);
       color: #000;
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(46,125,50,0.5);
     }
-
     @media (max-width: 768px) {
       .plugin-showcase {
         flex-direction: column;
         text-align: center;
       }
-
       h1 {
         font-size: 3rem;
       }
-
       .hero p {
         font-size: 1.2rem;
       }
-
       .plugin-details {
         text-align: center;
       }
-
       .email-form {
         flex-direction: column;
       }
@@ -543,11 +470,9 @@
   <header>
     <div class="container">
       <nav>
-        <img
-          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/982f039366c6c304936ee785c468ab4f6e541343/Secret%20Weapon%20DSP%20logo.svg"
-          alt="Secret Weapon DSP Logo"
-          class="logo"
-        />
+        <a href="/">
+          <img src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/982f039366c6c304936ee785c468ab4f6e541343/Secret%20Weapon%20DSP%20logo.svg" alt="Secret Weapon DSP Logo" class="logo" />
+        </a>
         <div class="nav-links">
           <a href="#features">Features</a>
           <a href="#demo">Demo</a>
@@ -557,7 +482,7 @@
       </nav>
     </div>
   </header>
-
+  
   <!-- Hero Section -->
   <section class="hero">
     <div class="container">
@@ -566,15 +491,12 @@
       <a href="#download" class="cta-button">Download Now</a>
     </div>
   </section>
-
+  
   <!-- Plugin Showcase Section -->
   <section class="plugin-showcase">
     <div class="container">
       <div class="plugin-image">
-        <img
-          src="https://rawcdn.githack.com/gabefryaudio/Secret-Weapon-DSP-Site/498c915ed108abff9404d50353e1d67b3498bf4b/Uppercomp_images/Uppercomp_still_1.png"
-          alt="Uppercomp Plugin Interface"
-        />
+        <img src="https://rawcdn.githack.com/gabefryaudio/Secret-Weapon-DSP-Site/498c915ed108abff9404d50353e1d67b3498bf4b/Uppercomp_images/Uppercomp_still_1.png" alt="Uppercomp Plugin Interface" />
       </div>
       <div class="plugin-details">
         <h2>MEET UPPERCOMP</h2>
@@ -590,7 +512,7 @@
       </div>
     </div>
   </section>
-
+  
   <!-- Features Section -->
   <section class="features" id="features">
     <div class="container">
@@ -599,8 +521,8 @@
         UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings 
         analog character to your digital workflow.
       </p>
-
       <div class="features-grid">
+        <!-- Feature cards go here (unchanged) -->
         <div class="feature-card">
           <h3>Vintage British Preamp</h3>
           <p>
@@ -608,7 +530,6 @@
             richness before compression even begins.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>DBX Gold Can VCA</h3>
           <p>
@@ -616,7 +537,6 @@
             that familiar punch and control that made them legendary.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Diode-Based Envelope</h3>
           <p>
@@ -624,7 +544,6 @@
             characterful compression unlike flat digital algorithms.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Parallel Processing</h3>
           <p>
@@ -632,7 +551,6 @@
             of clean and processed signal.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Advanced Controls</h3>
           <p>
@@ -640,7 +558,6 @@
             compression behavior and character.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Versatile Applications</h3>
           <p>
@@ -651,7 +568,7 @@
       </div>
     </div>
   </section>
-
+  
   <!-- Demo Section -->
   <section class="demo-section" id="demo">
     <div class="container">
@@ -660,33 +577,29 @@
         Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear 
         how it transforms your tracks.
       </p>
-
       <div class="demo-container">
-        <!-- Replaced the original 5 track buttons with 6 that match your WAV files -->
+        <!-- Track selector -->
         <div class="track-selector">
-          <button class="track-button active">Kick (Sub)</button>
-          <button class="track-button">Kick In</button>
-          <button class="track-button">Snare</button>
-          <button class="track-button">Tom</button>
-          <button class="track-button">Overheads</button>
-          <button class="track-button">Room</button>
+          <button class="track-button active">Drums</button>
+          <button class="track-button">Bass</button>
+          <button class="track-button">Vocals</button>
+          <button class="track-button">Guitar</button>
+          <button class="track-button">Full Mix</button>
         </div>
-
         <div class="plugin-waveform">
           <div class="waveform-animation"></div>
         </div>
-
         <div class="demo-controls">
-          <button class="play-button" title="Play / Resume Audio"></button>
+          <button class="play-button" title="Play"></button>
           <div>
-            <p>Kick - "Choose a track"</p>
-            <p>Toggle processing with button above</p>
+            <p>Drums - "Pocket Groove"</p>
+            <p>0:00 / 0:30 - Toggle processing with button below</p>
           </div>
         </div>
       </div>
     </div>
   </section>
-
+  
   <!-- Download Section -->
   <section class="download-section" id="download">
     <div class="container">
@@ -694,138 +607,121 @@
       <p>
         Download UPPERCOMP and experience the punch and character that will elevate your mixes.
       </p>
-
       <div class="pricing-box">
         <h3 class="pricing-title">Pay What You Think It's Worth</h3>
         <p>
           We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal, 
           support future development at a price that feels right.
         </p>
-
         <div class="price-input">
           <span>$</span>
-          <input type="number" value="25" min="0" />
+          <input type="number" value="25" min="0" title="Enter price" placeholder="Price" />
         </div>
-
         <a href="#" class="cta-button">Download Now</a>
       </div>
-
       <div class="newsletter">
         <h3>Stay Updated</h3>
         <p>
           Sign up to receive updates about UPPERCOMP and future Secret Weapon DSP releases.
         </p>
-
         <form class="email-form">
-          <input type="email" placeholder="Your email address" />
+          <input type="email" placeholder="Your email address" title="Email address" />
           <button type="submit" class="submit-button">Subscribe</button>
         </form>
       </div>
     </div>
   </section>
-
+  
   <!-- Footer -->
   <footer id="contact">
     <div class="container">
       <div class="social-links">
-        <a href="#" class="social-icon" title="Facebook">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="#" class="social-icon" title="Instagram">
-          <i class="fab fa-instagram"></i>
-        </a>
-        <a href="#" class="social-icon" title="YouTube">
-          <i class="fab fa-youtube"></i>
-        </a>
-        <a href="#" class="social-icon" title="TikTok">
-          <i class="fab fa-tiktok"></i>
-        </a>
+        <a href="#" class="social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
       </div>
       <p>&copy; 2025 Secret Weapon DSP. All rights reserved.</p>
     </div>
   </footer>
-
-  <!-- =====================
-       WAM Integration Scripts
-       ===================== -->
-  <!-- Load your WAM plugin scripts from 'Uppercomp_WAM' (no spaces) -->
-  <script src="./Uppercomp_WAM/cmaj_Uppercomp.js"></script>
-  <script src="./Uppercomp_WAM/compui.js"></script>
-  <script src="./Uppercomp_WAM/index.js"></script>
-
-  <!-- Main script to set up the AudioContext and wire up track buttons -->
-  <script>
-    let audioCtx;
+  
+  <!-- ===================== WAM Integration Scripts ===================== -->
+  <!-- Main script loaded as a module so that import/export works -->
+  <script type="module">
+    const audioCtx = new AudioContext();
+    
+    try {
+      // Load the AudioWorklet module as an ES module.
+      await audioCtx.audioWorklet.addModule('./Uppercomp_WAM/cmaj_Uppercomp.js', { type: 'module' });
+    } catch(e) {
+      console.error("Error loading Uppercomp worklet:", e);
+    }
+    
     let compressorNode;
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      audioCtx = new AudioContext();
-
+    try {
+      // Create the AudioWorkletNode using the processor name defined in the module.
+      compressorNode = new AudioWorkletNode(audioCtx, 'cmaj_Uppercomp-processor');
+      compressorNode.connect(audioCtx.destination);
+    } catch(e) {
+      console.error("Error creating compressor node:", e);
+    }
+    
+    // Helper function to load a WAV file sample.
+    async function loadSample(url) {
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+      return await audioCtx.decodeAudioData(arrayBuffer);
+    }
+    
+    // Function to play a sample through the compressor.
+    async function playSample(url) {
       try {
-        // Load the AudioWorklet module
-        await audioCtx.audioWorklet.addModule('./Uppercomp_WAM/cmaj_Uppercomp.js');
-        // Create the AudioWorkletNode
-        compressorNode = new AudioWorkletNode(audioCtx, 'cmaj_Uppercomp-processor');
-        compressorNode.connect(audioCtx.destination);
-      } catch (err) {
-        console.error("Error loading Uppercomp worklet:", err);
+        await audioCtx.resume();
+        const audioBuffer = await loadSample(url);
+        const source = audioCtx.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(compressorNode);
+        source.start();
+      } catch (e) {
+        console.error("Error playing sample:", e);
       }
-
-      // Helper to load a WAV file
-      async function loadSample(url) {
-        const response = await fetch(url);
-        const arrayBuffer = await response.arrayBuffer();
-        return audioCtx.decodeAudioData(arrayBuffer);
-      }
-
-      // Function to play a sample through the compressor
-      async function playSample(url) {
-        try {
-          await audioCtx.resume();
-          const audioBuffer = await loadSample(url);
-          const source = audioCtx.createBufferSource();
-          source.buffer = audioBuffer;
-          source.connect(compressorNode);
-          source.start();
-        } catch (e) {
-          console.error("Error loading/playing sample:", e);
+    }
+    
+    // Attach event listeners to track buttons.
+    const trackButtons = document.querySelectorAll('.track-button');
+    trackButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        // Visual feedback.
+        trackButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+  
+        const text = btn.textContent.trim();
+        // Map button text to audio files.
+        if (text === 'Drums') {
+          playSample('./Audio_Files/Kick_In.wav');
+        } else if (text === 'Bass') {
+          playSample('./Audio_Files/Kick_(Sub).wav');
+        } else if (text === 'Vocals') {
+          playSample('./Audio_Files/Snare.wav');
+        } else if (text === 'Guitar') {
+          playSample('./Audio_Files/Tom.wav');
+        } else if (text === 'Full Mix') {
+          playSample('./Audio_Files/Overheads.wav');
         }
-      }
-
-      // Track buttons -> match your actual file names
-      const trackButtons = document.querySelectorAll('.track-button');
-      trackButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          // Remove 'active' from all
-          trackButtons.forEach(b => b.classList.remove('active'));
-          // Add 'active' to this button
-          btn.classList.add('active');
-
-          const text = btn.textContent.trim();
-          if (text === 'Kick (Sub)') {
-            playSample('./Audio_Files/Kick_(Sub).wav');
-          } else if (text === 'Kick In') {
-            playSample('./Audio_Files/Kick_In.wav');
-          } else if (text === 'Snare') {
-            playSample('./Audio_Files/Snare.wav');
-          } else if (text === 'Tom') {
-            playSample('./Audio_Files/Tom.wav');
-          } else if (text === 'Overheads') {
-            playSample('./Audio_Files/Overheads.wav');
-          } else if (text === 'Room') {
-            playSample('./Audio_Files/Room.wav');
-          }
-        });
       });
-
-      // Optional play-button
-      const playBtn = document.querySelector('.play-button');
-      if (playBtn) {
-        playBtn.addEventListener('click', async () => {
-          await audioCtx.resume();
-        });
-      }
     });
+    
+    // Optional play-button to resume the AudioContext.
+    const playBtn = document.querySelector('.play-button');
+    if (playBtn) {
+      playBtn.addEventListener('click', async () => {
+        await audioCtx.resume();
+      });
+    }
   </script>
+  
+  <!-- Load additional UI scripts as modules -->
+  <script type="module" src="./Uppercomp_WAM/compui.js"></script>
+  <script type="module" src="./Uppercomp_WAM/index.js"></script>
 </body>
 </html>
