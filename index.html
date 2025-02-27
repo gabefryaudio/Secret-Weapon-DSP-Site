@@ -628,13 +628,13 @@
     window.addEventListener('DOMContentLoaded', async () => {
       audioCtx = new AudioContext();
       try {
-        // Create the connection using the auto-generated API.
+        // Create the worklet patch connection.
         compressorConnection = await createAudioWorkletNodePatchConnection(
           audioCtx,
           "com.SecretWeaponDSP.Uppercomp"
         );
-        // Use the connection object itself (not a nonexistent "node" property) to connect.
-        compressorConnection.connect(audioCtx.destination);
+        // Connect the underlying AudioWorkletNode to the destination.
+        compressorConnection.node.connect(audioCtx.destination);
       } catch (err) {
         console.error("Error loading Uppercomp worklet:", err);
       }
@@ -653,8 +653,8 @@
           const audioBuffer = await loadSample(url);
           const source = audioCtx.createBufferSource();
           source.buffer = audioBuffer;
-          // Connect source to the connection object directly.
-          source.connect(compressorConnection);
+          // Connect sample source to the worklet node.
+          source.connect(compressorConnection.node);
           source.start();
         } catch (e) {
           console.error("Error loading/playing sample:", e);
@@ -665,9 +665,9 @@
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
-          // Remove 'active' from all buttons.
+          // Remove 'active' class from all buttons.
           trackButtons.forEach(b => b.classList.remove('active'));
-          // Add 'active' to the clicked button.
+          // Add 'active' class to the clicked button.
           btn.classList.add('active');
           const text = btn.textContent.trim();
           if (text === 'Kick (Sub)') {
