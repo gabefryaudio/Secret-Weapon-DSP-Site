@@ -6,10 +6,17 @@
   <title>Secret Weapon DSP - UPPERCOMP</title>
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" referrerpolicy="no-referrer" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+    referrerpolicy="no-referrer"
+  />
 
   <style>
     :root {
@@ -619,8 +626,9 @@
           audioCtx,
           "com.SecretWeaponDSP.Uppercomp"
         );
-        // IMPORTANT: Use the underlying node property for connecting.
-        compressorConnection.node.connect(audioCtx.destination);
+        // Determine the worklet node: use the node property if it exists, else use the connection itself.
+        const workletNode = compressorConnection.node || compressorConnection;
+        workletNode.connect(audioCtx.destination);
       } catch (err) {
         console.error("Error loading Uppercomp worklet:", err);
       }
@@ -639,8 +647,7 @@
           const audioBuffer = await loadSample(url);
           const source = audioCtx.createBufferSource();
           source.buffer = audioBuffer;
-          // Connect the source to the underlying AudioWorkletNode.
-          source.connect(compressorConnection.node);
+          source.connect((compressorConnection.node || compressorConnection));
           source.start();
         } catch (e) {
           console.error("Error loading/playing sample:", e);
