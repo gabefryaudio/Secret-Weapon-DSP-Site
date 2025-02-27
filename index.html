@@ -605,8 +605,7 @@
     </div>
   </footer>
 
-  <!-- Inline module to patch DOM-related issues in worklet modules.
-       If HTMLElement is undefined in the AudioWorklet global scope, we define a dummy. -->
+  <!-- Inline module to patch DOM-related issues in worklet modules -->
   <script type="module">
     if (typeof HTMLElement === 'undefined') {
       globalThis.HTMLElement = class {};
@@ -620,15 +619,12 @@
     let compressorConnection;
     window.addEventListener('DOMContentLoaded', async () => {
       audioCtx = new AudioContext();
+
       try {
-        // Create the worklet patch connection using the manifest ID.
-        compressorConnection = await createAudioWorkletNodePatchConnection(
-          audioCtx,
-          "com.SecretWeaponDSP.Uppercomp"
-        );
-        // Determine the worklet node: use the node property if it exists, else use the connection itself.
-        const workletNode = compressorConnection.node || compressorConnection;
-        workletNode.connect(audioCtx.destination);
+        // Initialize the worklet connection by passing the manifest ID.
+        compressorConnection = await createAudioWorkletNodePatchConnection(audioCtx, "com.SecretWeaponDSP.Uppercomp");
+        // Use the underlying audioNode property for connection.
+        compressorConnection.audioNode.connect(audioCtx.destination);
       } catch (err) {
         console.error("Error loading Uppercomp worklet:", err);
       }
@@ -647,7 +643,7 @@
           const audioBuffer = await loadSample(url);
           const source = audioCtx.createBufferSource();
           source.buffer = audioBuffer;
-          source.connect((compressorConnection.node || compressorConnection));
+          source.connect(compressorConnection.audioNode);
           source.start();
         } catch (e) {
           console.error("Error loading/playing sample:", e);
@@ -658,8 +654,11 @@
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
+          // Remove 'active' class from all buttons.
           trackButtons.forEach(b => b.classList.remove('active'));
+          // Add 'active' class to the clicked button.
           btn.classList.add('active');
+
           const text = btn.textContent.trim();
           if (text === 'Kick (Sub)') {
             playSample('./Audio_Files/Kick_(Sub).wav');
@@ -687,7 +686,7 @@
     });
   </script>
 
-  <!-- Load UI modules (if provided) -->
+  <!-- Load UI modules (compui.js and index.js) as ES modules -->
   <script type="module" src="./Uppercomp_WAM/compui.js"></script>
   <script type="module" src="./Uppercomp_WAM/index.js"></script>
 </body>
