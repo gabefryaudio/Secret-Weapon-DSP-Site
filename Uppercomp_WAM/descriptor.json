@@ -1,0 +1,15 @@
+{
+    "identifier": "com.SecretWeaponDSP.Uppercomp",
+    "name": "Uppercomp",
+    "vendor": "Secret Weapon DSP",
+    "description": "A punchy, organic dynamic range compressor with analog modeled saturation.",
+    "version": "1.0",
+    "apiVersion": "2.0.0", 
+    "keywords": [ "Cmajor" ],
+    "isInstrument": false,
+    "hasMidiInput": false,
+    "hasMidiOutput": false,
+    "hasAudioInput": true,
+    "hasAudioOutput": true,
+    "website": ""
+}
