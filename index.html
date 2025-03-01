@@ -321,11 +321,16 @@
       width: 120px;
     }
 
-    /* Patch container (IDs from Code A for patch scaling) */
+    /* Patch container: set up flex layout to center the scaled patch */
     #patchViewOuterContainer {
-      margin: 40px auto; /* or whatever margin you like */
-      width: 100%;       /* let it fill the parent container’s width */
-      max-width: 1200px; /* or whichever maximum makes sense */
+      margin: 40px auto;
+      width: 100%;
+      max-width: 1200px;
+      display: flex;            /* new for centering */
+      justify-content: center;  /* center horizontally */
+      align-items: flex-start;  /* top-align */
+      overflow: visible;        /* ensure scaled patch is visible */
+      position: relative;
     }
 
     /* Download Section */
@@ -743,9 +748,7 @@
       // 1) Create an AudioContext for the plugin
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-      // -----------------------------
-      // MOBILE AUDIO PLAYBACK FIX:
-      // Add a global touchstart event listener to resume the AudioContext on first user interaction.
+      // MOBILE AUDIO PLAYBACK FIX: Resume on first touch
       const resumeAudioContext = async () => {
         if (audioContext.state === 'suspended') {
           await audioContext.resume();
@@ -754,7 +757,6 @@
         document.removeEventListener('touchstart', resumeAudioContext);
       };
       document.addEventListener('touchstart', resumeAudioContext, { passive: true });
-      // -----------------------------
 
       // 2) Initialize the Uppercomp patch connection
       let connection;
@@ -865,7 +867,7 @@
 
       async function playSample(url, trackName, crossfade = true) {
         try {
-          // Resume audio context if suspended (extra check on user gesture)
+          // Resume audio context if suspended
           if (audioContext.state === 'suspended') {
             await audioContext.resume();
           }
@@ -1059,23 +1061,28 @@
 
       function scalePatchView() {
         if (!outerContainer || !innerContainer) return;
+
         const widthNative = 1200;
         const heightNative = 400;
         const outerWidth = outerContainer.clientWidth;
-        const scaleFactor = outerWidth / widthNative;
-        
-        innerContainer.style.transformOrigin = "top center";
-        
-        // On small screens (mobile), remove the left shift so that the content fits fully.
-        if (outerWidth < 768) {
-          innerContainer.style.transform = `scale(${scaleFactor})`;
-        } else {
-          innerContainer.style.transform = `translateX(-45px) scale(${scaleFactor})`;
+
+        // Calculate how much we need to shrink to fit the container width
+        let scaleFactor = outerWidth / widthNative;
+
+        // OPTIONAL: Prevent scaling above 100%
+        if (scaleFactor > 1) {
+          scaleFactor = 1;
         }
-        
+
+        // Align from top-left so the plugin remains fully visible
+        innerContainer.style.transformOrigin = "top left";
+
+        // Apply scale (no negative translateX)
+        innerContainer.style.transform = `scale(${scaleFactor})`;
+
+        // If you prefer auto-height, comment out the next line
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
-
 
       // Re-scale on window resize
       let resizeTimeout;
