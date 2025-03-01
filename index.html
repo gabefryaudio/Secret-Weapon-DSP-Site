@@ -37,7 +37,7 @@
       background-color: var(--main-bg-color);
       color: var(--text-color);
       line-height: 1.6;
-      overflow-y: auto !important;  /* from code a */
+      overflow-y: auto !important;
     }
 
     .container {
@@ -326,11 +326,15 @@
       margin: 40px auto;
       width: 100%;
       max-width: 1200px;
-      display: flex;            /* new for centering */
-      justify-content: center;  /* center horizontally */
-      align-items: flex-start;  /* top-align */
-      overflow: visible;        /* ensure scaled patch is visible */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow: visible;
       position: relative;
+    }
+    /* Added touch-action to allow vertical scrolling from anywhere on the patch */
+    #patchViewInnerContainer {
+      touch-action: pan-y;
     }
 
     /* Download Section */
