@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <!-- Updated meta tags for better mobile support -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Secret Weapon DSP - UPPERCOMP</title>
   <!-- Fonts -->
@@ -20,6 +20,32 @@
   />
 
   <style>
+    /* Reset & Global Touch Fixes */
+    html, body {
+      position: relative;
+      width: 100%;
+      height: auto;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    body {
+      min-height: 100vh;
+    }
+
+    /* Remove tap highlight on iOS */
+    * {
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+
+    /* Scrollable wrapper for main content */
+    .scrollable-content {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
     :root {
       --main-bg-color: #1a1a1a; /* darker background from the plugin UI */
       --accent-color: #2E7D32;   /* green accent, same as plugin meters */
@@ -29,26 +55,7 @@
       --body-font: 'Inter', sans-serif;
     }
 
-    /* Updated HTML and Body CSS */
-    html {
-      height: 100%;
-      width: 100%;
-      overflow-x: hidden; /* Prevent horizontal overflow */
-    }
-
-    body {
-      height: auto;
-      min-height: 100%;
-      width: 100%;
-      font-family: var(--body-font);
-      background-color: var(--main-bg-color);
-      color: var(--text-color);
-      line-height: 1.6;
-      overflow-x: hidden;
-      overflow-y: scroll !important; /* Force vertical scroll */
-      -webkit-overflow-scrolling: touch; /* For iOS devices */
-    }
-
+    /* Header, Hero, and Other Sections Styles remain unchanged */
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -526,225 +533,233 @@
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="container">
-      <nav>
-        <img
-          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/refs/heads/main/Secret%20Weapon%20DSP%20logo%20(straight).svg"
-          alt="Secret Weapon DSP Logo"
-          class="logo"
-        />
-        <div class="nav-links">
-          <a href="#features">Features</a>
-          <a href="#demo">Demo</a>
-          <a href="#download">Download</a>
-          <a href="#contact">Contact</a>
-        </div>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container">
-      <h1>UPPERCOMP</h1>
-      <p>A punchy, dense and vibrant compressor inspired by classic British hardware and modern VCA technology.</p>
-      <a href="#download" class="cta-button">Download Now</a>
-    </div>
-  </section>
-
-  <!-- Plugin Showcase Section -->
-  <section class="plugin-showcase">
-    <div class="container">
-      <div class="plugin-image">
-        <img 
-          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png" 
-          alt="Uppercomp Plugin Interface" 
-        />
-      </div>
-      <div class="plugin-details">
-        <h2>MEET UPPERCOMP</h2>
-        <p>
-          UPPERCOMP delivers the punch and density of classic hardware compressors with modern flexibility. 
-          It combines the character of vintage British preamps with the precision of DBX gold can VCAs, 
-          creating a compressor that brings life and energy to any source.
-        </p>
-        <p>
-          Whether you're looking to add punch to drums, glue to a mix, or character to vocals, 
-          UPPERCOMP delivers with an intuitive interface and a sound that stands out in the digital realm.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section class="features" id="features">
-    <div class="container">
-      <h2>FEATURES</h2>
-      <p>
-        UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings 
-        analog character to your digital workflow.
-      </p>
-
-      <div class="features-grid">
-        <div class="feature-card">
-          <h3>Vintage British Preamp</h3>
-          <p>
-            The front-end is modeled after classic British console preamps, adding subtle harmonic 
-            richness before compression even begins.
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <h3>DBX Gold Can VCA</h3>
-          <p>
-            The compression circuit is inspired by the sought-after DBX gold can VCAs, delivering 
-            that familiar punch and control that made them legendary.
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <h3>Diode-Based Envelope</h3>
-          <p>
-            A state space half-wave rectifier diode-based envelope follower creates colorful, 
-            characterful compression unlike flat digital algorithms.
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <h3>Parallel Processing</h3>
-          <p>
-            Built-in saturation mix and compression mix controls let you dial in the perfect blend 
-            of clean and processed signal.
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <h3>Advanced Controls</h3>
-          <p>
-            Lookahead functionality and sidechain filtering give you precise control over 
-            compression behavior and character.
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <h3>Versatile Applications</h3>
-          <p>
-            While it excels on drums, UPPERCOMP enhances any source that benefits from punchy, 
-            character-rich compression.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Demo Section -->
-  <section class="demo-section" id="demo">
-    <div class="container">
-      <h2>HEAR IT IN ACTION</h2>
-      <p>
-        Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear 
-        how it transforms your tracks.
-      </p>
-
-      <!-- Demo Container -->
-      <div class="demo-container">
-        <!-- Track Selector -->
-        <div class="track-selector">
-          <button class="track-button active">Kick (Sub)</button>
-          <button class="track-button">Kick In</button>
-          <button class="track-button">Snare</button>
-          <button class="track-button">Tom</button>
-          <button class="track-button">Overheads</button>
-          <button class="track-button">Room</button>
-        </div>
-        <div class="plugin-waveform">
-          <div class="waveform-animation"></div>
-        </div>
-        <div class="demo-controls">
-          <button class="play-button" title="Play / Resume Audio"></button>
-          <button class="stop-button" title="Stop Audio"></button>
-          <div>
-            <p id="trackInfo">Kick (Sub) - "Choose a track"</p>
-            <p>Toggle processing with button above</p>
+  <!-- Wrap all content in a scrollable container -->
+  <div class="scrollable-content">
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <nav>
+          <img
+            src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/refs/heads/main/Secret%20Weapon%20DSP%20logo%20(straight).svg"
+            alt="Secret Weapon DSP Logo"
+            class="logo"
+          />
+          <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#demo">Demo</a>
+            <a href="#download">Download</a>
+            <a href="#contact">Contact</a>
           </div>
-          <div class="volume-container">
-            <label for="volumeSlider">Volume:</label>
-            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
-          </div>
-        </div>
+        </nav>
+      </div>
+    </header>
 
-        <!-- Where plugin UI is placed -->
-        <div id="patchViewOuterContainer">
-          <div id="patchViewInnerContainer">
-            <!-- The patch's GUI is inserted dynamically by the script -->
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h1>UPPERCOMP</h1>
+        <p>A punchy, dense and vibrant compressor inspired by classic British hardware and modern VCA technology.</p>
+        <a href="#download" class="cta-button">Download Now</a>
+      </div>
+    </section>
+
+    <!-- Plugin Showcase Section -->
+    <section class="plugin-showcase">
+      <div class="container">
+        <div class="plugin-image">
+          <img 
+            src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png" 
+            alt="Uppercomp Plugin Interface" 
+          />
+        </div>
+        <div class="plugin-details">
+          <h2>MEET UPPERCOMP</h2>
+          <p>
+            UPPERCOMP delivers the punch and density of classic hardware compressors with modern flexibility. 
+            It combines the character of vintage British preamps with the precision of DBX gold can VCAs, 
+            creating a compressor that brings life and energy to any source.
+          </p>
+          <p>
+            Whether you're looking to add punch to drums, glue to a mix, or character to vocals, 
+            UPPERCOMP delivers with an intuitive interface and a sound that stands out in the digital realm.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+      <div class="container">
+        <h2>FEATURES</h2>
+        <p>
+          UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings 
+          analog character to your digital workflow.
+        </p>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <h3>Vintage British Preamp</h3>
+            <p>
+              The front-end is modeled after classic British console preamps, adding subtle harmonic 
+              richness before compression even begins.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>DBX Gold Can VCA</h3>
+            <p>
+              The compression circuit is inspired by the sought-after DBX gold can VCAs, delivering 
+              that familiar punch and control that made them legendary.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Diode-Based Envelope</h3>
+            <p>
+              A state space half-wave rectifier diode-based envelope follower creates colorful, 
+              characterful compression unlike flat digital algorithms.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Parallel Processing</h3>
+            <p>
+              Built-in saturation mix and compression mix controls let you dial in the perfect blend 
+              of clean and processed signal.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Advanced Controls</h3>
+            <p>
+              Lookahead functionality and sidechain filtering give you precise control over 
+              compression behavior and character.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <h3>Versatile Applications</h3>
+            <p>
+              While it excels on drums, UPPERCOMP enhances any source that benefits from punchy, 
+              character-rich compression.
+            </p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Download Section -->
-  <section class="download-section" id="download">
-    <div class="container">
-      <h2>GET UPPERCOMP</h2>
-      <p>
-        Download UPPERCOMP and experience the punch and character that will elevate your mixes.
-      </p>
-
-      <div class="pricing-box">
-        <h3 class="pricing-title">Pay What You Think It's Worth</h3>
+    <!-- Demo Section -->
+    <section class="demo-section" id="demo">
+      <div class="container">
+        <h2>HEAR IT IN ACTION</h2>
         <p>
-          We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal, 
-          support future development at a price that feels right.
+          Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear 
+          how it transforms your tracks.
         </p>
 
-        <div class="price-input">
-          <span>$</span>
-          <input type="number" value="25" min="0" />
+        <!-- Demo Container -->
+        <div class="demo-container">
+          <!-- Track Selector -->
+          <div class="track-selector">
+            <button class="track-button active">Kick (Sub)</button>
+            <button class="track-button">Kick In</button>
+            <button class="track-button">Snare</button>
+            <button class="track-button">Tom</button>
+            <button class="track-button">Overheads</button>
+            <button class="track-button">Room</button>
+          </div>
+          <div class="plugin-waveform">
+            <div class="waveform-animation"></div>
+          </div>
+          <div class="demo-controls">
+            <button class="play-button" title="Play / Resume Audio"></button>
+            <button class="stop-button" title="Stop Audio"></button>
+            <div>
+              <p id="trackInfo">Kick (Sub) - "Choose a track"</p>
+              <p>Toggle processing with button above</p>
+            </div>
+            <div class="volume-container">
+              <label for="volumeSlider">Volume:</label>
+              <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+            </div>
+          </div>
+
+          <!-- Where plugin UI is placed -->
+          <div id="patchViewOuterContainer">
+            <div id="patchViewInnerContainer">
+              <!-- The patch's GUI is inserted dynamically by the script -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Download Section -->
+    <section class="download-section" id="download">
+      <div class="container">
+        <h2>GET UPPERCOMP</h2>
+        <p>
+          Download UPPERCOMP and experience the punch and character that will elevate your mixes.
+        </p>
+
+        <div class="pricing-box">
+          <h3 class="pricing-title">Pay What You Think It's Worth</h3>
+          <p>
+            We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal, 
+            support future development at a price that feels right.
+          </p>
+
+          <div class="price-input">
+            <span>$</span>
+            <input type="number" value="25" min="0" />
+          </div>
+
+          <a href="#" class="cta-button">Download Now</a>
         </div>
 
-        <a href="#" class="cta-button">Download Now</a>
-      </div>
+        <div class="newsletter">
+          <h3>Stay Updated</h3>
+          <p>
+            Sign up to receive updates about UPPERCOMP and future Secret Weapon DSP releases.
+          </p>
 
-      <div class="newsletter">
-        <h3>Stay Updated</h3>
-        <p>
-          Sign up to receive updates about UPPERCOMP and future Secret Weapon DSP releases.
-        </p>
-
-        <form class="email-form">
-          <input type="email" placeholder="Your email address" />
-          <button type="submit" class="submit-button">Subscribe</button>
-        </form>
+          <form class="email-form">
+            <input type="email" placeholder="Your email address" />
+            <button type="submit" class="submit-button">Subscribe</button>
+          </form>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer id="contact">
-    <div class="container">
-      <div class="social-links">
-        <a href="#" class="social-icon" title="Facebook">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="#" class="social-icon" title="Instagram">
-          <i class="fab fa-instagram"></i>
-        </a>
-        <a href="#" class="social-icon" title="YouTube">
-          <i class="fab fa-youtube"></i>
-        </a>
-        <a href="#" class="social-icon" title="TikTok">
-          <i class="fab fa-tiktok"></i>
-        </a>
+    <!-- Footer -->
+    <footer id="contact">
+      <div class="container">
+        <div class="social-links">
+          <a href="#" class="social-icon" title="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="social-icon" title="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="#" class="social-icon" title="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+          <a href="#" class="social-icon" title="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        </div>
+        <p>© 2025 Secret Weapon DSP. All rights reserved.</p>
       </div>
-      <p>© 2025 Secret Weapon DSP. All rights reserved.</p>
-    </div>
-  </footer>
+    </footer>
+  </div> <!-- End of .scrollable-content -->
 
   <!-- Single merged script: sets up the plugin, routes audio through it, and does patch scaling. -->
   <script type="module">
+    // Allow default touch behavior on mobile devices
+    document.addEventListener('touchmove', function(event) {
+      // Do not prevent default scrolling behavior
+    }, { passive: true });
+
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
 
