@@ -1063,12 +1063,19 @@
         const heightNative = 400;
         const outerWidth = outerContainer.clientWidth;
         const scaleFactor = outerWidth / widthNative;
-
+        
         innerContainer.style.transformOrigin = "top center";
-        // Slight left shift for layout, then scale
-        innerContainer.style.transform = `translateX(-45px) scale(${scaleFactor})`;
+        
+        // On small screens (mobile), remove the left shift so that the content fits fully.
+        if (outerWidth < 768) {
+          innerContainer.style.transform = `scale(${scaleFactor})`;
+        } else {
+          innerContainer.style.transform = `translateX(-45px) scale(${scaleFactor})`;
+        }
+        
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
+
 
       // Re-scale on window resize
       let resizeTimeout;
