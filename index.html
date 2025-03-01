@@ -743,6 +743,19 @@
       // 1) Create an AudioContext for the plugin
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
+      // -----------------------------
+      // MOBILE AUDIO PLAYBACK FIX:
+      // Add a global touchstart event listener to resume the AudioContext on first user interaction.
+      const resumeAudioContext = async () => {
+        if (audioContext.state === 'suspended') {
+          await audioContext.resume();
+          console.log('AudioContext resumed on touchstart');
+        }
+        document.removeEventListener('touchstart', resumeAudioContext);
+      };
+      document.addEventListener('touchstart', resumeAudioContext, { passive: true });
+      // -----------------------------
+
       // 2) Initialize the Uppercomp patch connection
       let connection;
       try {
@@ -852,7 +865,7 @@
 
       async function playSample(url, trackName, crossfade = true) {
         try {
-          // Resume audio context if suspended
+          // Resume audio context if suspended (extra check on user gesture)
           if (audioContext.state === 'suspended') {
             await audioContext.resume();
           }
