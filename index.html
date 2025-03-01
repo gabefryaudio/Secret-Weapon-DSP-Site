@@ -16,11 +16,10 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
-
   <style>
     :root {
-      --main-bg-color: #1a1a1a; /* darker background from the plugin UI */
-      --accent-color: #2E7D32;   /* green accent, same as plugin meters */
+      --main-bg-color: #1a1a1a;
+      --accent-color: #2E7D32;
       --text-color: #ccc;
       --secondary-bg: #1e1e1e;
       --header-font: 'Audiowide', sans-serif;
@@ -28,8 +27,8 @@
     }
 
     html, body {
-      overflow-x: hidden; /* Prevent horizontal overflow */
-      overflow-y: auto;   /* Allow vertical scrolling */
+      overflow-x: hidden;
+      overflow-y: auto;
     }
 
     body {
@@ -37,7 +36,7 @@
       background-color: var(--main-bg-color);
       color: var(--text-color);
       line-height: 1.6;
-      overflow-y: auto !important;  /* from code a */
+      overflow-y: auto !important;
     }
 
     .container {
@@ -323,9 +322,9 @@
 
     /* Patch container (IDs from Code A for patch scaling) */
     #patchViewOuterContainer {
-      margin: 40px auto; /* or whatever margin you like */
-      width: 100%;       /* let it fill the parent container’s width */
-      max-width: 1200px; /* or whichever maximum makes sense */
+      margin: 40px auto;
+      width: 100%;
+      max-width: 1200px;
     }
 
     /* Download Section */
@@ -512,6 +511,10 @@
       }
       .email-form {
         flex-direction: column;
+      }
+      /* Optional: if you prefer to remove the transform via CSS on mobile */
+      #patchViewInnerContainer {
+        transform: none !important;
       }
     }
   </style>
@@ -785,7 +788,6 @@
       const CROSSFADE_TIME = 0.2; // 200ms crossfade
 
       async function loadSample(url) {
-        // Return cached buffer if available
         if (audioBufferCache[url]) {
           return audioBufferCache[url];
         }
@@ -796,7 +798,7 @@
           }
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-          audioBufferCache[url] = audioBuffer; // Cache
+          audioBufferCache[url] = audioBuffer;
           return audioBuffer;
         } catch (error) {
           console.error(`Error loading audio file ${url}:`, error);
@@ -807,44 +809,32 @@
       function stopCurrentTrack(immediate = false) {
         if (currentSource) {
           if (immediate) {
-            // Immediate stop (stop button explicitly pressed)
             try {
               currentSource.stop();
               if (currentGainNode) {
                 currentGainNode.disconnect();
               }
-            } catch (e) {
-              // Ignore if already stopped
-            }
+            } catch (e) {}
             currentSource = null;
             currentGainNode = null;
             isPlaying = false;
           } else {
-            // Smooth fade-out for a normal track change
             const now = audioContext.currentTime;
             if (currentGainNode) {
               currentGainNode.gain.setValueAtTime(currentGainNode.gain.value, now);
               currentGainNode.gain.linearRampToValueAtTime(0, now + CROSSFADE_TIME);
-
-              // Store references to stop after fade completes
               const sourceToStop = currentSource;
               const gainToDisconnect = currentGainNode;
-
               setTimeout(() => {
                 try {
                   sourceToStop.stop();
-                } catch (e) {
-                  // Ignore if already stopped
-                }
+                } catch (e) {}
                 gainToDisconnect.disconnect();
               }, CROSSFADE_TIME * 1000 + 50);
             } else {
-              // Fallback if no gain node
               try {
                 currentSource.stop();
-              } catch (e) {
-                // Ignore
-              }
+              } catch (e) {}
             }
           }
         }
@@ -852,68 +842,47 @@
 
       async function playSample(url, trackName, crossfade = true) {
         try {
-          // Resume audio context if suspended
           if (audioContext.state === 'suspended') {
             await audioContext.resume();
           }
-
-          // Load the sample
           const audioBuffer = await loadSample(url);
-
           const now = audioContext.currentTime;
           const newGainNode = audioContext.createGain();
 
           if (crossfade && isPlaying) {
-            // Crossfade in the new track
             newGainNode.gain.setValueAtTime(0, now);
             newGainNode.gain.linearRampToValueAtTime(1, now + CROSSFADE_TIME);
-
-            // Fade out the old track
             if (currentSource && currentGainNode) {
               currentGainNode.gain.setValueAtTime(currentGainNode.gain.value, now);
               currentGainNode.gain.linearRampToValueAtTime(0, now + CROSSFADE_TIME);
-
               const oldSource = currentSource;
               const oldGain = currentGainNode;
-
               setTimeout(() => {
                 try {
                   oldSource.stop();
-                } catch (e) {
-                  // Ignore
-                }
+                } catch (e) {}
                 oldGain.disconnect();
               }, CROSSFADE_TIME * 1000 + 50);
             } else {
-              // If no current track, just do an immediate stop
               stopCurrentTrack(true);
             }
           } else {
-            // No crossfade needed
             stopCurrentTrack(true);
             newGainNode.gain.setValueAtTime(1, now);
           }
 
-          // Create and configure new source
           const source = audioContext.createBufferSource();
           source.buffer = audioBuffer;
           source.loop = true;
-
-          // Connect new source -> new gain -> plugin
           source.connect(newGainNode);
           newGainNode.connect(pluginNode);
           source.start();
-
-          // Update references
           currentSource = source;
           currentGainNode = newGainNode;
           currentTrackName = trackName;
           isPlaying = true;
-
-          // Update UI
           updateTrackInfo(trackName, "Now Playing");
           updatePlayButtonState(true);
-
           return true;
         } catch (error) {
           console.error('Error playing sample:', error);
@@ -943,7 +912,6 @@
         }
       }
 
-      // Map track names -> file paths
       const trackFilePaths = {
         'Kick (Sub)': './Audio_Files/Kick_(Sub).wav',
         'Kick In': './Audio_Files/Kick_In.wav',
@@ -953,14 +921,11 @@
         'Room': './Audio_Files/Room.wav'
       };
 
-      // Handle track buttons
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', async () => {
-          // Update UI for responsiveness
           trackButtons.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-
           const trackName = btn.textContent.trim();
           const filePath = trackFilePaths[trackName];
           if (!filePath) {
@@ -968,14 +933,8 @@
             updateTrackInfo(trackName, "File Not Found");
             return;
           }
-
-          // Show loading status
           updateTrackInfo(trackName, "Loading...");
-
-          // Play the track with crossfade
           const success = await playSample(filePath, trackName, true);
-
-          // Fallback if it fails
           if (!success && currentTrackName && trackFilePaths[currentTrackName]) {
             console.log(`Falling back to previous track: ${currentTrackName}`);
             await playSample(trackFilePaths[currentTrackName], currentTrackName, false);
@@ -983,20 +942,15 @@
         });
       });
 
-      // Play button
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
-          if (isPlaying) return; // Already playing
+          if (isPlaying) return;
           if (currentTrackName && trackFilePaths[currentTrackName]) {
-            // Resume current track (no crossfade from stop)
             await playSample(trackFilePaths[currentTrackName], currentTrackName, false);
           } else {
-            // Default to first track
             const defaultTrack = 'Kick (Sub)';
             await playSample(trackFilePaths[defaultTrack], defaultTrack, false);
-
-            // Update UI for default track
             trackButtons.forEach(btn => {
               if (btn.textContent.trim() === defaultTrack) {
                 btn.classList.add('active');
@@ -1008,7 +962,6 @@
         });
       }
 
-      // Stop button (immediate stop)
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
@@ -1018,7 +971,6 @@
         });
       }
 
-      // Volume slider -> master gainNode
       const volumeSlider = document.getElementById('volumeSlider');
       if (volumeSlider) {
         volumeSlider.addEventListener('input', () => {
@@ -1046,25 +998,27 @@
 
       function scalePatchView() {
         if (!outerContainer || !innerContainer) return;
-        const widthNative = 1200;
-        const heightNative = 400;
-        const outerWidth = outerContainer.clientWidth;
-        const scaleFactor = outerWidth / widthNative;
-
-        innerContainer.style.transformOrigin = "top center";
-        // Slight left shift for layout, then scale
-        innerContainer.style.transform = `translateX(-45px) scale(${scaleFactor})`;
-        outerContainer.style.height = `${heightNative * scaleFactor}px`;
+        // If mobile (width 768px or less), remove transform and let content flow naturally
+        if (window.innerWidth <= 768) {
+          innerContainer.style.transform = "none";
+          outerContainer.style.height = "auto";
+        } else {
+          const widthNative = 1200;
+          const heightNative = 400;
+          const outerWidth = outerContainer.clientWidth;
+          const scaleFactor = outerWidth / widthNative;
+          innerContainer.style.transformOrigin = "top center";
+          innerContainer.style.transform = `translateX(-45px) scale(${scaleFactor})`;
+          outerContainer.style.height = `${heightNative * scaleFactor}px`;
+        }
       }
 
-      // Re-scale on window resize
       let resizeTimeout;
       window.addEventListener("resize", () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(scalePatchView, 200);
       });
 
-      // Re-enforce vertical scroll if changed
       document.body.style.setProperty("overflow", "auto", "important");
       document.documentElement.style.setProperty("overflow", "auto", "important");
       const bodyObserver = new MutationObserver(mutations => {
