@@ -792,14 +792,14 @@
         try {
           const response = await fetch(url);
           if (!response.ok) {
-            throw new Error(Failed to fetch ${url}: ${response.status} ${response.statusText});
+            throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
           }
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
           audioBufferCache[url] = audioBuffer; // Cache
           return audioBuffer;
         } catch (error) {
-          console.error(Error loading audio file ${url}:, error);
+          console.error(`Error loading audio file ${url}:`, error);
           throw error;
         }
       }
@@ -925,7 +925,7 @@
       function updateTrackInfo(trackName, status) {
         const trackInfo = document.getElementById('trackInfo');
         if (trackInfo) {
-          trackInfo.textContent = ${trackName} - "${status}";
+          trackInfo.textContent = `${trackName} - "${status}"`;
         }
       }
 
@@ -964,7 +964,7 @@
           const trackName = btn.textContent.trim();
           const filePath = trackFilePaths[trackName];
           if (!filePath) {
-            console.error(No file path found for track: ${trackName});
+            console.error(`No file path found for track: ${trackName}`);
             updateTrackInfo(trackName, "File Not Found");
             return;
           }
@@ -977,7 +977,7 @@
 
           // Fallback if it fails
           if (!success && currentTrackName && trackFilePaths[currentTrackName]) {
-            console.log(Falling back to previous track: ${currentTrackName});
+            console.log(`Falling back to previous track: ${currentTrackName}`);
             await playSample(trackFilePaths[currentTrackName], currentTrackName, false);
           }
         });
@@ -1053,8 +1053,8 @@
 
         innerContainer.style.transformOrigin = "top center";
         // Slight left shift for layout, then scale
-        innerContainer.style.transform = translateX(-45px) scale(${scaleFactor});
-        outerContainer.style.height = ${heightNative * scaleFactor}px;
+        innerContainer.style.transform = `translateX(-45px) scale(${scaleFactor})`;
+        outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
 
       // Re-scale on window resize
