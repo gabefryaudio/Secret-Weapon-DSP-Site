@@ -18,6 +18,15 @@
   />
 
   <style>
+    /* Global touch and scrolling settings */
+    html, body {
+      touch-action: pan-y !important;
+      -webkit-overflow-scrolling: touch !important;
+      overscroll-behavior-y: auto !important;
+      overflow-x: hidden; /* Prevent horizontal overflow */
+      overflow-y: auto;   /* Allow vertical scrolling */
+    }
+
     :root {
       --main-bg-color: #1a1a1a; /* darker background from the plugin UI */
       --accent-color: #2E7D32;   /* green accent, same as plugin meters */
@@ -25,12 +34,6 @@
       --secondary-bg: #1e1e1e;
       --header-font: 'Audiowide', sans-serif;
       --body-font: 'Inter', sans-serif;
-    }
-
-    html, body {
-      overflow-x: hidden; /* Prevent horizontal overflow */
-      overflow-y: auto;   /* Allow vertical scrolling */
-      -webkit-overflow-scrolling: touch; /* Improve iOS scrolling */
     }
 
     body {
@@ -322,23 +325,19 @@
       width: 120px;
     }
 
-    /* Patch container: flex centering and touch support added */
-    #patchViewOuterContainer {
-      margin: 40px auto;
-      width: 100%;
-      max-width: 1200px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      overflow: visible;
-      position: relative;
-      touch-action: pan-y;
-    }
-    /* Allow vertical scrolling even if touching the patch view */
+    /* Patch container: ensure proper touch behavior and centering */
+    #patchViewOuterContainer, 
     #patchViewInnerContainer {
-      touch-action: pan-y;
+      touch-action: pan-y !important; 
+      pointer-events: auto !important;
     }
-
+    #patchViewInnerContainer {
+      transform-origin: top center !important;
+      display: flex !important;
+      justify-content: center !important;
+      width: 100% !important;
+    }
+    
     /* Download Section */
     .download-section {
       padding: 80px 0;
@@ -747,6 +746,11 @@
 
   <!-- Single merged script: sets up the plugin, routes audio through it, and does patch scaling. -->
   <script type="module">
+    // Add a passive touchmove event to ensure scrolling isn't blocked
+    document.addEventListener('touchmove', function(e) {
+      // Allow default touch behavior for scrolling
+    }, { passive: true });
+
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
 
@@ -806,7 +810,6 @@
       const CROSSFADE_TIME = 0.2; // 200ms crossfade
 
       async function loadSample(url) {
-        // Return cached buffer if available
         if (audioBufferCache[url]) {
           return audioBufferCache[url];
         }
@@ -817,7 +820,7 @@
           }
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-          audioBufferCache[url] = audioBuffer; // Cache
+          audioBufferCache[url] = audioBuffer;
           return audioBuffer;
         } catch (error) {
           console.error(`Error loading audio file ${url}:`, error);
@@ -1024,11 +1027,20 @@
         if (scaleFactor > 1) {
           scaleFactor = 1;
         }
-        // Set transform origin to top center so the GUI is centered
+        
+        // Center the plugin UI horizontally
         innerContainer.style.transformOrigin = "top center";
         innerContainer.style.transform = `scale(${scaleFactor})`;
-        // Option: To let the container auto-size, comment out the next line
+        innerContainer.style.width = `${widthNative}px`;
+        innerContainer.style.display = "flex";
+        innerContainer.style.justifyContent = "center";
+        
+        // Adjust height while maintaining aspect ratio
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
+        
+        // Ensure the containers allow vertical scrolling
+        outerContainer.style.touchAction = "pan-y";
+        innerContainer.style.touchAction = "pan-y";
       }
 
       let resizeTimeout;
