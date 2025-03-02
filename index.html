@@ -326,16 +326,16 @@
     }
 
     /* Patch container: ensure proper touch behavior and centering */
-    #patchViewOuterContainer, 
-    #patchViewInnerContainer {
-      touch-action: pan-y !important; 
+    /* The outer container is now explicitly scrollable with momentum scrolling enabled */
+    #patchViewOuterContainer {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y !important;
       pointer-events: auto !important;
     }
     #patchViewInnerContainer {
-      transform-origin: top center !important;
-      display: flex !important;
-      justify-content: center !important;
-      width: 100% !important;
+      touch-action: pan-y !important; 
+      pointer-events: auto !important;
     }
     
     /* Download Section */
