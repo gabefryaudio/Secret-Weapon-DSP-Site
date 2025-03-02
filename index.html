@@ -58,9 +58,12 @@
       height: 1px;
       margin-bottom: 100vh;
     }
+    /* Allow horizontal scroll if needed */
     html, body {
-      overflow-x: hidden;
+      overflow-x: auto;
       overflow-y: auto;
+      margin: 0;
+      padding: 0;
     }
     body {
       font-family: var(--body-font);
@@ -68,8 +71,6 @@
       color: var(--text-color);
       line-height: 1.6;
       overflow-y: auto !important;
-      margin: 0;
-      padding: 0;
     }
     .container {
       max-width: 1200px;
@@ -563,14 +564,17 @@
 
     /* 
     ------------------------------------------------------------
-    MEDIA QUERIES (Commented out to avoid plugin reflow on mobile)
+    RESPONSIVE MEDIA QUERIES (Retained except for plugin reflow)
     ------------------------------------------------------------
-
+    */
     @media (max-width: 992px) {
+      /* 
+      NOTE: We comment out plugin-showcase reflow:
       .plugin-showcase {
         flex-direction: column;
         gap: 30px;
       }
+      */
       .plugin-details {
         text-align: center;
       }
@@ -609,7 +613,8 @@
       .hero {
         padding: 40px 0;
       }
-      .plugin-showcase, .features, .demo-section, .download-section {
+      /* We keep reflow for features, etc., but not for plugin. */
+      .features, .demo-section, .download-section {
         padding: 40px 0;
       }
     }
@@ -639,7 +644,6 @@
         padding: 0 15px;
       }
     }
-    */
   </style>
 </head>
 <body>
