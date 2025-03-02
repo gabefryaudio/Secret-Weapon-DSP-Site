@@ -497,7 +497,6 @@
       gap: 10px;
       justify-content: center;
     }
-    /* Email input now includes id, name, and autocomplete attributes for better autofill support */
     .email-form input {
       flex: 1;
       padding: 12px;
@@ -931,15 +930,24 @@
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // 5) Track playback logic
+      // 5) Track playback logic with fade out
       let currentSource = null;
+      let currentGain = null; // per-track gain node for fadeout
       let currentTrackName = 'Kick (Sub)';
 
       function stopCurrentTrack() {
-        if (currentSource) {
-          currentSource.stop();
-          currentSource.disconnect();
-          currentSource = null;
+        if (currentSource && currentGain) {
+          const fadeTime = 1.0; // fade-out time in seconds
+          currentGain.gain.setValueAtTime(currentGain.gain.value, audioContext.currentTime);
+          currentGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + fadeTime);
+          // After fade out completes, stop and disconnect
+          setTimeout(() => {
+            currentSource.stop();
+            currentSource.disconnect();
+            currentGain.disconnect();
+            currentSource = null;
+            currentGain = null;
+          }, fadeTime * 1000);
         }
       }
 
@@ -952,17 +960,25 @@
           const source = audioContext.createBufferSource();
           source.buffer = audioBuffer;
           source.loop = true;
-
-          // Connect sample source -> plugin
-          source.connect(pluginNode);
-          source.start();
-
+          
+          // Create a per-track gain node for fade control
+          const sampleGain = audioContext.createGain();
+          sampleGain.gain.value = 1;
+          
+          // Connect sample source -> sampleGain -> plugin node
+          source.connect(sampleGain);
+          sampleGain.connect(pluginNode);
+          
           currentSource = source;
+          currentGain = sampleGain;
           currentTrackName = trackName;
+          
+          // Update track info UI
           const trackInfo = document.getElementById('trackInfo');
           if (trackInfo) {
             trackInfo.textContent = `${trackName} - "Now Playing"`;
           }
+          source.start();
         } catch (error) {
           console.error('Error playing sample:', error);
         }
@@ -1001,7 +1017,7 @@
         });
       }
 
-      // 8) Stop button
+      // 8) Stop button with fade out
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
