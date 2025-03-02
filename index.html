@@ -4,13 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
+
+  <!-- Content Security Policy: allows 'unsafe-eval' (not recommended) -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self'; 
+    script-src 'self' 'unsafe-eval' https://cdnjs.cloudflare.com; 
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
+    font-src 'self' https://fonts.gstatic.com; 
+    connect-src 'self'; 
+    object-src 'none';
+  ">
+
   <!-- Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
+
   <!-- Font Awesome (CDN or kit) -->
-  <!-- Replace with whichever Font Awesome version/kit you have in Code B if desired -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
