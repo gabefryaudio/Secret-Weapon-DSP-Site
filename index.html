@@ -667,36 +667,7 @@
         flex-direction: column;
         gap: 30px;
       }
-
-      /* LED and mobile control fixes */
-      .control-row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-bottom: 15px;
-      }
-      .knob-container {
-        position: relative !important;
-        display: inline-block;
-        margin: 10px;
-      }
-      .led-indicator {
-        position: absolute;
-        top: -15px; /* Adjust as needed */
-        left: 50%;
-        transform: translateX(-50%);
-      }
-      .control-label {
-        text-align: center;
-        width: 100%;
-        margin-top: 5px;
-      }
-      .value-display {
-        text-align: center;
-        width: 100%;
-      }
     }
-    
     @media (max-width: 480px) {
       h1 {
         font-size: 2.5rem;
@@ -721,14 +692,6 @@
       }
       .container {
         padding: 0 15px;
-      }
-      /* Specific LED fix for saturation knob */
-      .saturation-led {
-        position: absolute;
-        top: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 20;
       }
     }
   </style>
@@ -1131,7 +1094,7 @@
         const patchView = await createPatchView(connection);
         innerContainer.innerHTML = "";
         innerContainer.appendChild(patchView);
-        ();
+        scalePatchView();
         const observer = new MutationObserver(() => scalePatchView());
         observer.observe(innerContainer, { childList: true, subtree: true });
       } catch (guiError) {
@@ -1146,19 +1109,13 @@
         const outerWidth = outerContainer.clientWidth;
         const scaleFactor = outerWidth / widthNative;
       
-        // Set the inner container's width explicitly to match the native width
-        innerContainer.style.width = `${widthNative}px`;
-        
-        // Center the plugin using margins instead of transforms
-        innerContainer.style.position = "relative";
-        innerContainer.style.margin = "0 auto";
-        innerContainer.style.transformOrigin = "top center";
-        innerContainer.style.transform = `scale(${scaleFactor})`;
-        
-        // Set the outer container's height to accommodate the scaled height
+        innerContainer.style.position = "absolute";
+        innerContainer.style.left = "50%";
+        innerContainer.style.transformOrigin = "top left";
+        innerContainer.style.transform = `translateX(-50%) scale(${scaleFactor})`;
+      
+        outerContainer.style.position = "relative";
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
-        // Ensure the outer container allows overflow to be hidden
-        outerContainer.style.overflow = "hidden";
       }
 
       // Re-scale on window resize
