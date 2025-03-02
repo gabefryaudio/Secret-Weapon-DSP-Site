@@ -28,12 +28,12 @@
       --body-font: 'Inter', sans-serif;
     }
 
-    /* Basic resets */
+    /* Basic resets (NO horizontal overflow hidden here) */
     html, body {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      /* We do NOT force overflow-x: hidden, so horizontal scroll is allowed */
+      overflow-x: visible; /* allow horizontal scroll if needed */
       overflow-y: auto;
       background-color: var(--main-bg-color);
       color: var(--text-color);
@@ -200,7 +200,7 @@
       border: 1px solid rgba(46,125,50,0.1);
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       position: relative;
-      overflow: hidden; /* still OK for the container background, but does not limit the plugin container */
+      overflow: visible; /* Make sure we don't clip horizontally here */
     }
     .demo-container::after {
       content: '';
@@ -323,20 +323,26 @@
       width: 120px;
     }
 
-    /*
-     * Instead of scaling, we keep the plugin at 1200px wide and let users scroll horizontally
-     */
-    #patchViewOuterContainer {
-      width: 100%;        /* container matches the screen width */
-      margin: 40px auto;  /* center with top/bottom margin */
-      max-width: none;    /* so it doesn't cap at 1200px */
-      overflow-x: auto;   /* enable horizontal scroll if content is wider than screen */
+    /* New scroll wrapper for the plugin */
+    .outerScrollWrapper {
+      width: 100%;
+      overflow-x: auto; /* horizontal scroll if contents exceed screen width */
+      -webkit-overflow-scrolling: touch; /* iOS smoother scrolling */
+      margin: 40px auto;
     }
+
+    /* Patch container is fixed at 1200x400 so it can overflow on mobile */
+    #patchViewOuterContainer {
+      width: 1200px;
+      height: 400px;
+      margin: 0 auto; /* optional: centers it for wide screens */
+    }
+
+    /* Inner container simply fills #patchViewOuterContainer */
     #patchViewInnerContainer {
-      width: 1200px;      /* plugin's native width */
-      height: 400px;      /* plugin's native height */
-      transform: none !important;          /* no scaling, no offset */
-      transform-origin: top left !important;
+      width: 100%;
+      height: 100%;
+      transform: none !important; /* override old transforms */
     }
 
     /* Download Section */
@@ -507,7 +513,7 @@
       box-shadow: 0 5px 15px rgba(46,125,50,0.5);
     }
 
-    /* Simple Mobile Nav Wrapping */
+    /* Mobile Nav Wrapping */
     @media (max-width: 768px) {
       nav {
         flex-direction: column !important;
@@ -685,10 +691,12 @@
           </div>
         </div>
 
-        <!-- Where plugin UI is placed -->
-        <div id="patchViewOuterContainer">
-          <div id="patchViewInnerContainer">
-            <!-- The patch's GUI is inserted dynamically by the script -->
+        <!-- Horizontal Scroll Wrapper for the plugin -->
+        <div class="outerScrollWrapper">
+          <div id="patchViewOuterContainer">
+            <div id="patchViewInnerContainer">
+              <!-- The patch's GUI is inserted dynamically by the script -->
+            </div>
           </div>
         </div>
       </div>
@@ -753,7 +761,7 @@
     </div>
   </footer>
 
-  <!-- Single merged script: sets up the plugin, routes audio through it, and does patch scaling. -->
+  <!-- Single merged script: sets up the plugin, routes audio through it, and does patch. -->
   <script type="module">
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
@@ -1040,7 +1048,7 @@
         });
       }
 
-      // 5) Create and insert the plugin UI, but we do NOT scale or shift it now
+      // 5) Create and insert the plugin UI (no scaling logic).
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
 
@@ -1048,7 +1056,7 @@
         const patchView = await createPatchView(connection);
         innerContainer.innerHTML = "";
         innerContainer.appendChild(patchView);
-        // We do NOT call scalePatchView, so the plugin remains at 1200px width
+        // No transform or scale calls needed.
       } catch (guiError) {
         console.error("Error creating patch view:", guiError);
       }
