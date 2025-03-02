@@ -261,6 +261,7 @@
       margin-bottom: 20px;
       justify-content: center;
     }
+    /* Updated order: Kick In now comes first */
     .track-button {
       padding: 10px 15px;
       background-color: rgba(255,255,255,0.1);
@@ -802,10 +803,10 @@
         how it transforms your tracks.
       </p>
       <div class="demo-container">
-        <!-- Track Selector -->
+        <!-- Track Selector: Updated order so "Kick In" is first and default -->
         <div class="track-selector">
-          <button class="track-button active">Kick (Sub)</button>
-          <button class="track-button">Kick In</button>
+          <button class="track-button active">Kick In</button>
+          <button class="track-button">Kick (Sub)</button>
           <button class="track-button">Snare</button>
           <button class="track-button">Tom</button>
           <button class="track-button">Overheads</button>
@@ -815,7 +816,7 @@
           <div class="waveform-animation"></div>
         </div>
         <div class="track-info-container">
-          <p id="trackInfo">Kick (Sub) - "Choose a track"</p>
+          <p id="trackInfo">Kick In - "Choose a track"</p>
           <p>Toggle processing with button above</p>
         </div>
         <div class="demo-controls">
@@ -930,30 +931,40 @@
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // 5) Track playback logic with fade out
+      // 5) Track playback logic with fade out for manual stop.
       let currentSource = null;
       let currentGain = null; // per-track gain node for fadeout
-      let currentTrackName = 'Kick (Sub)';
+      let currentTrackName = 'Kick In';
 
-      function stopCurrentTrack() {
+      // Accepts an optional parameter to determine if a fade-out should be applied.
+      function stopCurrentTrack(fade = true) {
         if (currentSource && currentGain) {
-          const fadeTime = 1.0; // fade-out time in seconds
-          currentGain.gain.setValueAtTime(currentGain.gain.value, audioContext.currentTime);
-          currentGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + fadeTime);
-          // After fade out completes, stop and disconnect
-          setTimeout(() => {
+          if (fade) {
+            const fadeTime = 1.0; // fade-out time in seconds
+            currentGain.gain.setValueAtTime(currentGain.gain.value, audioContext.currentTime);
+            currentGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + fadeTime);
+            setTimeout(() => {
+              currentSource.stop();
+              currentSource.disconnect();
+              currentGain.disconnect();
+              currentSource = null;
+              currentGain = null;
+            }, fadeTime * 1000);
+          } else {
+            // Immediate stop (for track switching)
             currentSource.stop();
             currentSource.disconnect();
             currentGain.disconnect();
             currentSource = null;
             currentGain = null;
-          }, fadeTime * 1000);
+          }
         }
       }
 
       async function playSample(url, trackName) {
+        // When switching tracks, stop any current source immediately.
+        stopCurrentTrack(false);
         try {
-          stopCurrentTrack();
           const response = await fetch(url);
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
@@ -1004,7 +1015,7 @@
         });
       });
 
-      // 7) Play button
+      // 7) Play button: Default to "Kick In"
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
@@ -1012,7 +1023,7 @@
             await audioContext.resume();
           }
           if (!currentSource) {
-            playSample('./Audio_Files/Kick_(Sub).wav', 'Kick (Sub)');
+            playSample('./Audio_Files/Kick_In.wav', 'Kick In');
           }
         });
       }
@@ -1021,7 +1032,7 @@
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
-          stopCurrentTrack();
+          stopCurrentTrack(true);
           const trackInfo = document.getElementById('trackInfo');
           if (trackInfo) {
             trackInfo.textContent = `${currentTrackName} - "Stopped"`;
