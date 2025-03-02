@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- Disable phone number detection on iOS -->
+  <meta name="format-detection" content="telephone=no" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
   
@@ -51,6 +54,24 @@
       --body-font: 'Inter', sans-serif;
     }
 
+    /* Remove iOS tap highlight, unify link states */
+    a, button {
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* Force visited links to stay the same color as normal links */
+    .nav-links a:link,
+    .nav-links a:visited {
+      color: var(--text-color);
+      text-decoration: none;
+    }
+    .nav-links a:hover,
+    .nav-links a:focus,
+    .nav-links a:active {
+      color: var(--accent-color);
+      outline: none;
+      text-decoration: none;
+    }
+
     /* Force vertical scroll */
     body::after {
       content: "";
@@ -98,15 +119,6 @@
     .nav-links {
       display: flex;
       gap: 30px;
-    }
-    .nav-links a {
-      color: var(--text-color);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-    .nav-links a:hover {
-      color: var(--accent-color);
     }
     .mobile-menu-toggle {
       display: none;
@@ -613,7 +625,6 @@
       .hero {
         padding: 40px 0;
       }
-      /* We keep reflow for features, etc., but not for plugin. */
       .features, .demo-section, .download-section {
         padding: 40px 0;
       }
