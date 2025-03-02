@@ -290,6 +290,7 @@
       border-radius: 5px;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
     }
+    /* Updated .waveform-animation using background animation instead of transform */
     .waveform-animation {
       position: absolute;
       top: 0;
@@ -301,11 +302,16 @@
         rgba(46,125,50,0.3) 50%,
         rgba(46,125,50,0) 100%
       );
+      background-size: 200% 100%;
       animation: waveformMove 2s infinite linear;
     }
     @keyframes waveformMove {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      0% {
+        background-position: -100% 0;
+      }
+      100% {
+        background-position: 100% 0;
+      }
     }
     .demo-controls {
       display: flex;
@@ -1048,7 +1054,6 @@
         outerContainer.style.position = "relative";
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
-
 
       // Re-scale on window resize
       let resizeTimeout;
