@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- Standard viewport tag -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
   <!-- Fonts -->
@@ -18,17 +19,15 @@
   />
 
   <style>
-    /* Global touch and scrolling settings */
+    /* Global scrolling and touch settings for the document */
     html, body {
-      touch-action: pan-y !important;
-      -webkit-overflow-scrolling: touch !important;
-      overscroll-behavior-y: auto !important;
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: auto;
       overflow-x: hidden;
       overflow-y: auto;
-    }
-    /* If the patch view contains any canvas elements, let them use default touch behavior */
-    canvas {
-      touch-action: auto !important;
+      margin: 0;
+      padding: 0;
     }
 
     :root {
@@ -45,7 +44,6 @@
       background-color: var(--main-bg-color);
       color: var(--text-color);
       line-height: 1.6;
-      overflow-y: auto !important;
     }
 
     .container {
@@ -329,17 +327,26 @@
       width: 120px;
     }
 
-    /* Patch container: ensure proper touch behavior and centering */
-    #patchViewOuterContainer, 
-    #patchViewInnerContainer {
-      touch-action: pan-y !important; 
-      pointer-events: auto !important;
+    /* Patch container settings */
+    /* Outer container remains set to support vertical scrolling */
+    #patchViewOuterContainer {
+      margin: 40px auto;
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow: visible;
+      position: relative;
+      touch-action: pan-y;
     }
+    /* Inner container: allow interactive controls (knobs) to work normally */
     #patchViewInnerContainer {
-      transform-origin: top center !important;
-      display: flex !important;
-      justify-content: center !important;
-      width: 100% !important;
+      /* Remove forced pan-y so default (auto) applies */
+      touch-action: auto;
+      transform-origin: top center;
+      /* Remove any forced flex properties if they interfere with the patch UI */
+      width: 100%;
     }
     
     /* Download Section */
@@ -750,19 +757,19 @@
 
   <!-- Single merged script: sets up the plugin, routes audio through it, and does patch scaling. -->
   <script type="module">
-    // Add a passive touchmove event to ensure scrolling isn't blocked
+    // Add a passive touchmove event to ensure default scrolling behavior
     document.addEventListener('touchmove', function(e) {
-      // Allow default touch behavior for scrolling
+      // Do not prevent default so scrolling works
     }, { passive: true });
 
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
 
     document.addEventListener("DOMContentLoaded", async () => {
-      // 1) Create an AudioContext for the plugin
+      // Create AudioContext for the plugin
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-      // MOBILE AUDIO PLAYBACK FIX: Resume on first touch
+      // Mobile audio fix: resume AudioContext on first touch
       const resumeAudioContext = async () => {
         if (audioContext.state === 'suspended') {
           await audioContext.resume();
@@ -772,7 +779,7 @@
       };
       document.addEventListener('touchstart', resumeAudioContext, { passive: true });
 
-      // 2) Initialize the Uppercomp patch connection
+      // Initialize the Uppercomp patch connection
       let connection;
       try {
         connection = await createUppercompPatchConnection(audioContext, "uppercomp-worklet");
@@ -781,42 +788,29 @@
         return;
       }
 
-      // 3) Find a connectable AudioNode from the connection
-      let pluginNode = null;
-      if (connection.node && typeof connection.node.connect === "function") {
-        pluginNode = connection.node;
-      } else if (connection.patchNode && typeof connection.patchNode.connect === "function") {
-        pluginNode = connection.patchNode;
-      } else if (connection.audioWorkletPatchNode && typeof connection.audioWorkletPatchNode.connect === "function") {
-        pluginNode = connection.audioWorkletPatchNode;
-      } else if (connection.audioNode && typeof connection.audioNode.connect === "function") {
-        pluginNode = connection.audioNode;
-      } else {
+      // Find a connectable AudioNode from the connection
+      let pluginNode = connection.node || connection.patchNode || connection.audioWorkletPatchNode || connection.audioNode;
+      if (!pluginNode || typeof pluginNode.connect !== "function") {
         console.error("No connectable AudioNode found in Uppercomp connection.");
         return;
       }
 
-      // 4) Create a GainNode for overall volume control (master)
+      // Create a master GainNode
       const gainNode = audioContext.createGain();
       gainNode.gain.value = 1;
-      // plugin -> gain -> destination
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // ---------------------------------------------------------------------
-      // ENHANCED AUDIO PLAYER WITH SMOOTH CROSSFADE TRANSITIONS (NEW CODE)
-      // ---------------------------------------------------------------------
+      // --- Enhanced Audio Player Code ---
       let currentSource = null;
       let currentTrackName = 'Kick (Sub)';
       let isPlaying = false;
-      let audioBufferCache = {}; 
-      let currentGainNode = null; 
+      let audioBufferCache = {};
+      let currentGainNode = null;
       const CROSSFADE_TIME = 0.2; // 200ms crossfade
 
       async function loadSample(url) {
-        if (audioBufferCache[url]) {
-          return audioBufferCache[url];
-        }
+        if (audioBufferCache[url]) return audioBufferCache[url];
         try {
           const response = await fetch(url);
           if (!response.ok) {
@@ -835,12 +829,8 @@
       function stopCurrentTrack(immediate = false) {
         if (currentSource) {
           if (immediate) {
-            try {
-              currentSource.stop();
-              if (currentGainNode) {
-                currentGainNode.disconnect();
-              }
-            } catch (e) {}
+            try { currentSource.stop(); } catch (e) {}
+            if (currentGainNode) currentGainNode.disconnect();
             currentSource = null;
             currentGainNode = null;
             isPlaying = false;
@@ -852,15 +842,11 @@
               const sourceToStop = currentSource;
               const gainToDisconnect = currentGainNode;
               setTimeout(() => {
-                try {
-                  sourceToStop.stop();
-                } catch (e) {}
+                try { sourceToStop.stop(); } catch (e) {}
                 gainToDisconnect.disconnect();
               }, CROSSFADE_TIME * 1000 + 50);
             } else {
-              try {
-                currentSource.stop();
-              } catch (e) {}
+              try { currentSource.stop(); } catch (e) {}
             }
           }
         }
@@ -868,9 +854,7 @@
 
       async function playSample(url, trackName, crossfade = true) {
         try {
-          if (audioContext.state === 'suspended') {
-            await audioContext.resume();
-          }
+          if (audioContext.state === 'suspended') await audioContext.resume();
           const audioBuffer = await loadSample(url);
           const now = audioContext.currentTime;
           const newGainNode = audioContext.createGain();
@@ -884,9 +868,7 @@
               const oldSource = currentSource;
               const oldGain = currentGainNode;
               setTimeout(() => {
-                try {
-                  oldSource.stop();
-                } catch (e) {}
+                try { oldSource.stop(); } catch (e) {}
                 oldGain.disconnect();
               }, CROSSFADE_TIME * 1000 + 50);
             } else {
@@ -1004,9 +986,7 @@
           gainNode.gain.value = volumeSlider.value;
         });
       }
-      // ---------------------------------------------------------------------
-      // END CROSSFADE-ENHANCED AUDIO PLAYER CODE
-      // ---------------------------------------------------------------------
+      // --- End Enhanced Audio Player Code ---
 
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
@@ -1028,23 +1008,22 @@
         const heightNative = 400;
         const outerWidth = outerContainer.clientWidth;
         let scaleFactor = outerWidth / widthNative;
-        if (scaleFactor > 1) {
-          scaleFactor = 1;
-        }
+        if (scaleFactor > 1) scaleFactor = 1;
         
-        // Center the plugin UI horizontally and update transform properties
+        // Center the GUI by setting transform origin to top center
         innerContainer.style.transformOrigin = "top center";
         innerContainer.style.transform = `scale(${scaleFactor})`;
+        // Set width so that the scaled element remains centered
         innerContainer.style.width = `${widthNative}px`;
-        innerContainer.style.display = "flex";
-        innerContainer.style.justifyContent = "center";
+        innerContainer.style.display = "block"; // Let the patch view handle its own layout
         
-        // Commenting out forced height so the container grows naturally:
+        // Do not force a fixed height on outerContainer; allow it to size naturally
         // outerContainer.style.height = `${heightNative * scaleFactor}px`;
         
-        // Ensure the containers allow vertical scrolling
+        // Ensure vertical scrolling is enabled on the outer container
         outerContainer.style.touchAction = "pan-y";
-        innerContainer.style.touchAction = "pan-y";
+        // Let the inner container use its default (auto) for interactive events
+        innerContainer.style.touchAction = "auto";
       }
 
       let resizeTimeout;
