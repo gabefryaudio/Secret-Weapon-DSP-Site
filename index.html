@@ -8,7 +8,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
   
-  <!-- Content Security Policy -->
+  <!-- Content Security Policy:
+       This CSP allows:
+         - Default sources from 'self', data: and https:.
+         - Scripts from 'self', inline scripts ('unsafe-inline'), eval ('unsafe-eval'),
+           https: sources, and data URLs.
+         - Styles from 'self', inline styles ('unsafe-inline'), and https:.
+         - Images and fonts from 'self', data:, and https:.
+         - Worker scripts from 'self'.
+       WARNING: Allowing 'unsafe-inline' and 'unsafe-eval' reduces security.
+  -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self' data: https:;
     script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:;
@@ -49,6 +58,7 @@
     a, button {
       -webkit-tap-highlight-color: transparent;
     }
+    /* Force visited links to stay the same color as normal links */
     .nav-links a:link,
     .nav-links a:visited {
       color: var(--text-color);
@@ -62,6 +72,13 @@
       text-decoration: none;
     }
 
+    /* Force vertical scroll */
+    body::after {
+      content: "";
+      display: block;
+      height: 1px;
+      margin-bottom: 100vh;
+    }
     /* Allow horizontal and vertical scroll as needed */
     html, body {
       overflow-x: auto;
@@ -76,9 +93,6 @@
       line-height: 1.6;
       overflow-y: auto !important;
     }
-
-    /* Removed body::after that forced extra blank space */
-
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -619,10 +633,12 @@
     ------------------------------------------------------------
     */
     @media (max-width: 992px) {
-      /* .plugin-showcase {
-          flex-direction: column;
-          gap: 30px;
-        } */
+      /* We do NOT reflow .plugin-showcase to avoid LED displacement
+      .plugin-showcase {
+        flex-direction: column;
+        gap: 30px;
+      }
+      */
       .plugin-details {
         text-align: center;
       }
@@ -908,13 +924,13 @@
     </div>
   </footer>
 
-  <!-- Single merged script: sets up the plugin, routes audio through it, manages the mobile menu, etc. -->
+  <!-- Single merged script: sets up the plugin, routes audio through it, and manages the mobile menu & scaling. -->
   <script type="module">
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
 
     document.addEventListener("DOMContentLoaded", async () => {
-      // Mobile menu logic
+      // Mobile menu toggle logic
       const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
       const mobileNav = document.querySelector('.mobile-nav');
       const closeMenuBtn = document.querySelector('.close-menu');
@@ -970,15 +986,16 @@
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // 5) Track playback logic
+      // 5) Track playback logic with fade out for manual stop.
       let currentSource = null;
-      let currentGain = null;
+      let currentGain = null; // per-track gain node for fadeout
       let currentTrackName = 'Kick In';
 
+      // Accepts an optional parameter to determine if a fade-out should be applied.
       function stopCurrentTrack(fade = true) {
         if (currentSource && currentGain) {
           if (fade) {
-            const fadeTime = 1.0;
+            const fadeTime = 1.0; // fade-out time in seconds
             currentGain.gain.setValueAtTime(currentGain.gain.value, audioContext.currentTime);
             currentGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + fadeTime);
             setTimeout(() => {
@@ -989,6 +1006,7 @@
               currentGain = null;
             }, fadeTime * 1000);
           } else {
+            // Immediate stop (for track switching)
             currentSource.stop();
             currentSource.disconnect();
             currentGain.disconnect();
@@ -999,6 +1017,7 @@
       }
 
       async function playSample(url, trackName) {
+        // When switching tracks, stop any current source immediately.
         stopCurrentTrack(false);
         try {
           const response = await fetch(url);
@@ -1008,9 +1027,11 @@
           source.buffer = audioBuffer;
           source.loop = true;
           
+          // Create a per-track gain node for fade control
           const sampleGain = audioContext.createGain();
           sampleGain.gain.value = 1;
           
+          // Connect sample source -> sampleGain -> plugin node
           source.connect(sampleGain);
           sampleGain.connect(pluginNode);
           
@@ -1018,6 +1039,7 @@
           currentGain = sampleGain;
           currentTrackName = trackName;
           
+          // Update track info UI
           const trackInfo = document.getElementById('trackInfo');
           if (trackInfo) {
             trackInfo.textContent = `${trackName} - "Now Playing"`;
@@ -1028,6 +1050,7 @@
         }
       }
 
+      // 6) Handle track buttons
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -1047,6 +1070,7 @@
         });
       });
 
+      // 7) Play button: Default to "Kick In"
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
@@ -1059,6 +1083,7 @@
         });
       }
 
+      // 8) Stop button with fade out
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
@@ -1070,6 +1095,7 @@
         });
       }
 
+      // 9) Volume slider
       const volumeSlider = document.getElementById('volumeSlider');
       if (volumeSlider) {
         volumeSlider.addEventListener('input', () => {
@@ -1077,7 +1103,7 @@
         });
       }
 
-      // Patch UI
+      // 10) Create and insert the plugin UI, with scale logic
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
 
@@ -1109,12 +1135,14 @@
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
 
+      // Re-scale on window resize
       let resizeTimeout;
       window.addEventListener("resize", () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(scalePatchView, 200);
       });
 
+      // Re-enforce vertical scroll if changed
       document.body.style.setProperty("overflow", "auto", "important");
       document.documentElement.style.setProperty("overflow", "auto", "important");
       const bodyObserver = new MutationObserver(mutations => {
