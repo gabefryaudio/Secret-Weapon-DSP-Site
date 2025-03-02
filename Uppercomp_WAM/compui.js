@@ -101,9 +101,9 @@ class UpperCompGUI extends HTMLElement {
     if (this.paramListener) {
       this.patchConnection.removeAllParameterListener(this.paramListener);
     }
-    this.patchConnection.removeEndpointListener('gainReduction',   this.gainReductionListener);
-    this.patchConnection.removeEndpointListener('inputMeter',      this.inputMeterListener);
-    this.patchConnection.removeEndpointListener('outputMeter',     this.outputMeterListener);
+    this.patchConnection.removeEndpointListener('gainReduction', this.gainReductionListener);
+    this.patchConnection.removeEndpointListener('inputMeter', this.inputMeterListener);
+    this.patchConnection.removeEndpointListener('outputMeter', this.outputMeterListener);
   }
 
   // ------------------------------------------------------------------
@@ -114,7 +114,7 @@ class UpperCompGUI extends HTMLElement {
     this.paramListener = ({ endpointID, value }) => {
       const knobObj = this.knobs[endpointID];
       if (!knobObj) return;
-      knobObj.targetValue  = value;
+      knobObj.targetValue = value;
       knobObj.currentValue = value;
       this.updateKnobRotation(endpointID, value);
       this.updateKnobDisplayValue(endpointID, value);
@@ -176,9 +176,9 @@ class UpperCompGUI extends HTMLElement {
     this.knobs = {};
     const knobEls = this.querySelectorAll('.knob');
     knobEls.forEach(knobEl => {
-      const param   = knobEl.dataset.param;
-      const minVal  = parseFloat(knobEl.dataset.min);
-      const maxVal  = parseFloat(knobEl.dataset.max);
+      const param = knobEl.dataset.param;
+      const minVal = parseFloat(knobEl.dataset.min);
+      const maxVal = parseFloat(knobEl.dataset.max);
       const initVal = parseFloat(knobEl.dataset.value);
       this.knobs[param] = {
         element: knobEl,
@@ -200,27 +200,27 @@ class UpperCompGUI extends HTMLElement {
     const knobEls = this.querySelectorAll('.knob');
     knobEls.forEach(knobEl => {
       knobEl.addEventListener('mousedown', e => this.startKnobDrag(e, knobEl.dataset.param));
-      // Removed e.preventDefault() from startKnobTouch to avoid blocking scroll on mere touch
+      // Removed e.preventDefault() from touchstart to allow scrolling
       knobEl.addEventListener('touchstart', e => this.startKnobTouch(e, knobEl.dataset.param), { passive: false });
     });
 
-    document.addEventListener('mousemove',  e => this.handleKnobDrag(e));
-    document.addEventListener('mouseup',    () => this.stopKnobDrag());
-    // Only preventDefault if a knob is actually being dragged
-    document.addEventListener('touchmove',  e => this.handleKnobTouch(e), { passive: false });
-    document.addEventListener('touchend',   () => this.stopKnobDrag());
+    document.addEventListener('mousemove', e => this.handleKnobDrag(e));
+    document.addEventListener('mouseup', () => this.stopKnobDrag());
+    // Use passive: false so we can conditionally call preventDefault()
+    document.addEventListener('touchmove', e => this.handleKnobTouch(e), { passive: false });
+    document.addEventListener('touchend', () => this.stopKnobDrag());
   }
 
   startKnobDrag(e, param) {
-    e.preventDefault(); // Typically OK for mouse usage
+    e.preventDefault(); // For mouse events, this is acceptable
     this.knobs[param].isDragging = true;
-    this.knobs[param].lastY      = e.clientY;
+    this.knobs[param].lastY = e.clientY;
   }
 
   startKnobTouch(e, param) {
-    // Don't call e.preventDefault() here => allow normal scrolling unless actually dragging
+    // Do not call e.preventDefault() here to allow normal scrolling until a knob is actually dragged
     this.knobs[param].isDragging = true;
-    this.knobs[param].lastY      = e.touches[0].clientY;
+    this.knobs[param].lastY = e.touches[0].clientY;
   }
 
   handleKnobDrag(e) {
@@ -228,26 +228,25 @@ class UpperCompGUI extends HTMLElement {
       const knob = this.knobs[param];
       if (knob.isDragging) {
         const deltaY = e.clientY - knob.lastY;
-        knob.lastY   = e.clientY;
+        knob.lastY = e.clientY;
         this.adjustKnobValue(param, deltaY);
       }
     });
   }
 
   handleKnobTouch(e) {
-    // Check if any knob is actively dragging; only then block default scroll
+    // Determine if any knob is actively dragging
     let anyKnobDragging = false;
-
     Object.keys(this.knobs).forEach(param => {
       const knob = this.knobs[param];
       if (knob.isDragging && e.touches.length) {
         anyKnobDragging = true;
         const deltaY = e.touches[0].clientY - knob.lastY;
-        knob.lastY   = e.touches[0].clientY;
+        knob.lastY = e.touches[0].clientY;
         this.adjustKnobValue(param, deltaY);
       }
     });
-
+    // Only block default if a knob is actually being dragged
     if (anyKnobDragging) {
       e.preventDefault();
     }
@@ -260,7 +259,7 @@ class UpperCompGUI extends HTMLElement {
   }
 
   adjustKnobValue(param, deltaY) {
-    const knob  = this.knobs[param];
+    const knob = this.knobs[param];
     const range = knob.max - knob.min;
     const sensitivity = 0.3;
     const change = (deltaY * sensitivity * range) / 100;
@@ -268,16 +267,16 @@ class UpperCompGUI extends HTMLElement {
   }
 
   updateKnobRotation(param, value) {
-    const knob  = this.knobs[param];
+    const knob = this.knobs[param];
     const range = knob.max - knob.min;
-    const pct   = (value - knob.min) / range;
+    const pct = (value - knob.min) / range;
     // 270° total, offset -135 => 0 => -135°, 1 => +135°
-    const deg   = pct * 270 - 135;
+    const deg = pct * 270 - 135;
     knob.element.style.transform = `rotate(${deg}deg)`;
   }
 
   updateKnobDisplayValue(param, value) {
-    const knob  = this.knobs[param];
+    const knob = this.knobs[param];
     const label = knob.element.parentElement.querySelector('.knob-value');
     if (!label) return;
 
@@ -323,7 +322,7 @@ class UpperCompGUI extends HTMLElement {
     this.waveformCanvas = this.querySelector('#waveform');
     if (!this.waveformCanvas) return;
     const rect = this.waveformCanvas.getBoundingClientRect();
-    this.waveformCanvas.width  = rect.width;
+    this.waveformCanvas.width = rect.width;
     this.waveformCanvas.height = rect.height;
     this.ctx = this.waveformCanvas.getContext('2d');
   }
@@ -331,8 +330,8 @@ class UpperCompGUI extends HTMLElement {
   drawWaveform() {
     if (!this.ctx || !this.waveformCanvas) return;
     const ctx = this.ctx;
-    const w   = this.waveformCanvas.width;
-    const h   = this.waveformCanvas.height;
+    const w = this.waveformCanvas.width;
+    const h = this.waveformCanvas.height;
 
     // Clear
     ctx.fillStyle = '#1a1a1a';
@@ -340,8 +339,8 @@ class UpperCompGUI extends HTMLElement {
 
     // Horizontal dB lines
     ctx.strokeStyle = '#333';
-    ctx.lineWidth   = 1;
-    const dbLevels  = [-60, -48, -36, -24, -12, 0, 12];
+    ctx.lineWidth = 1;
+    const dbLevels = [-60, -48, -36, -24, -12, 0, 12];
     dbLevels.forEach(db => {
       const y = this.dbToY(db, h);
       ctx.beginPath();
@@ -349,9 +348,9 @@ class UpperCompGUI extends HTMLElement {
       ctx.lineTo(w, y);
       ctx.stroke();
 
-      ctx.fillStyle  = '#666';
-      ctx.font       = '10px "JetBrains Mono"';
-      ctx.textAlign  = 'right';
+      ctx.fillStyle = '#666';
+      ctx.font = '10px "JetBrains Mono"';
+      ctx.textAlign = 'right';
       ctx.fillText(`${db} dB`, w - 5, y - 5);
     });
 
@@ -370,10 +369,10 @@ class UpperCompGUI extends HTMLElement {
       const barW = w / this.historyLength;
       ctx.fillStyle = '#4CAF50';
       this.waveformHistory.forEach((sample, i) => {
-        const x   = i * barW;
+        const x = i * barW;
         const lvl = sample.inputLevel;
-        const y   = this.dbToY(lvl, h);
-        const barH= h - y;
+        const y = this.dbToY(lvl, h);
+        const barH = h - y;
         if (barH > 0) ctx.fillRect(x, y, barW - 1, barH);
       });
     }
@@ -381,16 +380,16 @@ class UpperCompGUI extends HTMLElement {
     // Threshold line
     const thrY = this.dbToY(this.currentThresholdDb, h);
     ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-    ctx.lineWidth   = 2;
+    ctx.lineWidth = 2;
     ctx.setLineDash([5, 3]);
     ctx.beginPath();
     ctx.moveTo(0, thrY);
     ctx.lineTo(w, thrY);
     ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle  = 'rgba(255,255,255,0.7)';
-    ctx.font       = '11px "JetBrains Mono"';
-    ctx.textAlign  = 'left';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = '11px "JetBrains Mono"';
+    ctx.textAlign = 'left';
     ctx.fillText(`Threshold: ${this.currentThresholdDb.toFixed(1)} dB`, 10, thrY - 5);
   }
 
@@ -407,9 +406,9 @@ class UpperCompGUI extends HTMLElement {
   // Meters
   // ------------------------------------------------------------------
   initializeMetersWithMarkers() {
-    this.initMeter('inputMeter',  inputOutputDbMarkers,  -36, 6,  false);
-    this.initMeter('outputMeter', inputOutputDbMarkers,  -36, 6,  false);
-    this.initMeter('grMeter',     gainReductionDbMarkers, 0,   -36, true);
+    this.initMeter('inputMeter', inputOutputDbMarkers, -36, 6, false);
+    this.initMeter('outputMeter', inputOutputDbMarkers, -36, 6, false);
+    this.initMeter('grMeter', gainReductionDbMarkers, 0, -36, true);
     this.positionAllScaleMarkers();
   }
 
@@ -431,21 +430,21 @@ class UpperCompGUI extends HTMLElement {
   }
 
   positionAllScaleMarkers() {
-    this.posMeterScale('inputMeterScale',  'inputMeter',  inputOutputDbMarkers,  -36, 6);
-    this.posMeterScale('grMeterScale',     'grMeter',     gainReductionDbMarkers, 0,   -36);
-    this.posMeterScale('outputMeterScale','outputMeter', inputOutputDbMarkers,  -36, 6);
+    this.posMeterScale('inputMeterScale', 'inputMeter', inputOutputDbMarkers, -36, 6);
+    this.posMeterScale('grMeterScale', 'grMeter', gainReductionDbMarkers, 0, -36);
+    this.posMeterScale('outputMeterScale', 'outputMeter', inputOutputDbMarkers, -36, 6);
   }
 
   posMeterScale(scaleId, dotsId, markers, minDb, maxDb) {
     const scaleEl = this.querySelector(`#${scaleId}`);
-    const dotsEl  = this.querySelector(`#${dotsId}`);
+    const dotsEl = this.querySelector(`#${dotsId}`);
     if (!scaleEl || !dotsEl) return;
     scaleEl.innerHTML = '';
 
     const totalDots = 30;  // Your meter-dot count
-    const stepW     = 16;  // Each dot+gap ~16px
-    const rng       = Math.abs(maxDb - minDb);
-    const offset    = 10;  // Horizontal shift so label centers under dot
+    const stepW = 16;      // Each dot+gap ~16px
+    const rng = Math.abs(maxDb - minDb);
+    const offset = 10;     // Horizontal shift so label centers under dot
 
     markers.forEach(dbVal => {
       const frac = (minDb < maxDb)
@@ -468,7 +467,7 @@ class UpperCompGUI extends HTMLElement {
     // 1) If input is very low, force gain reduction to zero
     if (this.meters.inputLevel.value < -50) {
       this.meters.gainReduction.value = 0;
-      this.meters.gainReduction.peak  = 0;
+      this.meters.gainReduction.peak = 0;
     }
 
     // 2) Decay peaks for input & output
@@ -484,7 +483,7 @@ class UpperCompGUI extends HTMLElement {
     // 3) If the gain reduction is near zero, force it to 0
     //    (prevents "hanging" with tiny dB values)
     if (Math.abs(this.meters.gainReduction.value) < 0.05) {
-      this.meters.gainReduction.peak  = 0;
+      this.meters.gainReduction.peak = 0;
       this.meters.gainReduction.value = 0;
     } else {
       // Otherwise let it track the current value
@@ -512,9 +511,9 @@ class UpperCompGUI extends HTMLElement {
     if (this.frameCount >= this.historyUpdateRate) {
       this.frameCount = 0;
       this.waveformHistory.push({
-        inputLevel:    this.meters.inputLevel.value,
+        inputLevel: this.meters.inputLevel.value,
         gainReduction: this.meters.gainReduction.value,
-        outputLevel:   this.meters.outputLevel.value
+        outputLevel: this.meters.outputLevel.value
       });
       if (this.waveformHistory.length > this.historyLength) {
         this.waveformHistory.shift();
@@ -550,7 +549,7 @@ class UpperCompGUI extends HTMLElement {
       const meterEl = this.querySelector(`#${cfg.id}`);
       if (!meterEl) return;
 
-      const dots  = meterEl.querySelectorAll('.meter-dot');
+      const dots = meterEl.querySelectorAll('.meter-dot');
       const valEl = meterEl.parentElement.querySelector('.meter-value');
 
       // If gainReduction is near zero, forcibly display as 0.0
@@ -565,8 +564,8 @@ class UpperCompGUI extends HTMLElement {
       }
 
       // For per-dot coloring:
-      const total  = dots.length;
-      const rng    = Math.abs(cfg.maxDb - cfg.minDb);
+      const total = dots.length;
+      const rng = Math.abs(cfg.maxDb - cfg.minDb);
       const dbStep = rng / (total - 1);
 
       for (let i = 0; i < total; i++) {
@@ -586,7 +585,6 @@ class UpperCompGUI extends HTMLElement {
           }
         } else {
           // For gain reduction
-          // clampVal ensures we never go above 0 dB for GR
           const clampVal = Math.min(0, meterValue);
           if (clampVal >= -0.01) {
             intensity = 0.0;
@@ -649,8 +647,429 @@ class UpperCompGUI extends HTMLElement {
     const makeDots = () => '<div class="meter-dot"></div>'.repeat(24);
 
     return `
-      <!-- All the HTML layout for your custom compressor UI goes here -->
-      <!-- (Same as in your original code, omitted for brevity in this snippet) -->
+      <style>
+      @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+
+      :host {
+        display: block;
+        width: 100%;
+        max-width: 1200px;
+      }
+
+      #compressor {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 3 / 1;
+        max-width: 1200px;
+        background: linear-gradient(145deg, #262626, #1e1e1e);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8),
+                    inset 0 1px 1px rgba(255,255,255,0.1);
+        overflow: hidden;
+        padding: 16px;
+      }
+
+      .sections-container {
+        display: flex;
+        gap: 16px;
+        width: 100%;
+        height: 100%;
+      }
+
+      .knobs-section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 8px;
+        flex: 3;
+        position: relative;
+      }
+      .knob-row {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+      }
+      .knob-wrapper {
+        width: 80px;
+        text-align: center;
+      }
+      #satWrapper { }
+      #satMixWrapper { }
+      .knob {
+        width: 55px;
+        height: 55px;
+        cursor: pointer;
+        filter: brightness(0.85) contrast(1.2)
+                drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+        transition: filter 0.2s ease;
+      }
+      .knob:hover {
+        filter: brightness(1) contrast(1.3)
+                drop-shadow(0 6px 12px rgba(0,0,0,0.9));
+      }
+      .knob-label {
+        font-size: 10px;
+        color: #bbb;
+        margin-top: 6px;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .knob-value {
+        font-size: 9px;
+        color: #888;
+        font-family: 'JetBrains Mono', monospace;
+        margin-top: 3px;
+        font-weight: 500;
+      }
+
+      .toggle-switches {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 8px;
+        justify-content: center;
+      }
+      .toggle-button {
+        padding: 5px 10px;
+        border: none;
+        background: #1a1a1a;
+        color: #888;
+        font-size: 9px;
+        cursor: pointer;
+        border-radius: 3px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        font-family: 'Inter', sans-serif;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.4),
+                    inset 0 1px 1px rgba(255,255,255,0.1);
+      }
+      .toggle-button:hover {
+        color: #bbb;
+      }
+      .toggle-button.active {
+        background: #2E7D32;
+        color: #fff;
+        box-shadow:
+          inset 0 1px 1px rgba(255,255,255,0.2),
+          0 0 4px rgba(76,175,80,0.4);
+      }
+
+      .visualization-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 8px;
+        flex: 4;
+      }
+      .visualization-box {
+        background: linear-gradient(to bottom, #1a1a1a, #222);
+        border-radius: 8px;
+        border: 1px solid #333;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+        width: 100%;
+        height: 100%;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #title {
+        font-family: 'Audiowide', sans-serif;
+        font-size: 20px;
+        color: #ddd;
+        text-align: center;
+        margin: 0;
+        margin-bottom: 8px;
+        text-shadow: 0 0 10px rgba(76,175,80,0.3);
+        letter-spacing: 3px;
+      }
+      #waveform {
+        width: 100%;
+        height: 100%;
+      }
+
+      .meters-section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 8px;
+        flex: 2;
+        margin-top: -16px;
+      }
+      .meter-block {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 6px;
+      }
+      .meter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+      .meter-label {
+        font-size: 10px;
+        color: #bbb;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .meter-value {
+        font-size: 10px;
+        font-family: 'JetBrains Mono', monospace;
+        color: #888;
+        font-weight: 500;
+      }
+      .meter-dots {
+        display: flex;
+        gap: 3px;
+        padding: 3px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 3px;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+        position: relative;
+        height: 16px;
+      }
+      .meter-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #333;
+        border: 1px solid #222;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+      }
+      .meter-scale {
+        position: absolute;
+        left: 4px;
+        right: 4px;
+        bottom: -18px;
+        height: 14px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .scale-marker {
+        position: absolute;
+        color: #999;
+        font-size: 8px;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 500;
+        transform: translateX(-50%);
+      }
+      .meter-dot.active {
+        background: #4CAF50;
+        border-color: #2E7D32;
+        box-shadow:
+          inset 0 1px 2px rgba(255,255,255,0.3),
+          0 0 4px rgba(76,175,80,0.8);
+      }
+      #grMeter .meter-dot.active {
+        background: #F44336;
+        border-color: #C62828;
+        box-shadow:
+          inset 0 1px 2px rgba(255,255,255,0.3),
+          0 0 4px rgba(244,67,54,0.8);
+      }
+
+      .logo-container {
+        position: absolute;
+        bottom: 40px;
+        right: 100px;
+        opacity: 0.85;
+        transition: opacity 0.2s ease;
+      }
+      .logo-container:hover {
+        opacity: 1.0;
+      }
+      .secret-weapon-logo {
+        width: 150px;
+        height: auto;
+      }
+
+      /* --- LED Styles --- */
+      #saturationLedWrapper {
+        position: absolute;
+        width: 30px;
+        height: 14px;
+        pointer-events: none;
+      }
+      #saturationLed {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background-color: #444;
+      }
+      #saturationLed.on {
+        background-color: #FF0000;
+        box-shadow: 0 0 12px 4px rgba(255, 0, 0, 1.0);
+      }
+      </style>
+
+      <div id="compressor">
+        <div class="sections-container">
+          <!-- Knobs Section -->
+          <div class="knobs-section">
+            <div class="knob-row">
+              <!-- drive (Saturation) -->
+              <div class="knob-wrapper" id="satWrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="drive" data-min="0.1" data-max="10" data-value="1.0">
+                <div class="knob-label">Saturation</div>
+                <div class="knob-value">0.9</div>
+              </div>
+              <!-- satMixIn (Saturation Mix) -->
+              <div class="knob-wrapper" id="satMixWrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="satMixIn" data-min="0" data-max="1" data-value="1.0">
+                <div class="knob-label">Saturation Mix</div>
+                <div class="knob-value">1.0</div>
+              </div>
+              <!-- inputGainIn -->
+              <div class="knob-wrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="inputGainIn" data-min="-25" data-max="25" data-value="0.0">
+                <div class="knob-label">Comp In Gain</div>
+                <div class="knob-value">0.0 dB</div>
+              </div>
+              <!-- ratioIn -->
+              <div class="knob-wrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="ratioIn" data-min="1" data-max="10" data-value="4.0">
+                <div class="knob-label">Ratio</div>
+                <div class="knob-value">4.0:1</div>
+              </div>
+              <!-- thresholdDbIn -->
+              <div class="knob-wrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="thresholdDbIn" data-min="-60" data-max="0" data-value="-28.0">
+                <div class="knob-label">Threshold</div>
+                <div class="knob-value">-28.0 dB</div>
+              </div>
+            </div>
+            <!-- LED for Saturation (positioned between drive and satMixIn) -->
+            <div id="saturationLedWrapper" class="led-wrapper">
+              <div id="saturationLed"></div>
+            </div>
+            <div class="knob-row">
+              <!-- lookaheadMsIn -->
+              <div class="knob-wrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="lookaheadMsIn" data-min="0" data-max="50" data-value="5.0">
+                <div class="knob-label">Lookahead</div>
+                <div class="knob-value">5.0 ms</div>
+              </div>
+              <!-- attackMsIn -->
+              <div class="knob-wrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="attackMsIn" data-min="1" data-max="100" data-value="25.0">
+                <div class="knob-label">Attack</div>
+                <div class="knob-value">25.0 ms</div>
+              </div>
+              <!-- releaseMsIn -->
+              <div class="knob-wrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="releaseMsIn" data-min="10" data-max="500" data-value="80.0">
+                <div class="knob-label">Release</div>
+                <div class="knob-value">80.0 ms</div>
+              </div>
+              <!-- outputGainIn -->
+              <div class="knob-wrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="outputGainIn" data-min="-25" data-max="25" data-value="0.0">
+                <div class="knob-label">Output Gain</div>
+                <div class="knob-value">0.0 dB</div>
+              </div>
+              <!-- sidechainFreqIn -->
+              <div class="knob-wrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="sidechainFreqIn" data-min="20" data-max="20000" data-value="200.0">
+                <div class="knob-label">Sidechain Freq</div>
+                <div class="knob-value">200.0 Hz</div>
+              </div>
+            </div>
+            <div class="toggle-switches">
+              <button class="toggle-button" data-param="enableLookAheadIn">
+                LOOKAHEAD ENABLED
+              </button>
+              <div class="knob-wrapper">
+                <img class="knob"
+                     src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
+                     data-param="compMixIn" data-min="0" data-max="1" data-value="1.0">
+                <div class="knob-label">Comp Mix</div>
+                <div class="knob-value">1.0</div>
+              </div>
+              <button class="toggle-button" data-param="sidechainFilterEnableIn">
+                SIDECHAIN FILTER ENABLED
+              </button>
+            </div>
+          </div>
+
+          <!-- Visualization Section -->
+          <div class="visualization-section">
+            <div class="visualization-box">
+              <h1 id="title">UPPERCOMP</h1>
+              <canvas id="waveform"></canvas>
+            </div>
+          </div>
+
+          <!-- Meters Section -->
+          <div class="meters-section">
+            <div class="meter-block">
+              <div class="meter-header">
+                <span class="meter-label">Input Level</span>
+                <span class="meter-value">-36.0 dB</span>
+              </div>
+              <div class="meter-dots" id="inputMeter">
+                ${makeDots()}
+              </div>
+              <div class="meter-scale" id="inputMeterScale"></div>
+            </div>
+
+            <div class="meter-block">
+              <div class="meter-header">
+                <span class="meter-label">Gain Reduction</span>
+                <span class="meter-value">0.0 dB</span>
+              </div>
+              <div class="meter-dots" id="grMeter">
+                ${makeDots()}
+              </div>
+              <div class="meter-scale" id="grMeterScale"></div>
+            </div>
+
+            <div class="meter-block">
+              <div class="meter-header">
+                <span class="meter-label">Output Level</span>
+                <span class="meter-value">-36.0 dB</span>
+              </div>
+              <div class="meter-dots" id="outputMeter">
+                ${makeDots()}
+              </div>
+              <div class="meter-scale" id="outputMeterScale"></div>
+            </div>
+
+            <div class="logo-container">
+              <img
+                class="secret-weapon-logo"
+                src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/refs/heads/main/Secret%20Weapon%20DSP%20logo%20(straight).svg"
+                alt="Secret Weapon DSP Logo"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     `;
   }
 }
