@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Responsive meta tag -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <!-- Updated meta viewport tag -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <title>Secret Weapon DSP - UPPERCOMP</title>
   <!-- Fonts -->
   <link
@@ -31,9 +31,11 @@
     /* Global resets */
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
-    /* Updated to allow vertical scrolling */
+    /* Ensure proper scrolling on mobile */
     html, body {
       margin: 0;
       padding: 0;
@@ -42,8 +44,10 @@
       font-family: var(--body-font);
       line-height: 1.6;
       width: 100%;
-      overflow-x: hidden; /* Prevent horizontal scroll */
-      overflow-y: auto;   /* Ensure vertical scrolling works */
+      height: 100%; /* Added height */
+      overflow-x: hidden;
+      overflow-y: visible; /* Allow vertical content flow */
+      position: relative;
     }
 
     img {
@@ -51,12 +55,13 @@
       height: auto;
     }
 
-    /* Container for most sections */
+    /* Ensure container doesn't restrict scrolling */
     .container {
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
+      overflow: visible;
     }
 
     /* Header styles */
@@ -214,6 +219,11 @@
     }
 
     /* Demo Section */
+    section {
+      width: 100%;
+      overflow: visible;
+      position: relative;
+    }
     .demo-section {
       padding: 60px 0;
       width: 100%;
@@ -348,35 +358,30 @@
       width: 100%;
     }
 
-    /* CRITICAL CHANGE: Plugin scroll container */
-    .plugin-scroll-container {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 30px 0;
-      padding-bottom: 10px; /* Space for scrollbar */
-    }
-
-    /* New CSS for outerScrollWrapper */
+    /* Updated Plugin Scroll Container */
     .outerScrollWrapper {
       width: 100%;
       overflow-x: auto;
+      overflow-y: visible;
       -webkit-overflow-scrolling: touch;
       margin: 30px 0;
       padding-bottom: 10px;
     }
 
-    /* Adjusted plugin view container to be responsive */
+    /* Responsive Plugin Container */
     #patchViewOuterContainer {
       width: 100%;
+      min-width: 320px;
       max-width: 1200px;
-      height: 400px;
-      overflow-x: auto; /* Allow horizontal scrolling for the plugin */
+      height: auto;
+      min-height: 400px;
+      overflow: auto;
     }
     
     #patchViewInnerContainer {
       width: 100%;
       height: 100%;
+      min-height: 400px;
     }
 
     /* Download Section */
