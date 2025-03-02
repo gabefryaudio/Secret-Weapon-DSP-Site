@@ -28,13 +28,13 @@
       --body-font: 'Inter', sans-serif;
     }
 
-    /* Basic resets to avoid any horizontal overflow from default styling */
+    /* Basic resets */
     html, body {
       margin: 0;
       padding: 0;
+      /* Removed overflow-x: hidden to allow horizontal scroll if needed */
+      overflow-y: auto;
       box-sizing: border-box;
-      overflow-x: hidden; /* Force no horizontal scroll */
-      overflow-y: auto;   /* Allow vertical scrolling */
       background-color: var(--main-bg-color);
       color: var(--text-color);
       font-family: var(--body-font);
@@ -59,7 +59,6 @@
     }
     .logo {
       width: 180px;
-      /* Optionally you can set a max-width: 100% to ensure it never overflows */
       max-width: 100%;
     }
     .nav-links {
@@ -514,7 +513,7 @@
         width: 150px !important;
         margin-bottom: 10px !important;
       }
-      /* Optional: reduce heading size on smaller screens */
+      /* Optionally reduce heading size on smaller screens */
       h1 {
         font-size: 3rem !important;
       }
@@ -1058,11 +1057,9 @@
         const outerWidth = outerContainer.clientWidth;
         const scaleFactor = outerWidth / widthNative;
 
-        // For small screens, remove or reduce the left shift
-        let translateOffset = outerWidth < 500 ? "0px" : "-45px";
-
         innerContainer.style.transformOrigin = "top center";
-        innerContainer.style.transform = `translateX(${translateOffset}) scale(${scaleFactor})`;
+        // Remove horizontal translation to avoid potential cutoff
+        innerContainer.style.transform = `scale(${scaleFactor})`;
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
 
@@ -1072,19 +1069,6 @@
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(scalePatchView, 200);
       });
-
-      // Re-enforce vertical scroll if changed
-      document.body.style.setProperty("overflow", "auto", "important");
-      document.documentElement.style.setProperty("overflow", "auto", "important");
-      const bodyObserver = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-          if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-            document.body.style.setProperty("overflow", "auto", "important");
-            document.documentElement.style.setProperty("overflow", "auto", "important");
-          }
-        });
-      });
-      bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['style'] });
     });
   </script>
 </body>
