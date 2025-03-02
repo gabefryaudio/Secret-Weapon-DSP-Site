@@ -19,6 +19,35 @@
   />
 
   <style>
+    /* Force scrolling to work */
+    html, body {
+      height: 100% !important;
+      width: 100% !important;
+      position: relative !important;
+      overflow-y: scroll !important;
+      -webkit-overflow-scrolling: touch !important;
+      overscroll-behavior-y: auto !important;
+      margin: 0;
+      padding: 0;
+      background-color: var(--main-bg-color);
+      color: var(--text-color);
+      font-family: var(--body-font);
+      line-height: 1.6;
+    }
+
+    /* Fix container heights to allow content to determine page length */
+    .container, section, header, footer {
+      overflow: visible !important;
+      height: auto !important;
+    }
+
+    /* Make sure fixed elements don't break scrolling */
+    .hero, .features, .plugin-showcase, .demo-section, .download-section {
+      position: relative !important;
+      height: auto !important;
+      min-height: 0 !important;
+    }
+
     :root {
       --main-bg-color: #1a1a1a;
       --accent-color: #2E7D32;
@@ -31,23 +60,6 @@
     /* Global resets */
     * {
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-
-    /* Ensure proper scrolling on mobile */
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--main-bg-color);
-      color: var(--text-color);
-      font-family: var(--body-font);
-      line-height: 1.6;
-      width: 100%;
-      height: 100%; /* Added height */
-      overflow-x: hidden;
-      overflow-y: visible; /* Allow vertical content flow */
-      position: relative;
     }
 
     img {
@@ -55,7 +67,6 @@
       height: auto;
     }
 
-    /* Ensure container doesn't restrict scrolling */
     .container {
       width: 100%;
       max-width: 1200px;
@@ -138,14 +149,12 @@
       padding: 60px 0;
       width: 100%;
     }
-    
     .plugin-content {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 30px;
     }
-    
     .plugin-image {
       width: 100%;
       text-align: center;
@@ -219,24 +228,20 @@
     }
 
     /* Demo Section */
-    section {
-      width: 100%;
-      overflow: visible;
-      position: relative;
-    }
     .demo-section {
       padding: 60px 0;
       width: 100%;
     }
     .demo-container {
+      position: relative !important;
+      overflow: visible !important;
+      height: auto !important;
       background-color: rgba(255,255,255,0.05);
       padding: 20px;
       border-radius: 10px;
       margin-top: 40px;
       border: 1px solid rgba(46,125,50,0.1);
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      position: relative;
-      width: 100%;
     }
     .demo-container::after {
       content: '';
@@ -358,30 +363,30 @@
       width: 100%;
     }
 
-    /* Updated Plugin Scroll Container */
+    /* Fix demo section scrolling for the plugin */
     .outerScrollWrapper {
-      width: 100%;
-      overflow-x: auto;
-      overflow-y: visible;
-      -webkit-overflow-scrolling: touch;
+      position: relative !important;
+      overflow-x: auto !important;
+      overflow-y: visible !important;
+      max-width: 100% !important;
       margin: 30px 0;
       padding-bottom: 10px;
     }
-
-    /* Responsive Plugin Container */
     #patchViewOuterContainer {
-      width: 100%;
-      min-width: 320px;
-      max-width: 1200px;
-      height: auto;
-      min-height: 400px;
-      overflow: auto;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow-x: auto !important;
+      position: relative !important;
     }
-    
-    #patchViewInnerContainer {
-      width: 100%;
-      height: 100%;
-      min-height: 400px;
+
+    /* Touchscreen specific fixes */
+    @media (hover: none) and (pointer: coarse) {
+      body {
+        touch-action: pan-y !important;
+      }
+      * {
+        -webkit-touch-callout: none !important;
+      }
     }
 
     /* Download Section */
@@ -521,7 +526,7 @@
       transform: translateY(-2px);
       box-shadow: 0 0 15px rgba(46,125,50,0.8);
     }
-    
+
     /* Footer */
     footer {
       padding: 30px 0;
@@ -541,22 +546,19 @@
     .social-icon:hover {
       color: var(--accent-color);
     }
-    
+
     /* Media Queries */
     @media (min-width: 768px) {
       .plugin-content {
         flex-direction: row;
         align-items: center;
       }
-      
       .plugin-image, .plugin-details {
         width: 50%;
       }
-      
       .demo-controls {
         align-items: center;
       }
-      
       .volume-container {
         width: auto;
       }
@@ -582,7 +584,7 @@
       </nav>
     </div>
   </header>
-  
+
   <!-- Hero Section -->
   <section class="hero">
     <div class="container">
@@ -591,7 +593,7 @@
       <a href="#download" class="cta-button">Download Now</a>
     </div>
   </section>
-  
+
   <!-- Plugin Showcase Section -->
   <section class="plugin-showcase">
     <div class="container">
@@ -612,7 +614,7 @@
       </div>
     </div>
   </section>
-  
+
   <!-- Features Section -->
   <section class="features" id="features">
     <div class="container">
@@ -667,7 +669,7 @@
       </div>
     </div>
   </section>
-  
+
   <!-- Demo Section -->
   <section class="demo-section" id="demo">
     <div class="container">
@@ -711,7 +713,7 @@
       </div>
     </div>
   </section>
-  
+
   <!-- Download Section -->
   <section class="download-section" id="download">
     <div class="container">
@@ -743,7 +745,7 @@
       </div>
     </div>
   </section>
-  
+
   <!-- Footer -->
   <footer id="contact">
     <div class="container">
@@ -764,12 +766,17 @@
       <p>© 2025 Secret Weapon DSP. All rights reserved.</p>
     </div>
   </footer>
-  
+
   <!-- Script: Setup Uppercomp and audio routing -->
   <script type="module">
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
     document.addEventListener("DOMContentLoaded", async () => {
+      // Prevent touchmove events from being captured to ensure scrolling works
+      document.addEventListener('touchmove', function(e) {
+        e.stopPropagation();
+      }, { passive: true });
+      
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       let connection;
       try {
