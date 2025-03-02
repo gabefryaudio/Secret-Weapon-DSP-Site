@@ -2,18 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
-
   <!-- Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap"
     rel="stylesheet"
   />
-  <!-- Font Awesome -->
+  <!-- Font Awesome (CDN or kit) -->
+  <!-- Replace with whichever Font Awesome version/kit you have in Code B if desired -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+    integrity="sha512-lG9C+Qh7hCXS6ETqE9Xd9Q5H8u0lk//Sezyw8W13ty2Z85CPG7cmWOTKMIm//lm4Yz8WQkX8xkGpC8N8bHIpGA=="
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
@@ -28,29 +29,29 @@
       --body-font: 'Inter', sans-serif;
     }
 
-    /* Base / Reset */
+    /*
+     * 1) Force vertical scroll (Code A feature)
+     */
+    body::after {
+      content: "";
+      display: block;
+      height: 1px;
+      margin-bottom: 100vh; /* ensures there's always enough page to scroll */
+    }
     html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      background: var(--main-bg-color);
-      color: var(--text-color);
-      font-family: var(--body-font);
-      line-height: 1.6;
-      overflow-x: hidden; /* No horizontal scroll for the page */
-      overflow-y: auto;   /* Single vertical scrollbar */
-    }
-    * {
-      box-sizing: border-box;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
+      overflow-x: hidden; /* Prevent horizontal overflow */
+      overflow-y: auto;   /* Allow vertical scrolling */
     }
 
-    /* Container */
+    body {
+      font-family: var(--body-font);
+      background-color: var(--main-bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      overflow-y: auto !important;  /* from code a */
+    }
+
     .container {
-      width: 100%;
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
@@ -65,15 +66,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
     }
     .logo {
       width: 180px;
     }
     .nav-links {
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+      gap: 30px;
     }
     .nav-links a {
       color: var(--text-color);
@@ -85,19 +84,20 @@
       color: var(--accent-color);
     }
 
-    /* Hero */
+    /* Hero Section */
     .hero {
-      padding: 60px 0;
+      padding: 80px 0;
       text-align: center;
     }
     h1 {
       font-family: var(--header-font);
-      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-size: 5rem;
       margin-bottom: 20px;
       letter-spacing: 4px;
       text-shadow: 0 0 10px rgba(46,125,50,0.3);
     }
     .hero p {
+      font-size: 1.5rem;
       max-width: 700px;
       margin: 0 auto 40px;
     }
@@ -119,46 +119,117 @@
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
 
-    /* Plugin Showcase (centered) */
+    /* Plugin Showcase Section */
     .plugin-showcase {
-      padding: 60px 0;
+      padding: 80px 0;
+      display: flex;
+      align-items: center;
+      gap: 50px;
+    }
+    .plugin-image {
+      flex: 1;
       text-align: center;
     }
-    .plugin-showcase .plugin-details {
-      max-width: 700px;
-      margin: 0 auto;
-      text-align: center;
+    .plugin-image img {
+      max-width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border-radius: 10px;
+    }
+    .plugin-details {
+      flex: 1;
     }
     h2 {
       font-family: var(--header-font);
-      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      font-size: 2.5rem;
       margin-bottom: 20px;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 80px 0;
+      background-color: var(--secondary-bg);
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .feature-card {
+      background-color: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(46,125,50,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-color), transparent);
+      opacity: 0.7;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--accent-color);
+      text-shadow: 0 0 6px rgba(46,125,50,0.7);
+      display: flex;
+      align-items: center;
+    }
+    .feature-card h3::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: var(--accent-color);
+      border-radius: 50%;
+      margin-right: 10px;
+      box-shadow: 0 0 8px rgba(46,125,50,0.8);
     }
 
     /* Demo Section */
     .demo-section {
-      padding: 60px 0;
-      text-align: center;
+      padding: 80px 0;
     }
     .demo-container {
       background-color: rgba(255,255,255,0.05);
-      padding: 20px;
+      padding: 30px;
       border-radius: 10px;
       margin-top: 40px;
       border: 1px solid rgba(46,125,50,0.1);
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       position: relative;
+      overflow: hidden;
+    }
+    .demo-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(46,125,50,0.05) 0%, transparent 100%);
+      pointer-events: none;
     }
 
     .track-selector {
       display: flex;
-      gap: 10px;
+      gap: 15px;
       flex-wrap: wrap;
-      justify-content: center;
       margin-bottom: 20px;
     }
     .track-button {
-      padding: 8px 15px;
+      padding: 10px 20px;
       background-color: rgba(255,255,255,0.1);
       border: none;
       border-radius: 5px;
@@ -166,7 +237,6 @@
       cursor: pointer;
       transition: all 0.3s ease;
       border: 1px solid transparent;
-      font-size: 0.9rem;
     }
     .track-button:hover,
     .track-button.active {
@@ -179,7 +249,7 @@
     }
 
     .plugin-waveform {
-      height: 120px;
+      height: 150px;
       background-color: rgba(0,0,0,0.3);
       margin: 20px 0;
       position: relative;
@@ -208,14 +278,13 @@
     .demo-controls {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
       flex-wrap: wrap;
-      justify-content: center;
     }
     .play-button,
     .stop-button {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       background-color: var(--accent-color);
       border: none;
       border-radius: 50%;
@@ -238,63 +307,228 @@
       display: block;
       width: 0;
       height: 0;
-      border-top: 12px solid transparent;
-      border-bottom: 12px solid transparent;
-      border-left: 16px solid #000;
-      margin-left: 3px;
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      border-left: 20px solid #000;
+      margin-left: 5px;
     }
     .stop-button::after {
       content: '■';
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       margin-left: 0;
       color: #000;
     }
+
     .volume-container {
       display: flex;
       align-items: center;
       gap: 10px;
-      width: 100%;
-      max-width: 300px;
     }
     .volume-container label {
       font-size: 0.9rem;
       font-weight: 500;
     }
     .volume-container input[type="range"] {
-      width: 100%;
+      width: 120px;
     }
 
-    /* Outer wrapper: horizontal scroll if plugin is wide */
-    .outerScrollWrapper {
-      width: 100%;
-      overflow-x: auto;                /* horizontal scroll */
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-x;             /* needed for iOS horizontal scroll */
-      margin: 30px 0;
-    }
-    /* Plugin container set to a fixed width so you get horizontal scrolling if narrower than 1200px */
+    /* Patch container (same IDs from Code A for patch scaling) */
     #patchViewOuterContainer {
-      width: 1200px;
-      height: 400px;
-      overflow-y: hidden;   /* hide vertical scroll inside plugin container */
-      overflow-x: auto;     /* horizontal scroll if plugin is bigger than phone screen */
-      background: #222;     /* just so we see the area, remove if you want transparent */
+      margin: 40px auto;
+      width: 100%;
+      max-width: 1200px;
     }
 
-    /* Footer */
-    footer {
-      padding: 30px 0;
+    /* Download Section */
+    .download-section {
+      padding: 80px 0;
+      text-align: center;
+      background-color: var(--secondary-bg);
+      position: relative;
+      overflow: hidden;
+    }
+    .download-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at center, rgba(46,125,50,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .pricing-box {
+      max-width: 500px;
+      margin: 40px auto;
+      background-color: rgba(0,0,0,0.2);
+      padding: 40px;
+      border-radius: 10px;
+      border: 1px solid rgba(46,125,50,0.2);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .pricing-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .pricing-box::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(46,125,50,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .pricing-title {
+      font-family: var(--body-font);
+      font-size: 2rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-shadow: none;
+    }
+    .price-input {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    .price-input span {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent-color);
+    }
+    .price-input input {
+      width: 150px;
+      padding: 15px;
+      border: 2px solid rgba(46,125,50,0.3);
+      border-radius: 5px;
+      font-size: 1.5rem;
+      background-color: rgba(0,0,0,0.2);
+      color: var(--text-color);
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .price-input input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .newsletter {
+      max-width: 500px;
+      margin: 60px auto 0;
       text-align: center;
     }
+    .newsletter h3 {
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+      font-family: var(--body-font);
+      font-weight: 600;
+      color: var(--accent-color);
+      text-shadow: none;
+    }
+    .newsletter p {
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+    .email-form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .email-form input {
+      flex: 1;
+      padding: 15px;
+      border: 2px solid rgba(46,125,50,0.2);
+      border-radius: 5px;
+      background-color: rgba(0,0,0,0.2);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .email-form input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .submit-button {
+      padding: 15px 20px;
+      background-color: var(--accent-color);
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(46,125,50,0.5);
+      letter-spacing: 0.5px;
+    }
+    .submit-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(46,125,50,0.8);
+    }
 
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+    /* Footer: Social icon styling from Code B (example) */
+    footer {
+      padding: 60px 0;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    .social-icon:hover {
+      background-color: var(--accent-color);
+      color: #000;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(46,125,50,0.5);
+    }
+
+    @media (max-width: 768px) {
+      .plugin-showcase {
+        flex-direction: column;
+        text-align: center;
+      }
+      h1 {
+        font-size: 3rem;
+      }
+      .hero p {
+        font-size: 1.2rem;
+      }
+      .plugin-details {
+        text-align: center;
+      }
+      .email-form {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- HEADER -->
+  <!-- Header -->
   <header>
     <div class="container">
       <nav>
@@ -313,7 +547,7 @@
     </div>
   </header>
 
-  <!-- HERO -->
+  <!-- Hero Section -->
   <section class="hero">
     <div class="container">
       <h1>UPPERCOMP</h1>
@@ -322,34 +556,101 @@
     </div>
   </section>
 
-  <!-- PLUGIN SHOWCASE -->
+  <!-- Plugin Showcase Section -->
   <section class="plugin-showcase">
     <div class="container">
-      <img
-        src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png"
-        alt="Uppercomp Plugin Interface"
-      />
+      <div class="plugin-image">
+        <img
+          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png"
+          alt="Uppercomp Plugin Interface"
+        />
+      </div>
       <div class="plugin-details">
         <h2>MEET UPPERCOMP</h2>
         <p>
-          UPPERCOMP delivers the punch and density of classic hardware compressors with modern flexibility. 
-          It combines the character of vintage British preamps with the precision of DBX gold can VCAs, 
+          UPPERCOMP delivers the punch and density of classic hardware compressors with modern flexibility.
+          It combines the character of vintage British preamps with the precision of DBX gold can VCAs,
           creating a compressor that brings life and energy to any source.
         </p>
         <p>
-          Whether you're looking to add punch to drums, glue to a mix, or character to vocals, 
+          Whether you're looking to add punch to drums, glue to a mix, or character to vocals,
           UPPERCOMP delivers with an intuitive interface and a sound that stands out in the digital realm.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- DEMO SECTION -->
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2>FEATURES</h2>
+      <p>
+        UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings
+        analog character to your digital workflow.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>Vintage British Preamp</h3>
+          <p>
+            The front-end is modeled after classic British console preamps, adding subtle harmonic
+            richness before compression even begins.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>DBX Gold Can VCA</h3>
+          <p>
+            The compression circuit is inspired by the sought-after DBX gold can VCAs, delivering
+            that familiar punch and control that made them legendary.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Diode-Based Envelope</h3>
+          <p>
+            A state space half-wave rectifier diode-based envelope follower creates colorful,
+            characterful compression unlike flat digital algorithms.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Parallel Processing</h3>
+          <p>
+            Built-in saturation mix and compression mix controls let you dial in the perfect blend
+            of clean and processed signal.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Advanced Controls</h3>
+          <p>
+            Lookahead functionality and sidechain filtering give you precise control over
+            compression behavior and character.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Versatile Applications</h3>
+          <p>
+            While it excels on drums, UPPERCOMP enhances any source that benefits from punchy,
+            character-rich compression.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Section -->
   <section class="demo-section" id="demo">
     <div class="container">
       <h2>HEAR IT IN ACTION</h2>
-      <p>Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear how it transforms your tracks.</p>
+      <p>
+        Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear
+        how it transforms your tracks.
+      </p>
 
+      <!-- Demo Container -->
       <div class="demo-container">
         <!-- Track Selector -->
         <div class="track-selector">
@@ -360,13 +661,9 @@
           <button class="track-button">Overheads</button>
           <button class="track-button">Room</button>
         </div>
-
-        <!-- Visual "waveform" area -->
         <div class="plugin-waveform">
           <div class="waveform-animation"></div>
         </div>
-
-        <!-- Controls -->
         <div class="demo-controls">
           <button class="play-button" title="Play / Resume Audio"></button>
           <button class="stop-button" title="Stop Audio"></button>
@@ -380,42 +677,88 @@
           </div>
         </div>
 
-        <!-- Outer scroll wrapper for the plugin GUI -->
-        <div class="outerScrollWrapper">
-          <div id="patchViewOuterContainer">
-            <div id="patchViewInnerContainer">
-              <!-- The actual plugin GUI will be dynamically inserted here -->
-            </div>
+        <!-- Where plugin UI is placed -->
+        <div id="patchViewOuterContainer">
+          <div id="patchViewInnerContainer">
+            <!-- The patch's GUI is inserted dynamically by the script -->
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <!-- Download Section -->
+  <section class="download-section" id="download">
+    <div class="container">
+      <h2>GET UPPERCOMP</h2>
+      <p>
+        Download UPPERCOMP and experience the punch and character that will elevate your mixes.
+      </p>
+
+      <div class="pricing-box">
+        <h3 class="pricing-title">Pay What You Think It's Worth</h3>
+        <p>
+          We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal,
+          support future development at a price that feels right.
+        </p>
+
+        <div class="price-input">
+          <span>$</span>
+          <input type="number" value="25" min="0" />
+        </div>
+
+        <a href="#" class="cta-button">Download Now</a>
+      </div>
+
+      <div class="newsletter">
+        <h3>Stay Updated</h3>
+        <p>
+          Sign up to receive updates about UPPERCOMP and future Secret Weapon DSP releases.
+        </p>
+
+        <form class="email-form">
+          <input type="email" placeholder="Your email address" />
+          <button type="submit" class="submit-button">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer with code B's social icon logic -->
   <footer id="contact">
     <div class="container">
+      <div class="social-links">
+        <!-- 
+           If Code B had actual URLs, place them in the href values below.
+           Example: href="https://facebook.com/yourpage" 
+        -->
+        <a href="#" class="social-icon" title="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#" class="social-icon" title="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#" class="social-icon" title="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="#" class="social-icon" title="TikTok">
+          <i class="fab fa-tiktok"></i>
+        </a>
+      </div>
       <p>© 2025 Secret Weapon DSP. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- Script references: Setup Uppercomp and audio routing -->
+  <!-- Single merged script: sets up the plugin, routes audio through it, and does patch scaling. -->
   <script type="module">
-    // Passive touch listener so we don't block default scrolling
-    document.addEventListener('touchmove', function(e) {
-      // empty => ensures default scroll
-    }, { passive: true });
-
-    /* 
-      1) Ensure you have the correct paths for cmaj_Uppercomp.js, cmaj-patch-view.js, and your audio files.
-      2) If these scripts or files are in a different directory, update the paths accordingly.
-    */
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
 
     document.addEventListener("DOMContentLoaded", async () => {
-      // 1. Setup audio context and plugin
+      // 1) Create an AudioContext for the plugin
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+      // 2) Initialize the Uppercomp patch connection
       let connection;
       try {
         connection = await createUppercompPatchConnection(audioContext, "uppercomp-worklet");
@@ -424,6 +767,7 @@
         return;
       }
 
+      // 3) Find a connectable AudioNode from the connection
       let pluginNode = null;
       if (connection.node && typeof connection.node.connect === "function") {
         pluginNode = connection.node;
@@ -438,199 +782,97 @@
         return;
       }
 
-      // 2. Create a gain node for volume control, connect plugin -> gain -> destination
+      // 4) Create a GainNode for volume control, connect plugin -> gain -> destination
       const gainNode = audioContext.createGain();
       gainNode.gain.value = 1;
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // 3. Load and play audio files with crossfade
+      // 5) Track playback logic
       let currentSource = null;
       let currentTrackName = 'Kick (Sub)';
-      let isPlaying = false;
-      let audioBufferCache = {};
-      let currentGainNode = null;
-      const CROSSFADE_TIME = 0.2;
 
-      async function loadSample(url) {
-        if (audioBufferCache[url]) {
-          return audioBufferCache[url];
+      function stopCurrentTrack() {
+        if (currentSource) {
+          currentSource.stop();
+          currentSource.disconnect();
+          currentSource = null;
         }
+      }
+
+      async function playSample(url, trackName) {
         try {
+          stopCurrentTrack();
           const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
-          }
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-          audioBufferCache[url] = audioBuffer;
-          return audioBuffer;
-        } catch (error) {
-          console.error(`Error loading audio file ${url}:`, error);
-          throw error;
-        }
-      }
-
-      function stopCurrentTrack(immediate = false) {
-        if (currentSource) {
-          if (immediate) {
-            try {
-              currentSource.stop();
-              if (currentGainNode) currentGainNode.disconnect();
-            } catch (e) {}
-            currentSource = null;
-            currentGainNode = null;
-            isPlaying = false;
-          } else {
-            const now = audioContext.currentTime;
-            if (currentGainNode) {
-              currentGainNode.gain.setValueAtTime(currentGainNode.gain.value, now);
-              currentGainNode.gain.linearRampToValueAtTime(0, now + CROSSFADE_TIME);
-              const sourceToStop = currentSource;
-              const gainToDisconnect = currentGainNode;
-              setTimeout(() => {
-                try { sourceToStop.stop(); } catch (e) {}
-                gainToDisconnect.disconnect();
-              }, CROSSFADE_TIME * 1000 + 50);
-            } else {
-              try { currentSource.stop(); } catch (e) {}
-            }
-          }
-        }
-      }
-
-      async function playSample(url, trackName, crossfade = true) {
-        try {
-          if (audioContext.state === 'suspended') {
-            await audioContext.resume();
-          }
-          const audioBuffer = await loadSample(url);
-          const now = audioContext.currentTime;
-          const newGainNode = audioContext.createGain();
-
-          if (crossfade && isPlaying) {
-            newGainNode.gain.setValueAtTime(0, now);
-            newGainNode.gain.linearRampToValueAtTime(1, now + CROSSFADE_TIME);
-            if (currentSource && currentGainNode) {
-              currentGainNode.gain.setValueAtTime(currentGainNode.gain.value, now);
-              currentGainNode.gain.linearRampToValueAtTime(0, now + CROSSFADE_TIME);
-              const oldSource = currentSource;
-              const oldGain = currentGainNode;
-              setTimeout(() => {
-                try { oldSource.stop(); } catch (e) {}
-                oldGain.disconnect();
-              }, CROSSFADE_TIME * 1000 + 50);
-            } else {
-              stopCurrentTrack(true);
-            }
-          } else {
-            stopCurrentTrack(true);
-            newGainNode.gain.setValueAtTime(1, now);
-          }
-
           const source = audioContext.createBufferSource();
           source.buffer = audioBuffer;
           source.loop = true;
-          source.connect(newGainNode);
-          newGainNode.connect(pluginNode);
+
+          // Connect sample source -> plugin
+          source.connect(pluginNode);
           source.start();
 
           currentSource = source;
-          currentGainNode = newGainNode;
           currentTrackName = trackName;
-          isPlaying = true;
-          updateTrackInfo(trackName, "Now Playing");
-          updatePlayButtonState(true);
-          return true;
+          const trackInfo = document.getElementById('trackInfo');
+          if (trackInfo) {
+            trackInfo.textContent = `${trackName} - "Now Playing"`;
+          }
         } catch (error) {
           console.error('Error playing sample:', error);
-          updateTrackInfo(trackName, "Error Loading");
-          return false;
         }
       }
 
-      function updateTrackInfo(trackName, status) {
-        const trackInfo = document.getElementById('trackInfo');
-        if (trackInfo) {
-          trackInfo.textContent = `${trackName} - "${status}"`;
-        }
-      }
-      function updatePlayButtonState(playing) {
-        const playBtn = document.querySelector('.play-button');
-        const stopBtn = document.querySelector('.stop-button');
-        if (playBtn && stopBtn) {
-          if (playing) {
-            playBtn.classList.add('active');
-            stopBtn.classList.remove('active');
-          } else {
-            playBtn.classList.remove('active');
-            stopBtn.classList.add('active');
-          }
-        }
-      }
-
-      // 4. File paths for each track (update these if needed)
-      const trackFilePaths = {
-        'Kick (Sub)': './Audio_Files/Kick_(Sub).wav',
-        'Kick In': './Audio_Files/Kick_In.wav',
-        'Snare': './Audio_Files/Snare.wav',
-        'Tom': './Audio_Files/Tom.wav',
-        'Overheads': './Audio_Files/Overheads.wav',
-        'Room': './Audio_Files/Room.wav'
-      };
-
-      // 5. Handle track button clicks
+      // 6) Handle track buttons
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
-        btn.addEventListener('click', async () => {
+        btn.addEventListener('click', () => {
           trackButtons.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          const trackName = btn.textContent.trim();
-          const filePath = trackFilePaths[trackName];
-          if (!filePath) {
-            console.error(`No file path found for track: ${trackName}`);
-            updateTrackInfo(trackName, "File Not Found");
-            return;
-          }
-          updateTrackInfo(trackName, "Loading...");
-          const success = await playSample(filePath, trackName, true);
-          if (!success && currentTrackName && trackFilePaths[currentTrackName]) {
-            console.log(`Falling back to previous track: ${currentTrackName}`);
-            await playSample(trackFilePaths[currentTrackName], currentTrackName, false);
+
+          const text = btn.textContent.trim();
+          let filePath = '';
+          if (text === 'Kick (Sub)') filePath = './Audio_Files/Kick_(Sub).wav';
+          else if (text === 'Kick In') filePath = './Audio_Files/Kick_In.wav';
+          else if (text === 'Snare') filePath = './Audio_Files/Snare.wav';
+          else if (text === 'Tom') filePath = './Audio_Files/Tom.wav';
+          else if (text === 'Overheads') filePath = './Audio_Files/Overheads.wav';
+          else if (text === 'Room') filePath = './Audio_Files/Room.wav';
+
+          if (filePath) {
+            playSample(filePath, text);
           }
         });
       });
 
-      // 6. Play / Stop button
+      // 7) Play button
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
-          if (isPlaying) return; // already playing
-          if (currentTrackName && trackFilePaths[currentTrackName]) {
-            await playSample(trackFilePaths[currentTrackName], currentTrackName, false);
-          } else {
-            const defaultTrack = 'Kick (Sub)';
-            await playSample(trackFilePaths[defaultTrack], defaultTrack, false);
-            trackButtons.forEach(btn => {
-              if (btn.textContent.trim() === defaultTrack) {
-                btn.classList.add('active');
-              } else {
-                btn.classList.remove('active');
-              }
-            });
+          if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+          }
+          if (!currentSource) {
+            playSample('./Audio_Files/Kick_(Sub).wav', 'Kick (Sub)');
           }
         });
       }
+
+      // 8) Stop button
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
-          stopCurrentTrack(true);
-          updateTrackInfo(currentTrackName, "Stopped");
-          updatePlayButtonState(false);
+          stopCurrentTrack();
+          const trackInfo = document.getElementById('trackInfo');
+          if (trackInfo) {
+            trackInfo.textContent = `${currentTrackName} - "Stopped"`;
+          }
         });
       }
 
-      // 7. Volume slider
+      // 9) Volume slider
       const volumeSlider = document.getElementById('volumeSlider');
       if (volumeSlider) {
         volumeSlider.addEventListener('input', () => {
@@ -638,16 +880,53 @@
         });
       }
 
-      // 8. Create the plugin GUI in #patchViewInnerContainer
+      // 10) Create and insert the plugin UI, with scale logic
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
+
       try {
         const patchView = await createPatchView(connection);
         innerContainer.innerHTML = "";
         innerContainer.appendChild(patchView);
+        scalePatchView();
+        const observer = new MutationObserver(() => scalePatchView());
+        observer.observe(innerContainer, { childList: true, subtree: true });
       } catch (guiError) {
         console.error("Error creating patch view:", guiError);
       }
+
+      function scalePatchView() {
+        if (!outerContainer || !innerContainer) return;
+        const widthNative = 1200; // your plugin's native width
+        const heightNative = 400;
+        const outerWidth = outerContainer.clientWidth;
+        const scaleFactor = outerWidth / widthNative;
+
+        innerContainer.style.transformOrigin = "top center";
+        // small horizontal shift if needed, then scale
+        innerContainer.style.transform = `translateX(-45px) scale(${scaleFactor})`;
+        outerContainer.style.height = `${heightNative * scaleFactor}px`;
+      }
+
+      // re-scale on window resize
+      let resizeTimeout;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(scalePatchView, 200);
+      });
+
+      // re-enforce vertical scroll if changed
+      document.body.style.setProperty("overflow", "auto", "important");
+      document.documentElement.style.setProperty("overflow", "auto", "important");
+      const bodyObserver = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+            document.body.style.setProperty("overflow", "auto", "important");
+            document.documentElement.style.setProperty("overflow", "auto", "important");
+          }
+        });
+      });
+      bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['style'] });
     });
   </script>
 </body>
