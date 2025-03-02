@@ -32,9 +32,9 @@
     html, body {
       margin: 0;
       padding: 0;
-      /* Removed overflow-x: hidden to allow horizontal scroll if needed */
-      overflow-y: auto;
       box-sizing: border-box;
+      /* We do NOT force overflow-x: hidden, so horizontal scroll is allowed */
+      overflow-y: auto;
       background-color: var(--main-bg-color);
       color: var(--text-color);
       font-family: var(--body-font);
@@ -200,7 +200,7 @@
       border: 1px solid rgba(46,125,50,0.1);
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       position: relative;
-      overflow: hidden;
+      overflow: hidden; /* still OK for the container background, but does not limit the plugin container */
     }
     .demo-container::after {
       content: '';
@@ -323,11 +323,20 @@
       width: 120px;
     }
 
-    /* Patch container (IDs from Code A for patch scaling) */
+    /*
+     * Instead of scaling, we keep the plugin at 1200px wide and let users scroll horizontally
+     */
     #patchViewOuterContainer {
-      margin: 40px auto;
-      width: 100%;
-      max-width: 1200px;
+      width: 100%;        /* container matches the screen width */
+      margin: 40px auto;  /* center with top/bottom margin */
+      max-width: none;    /* so it doesn't cap at 1200px */
+      overflow-x: auto;   /* enable horizontal scroll if content is wider than screen */
+    }
+    #patchViewInnerContainer {
+      width: 1200px;      /* plugin's native width */
+      height: 400px;      /* plugin's native height */
+      transform: none !important;          /* no scaling, no offset */
+      transform-origin: top left !important;
     }
 
     /* Download Section */
@@ -498,7 +507,7 @@
       box-shadow: 0 5px 15px rgba(46,125,50,0.5);
     }
 
-    /* KEY MOBILE STYLES */
+    /* Simple Mobile Nav Wrapping */
     @media (max-width: 768px) {
       nav {
         flex-direction: column !important;
@@ -513,7 +522,6 @@
         width: 150px !important;
         margin-bottom: 10px !important;
       }
-      /* Optionally reduce heading size on smaller screens */
       h1 {
         font-size: 3rem !important;
       }
@@ -1031,11 +1039,8 @@
           gainNode.gain.value = volumeSlider.value;
         });
       }
-      // ---------------------------------------------------------------------
-      // END AUDIO PLAYER CODE
-      // ---------------------------------------------------------------------
 
-      // 5) Create and insert the plugin UI, with patch-scaling logic
+      // 5) Create and insert the plugin UI, but we do NOT scale or shift it now
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
 
@@ -1043,32 +1048,10 @@
         const patchView = await createPatchView(connection);
         innerContainer.innerHTML = "";
         innerContainer.appendChild(patchView);
-        scalePatchView();
-        const observer = new MutationObserver(() => scalePatchView());
-        observer.observe(innerContainer, { childList: true, subtree: true });
+        // We do NOT call scalePatchView, so the plugin remains at 1200px width
       } catch (guiError) {
         console.error("Error creating patch view:", guiError);
       }
-
-      function scalePatchView() {
-        if (!outerContainer || !innerContainer) return;
-        const widthNative = 1200;
-        const heightNative = 400;
-        const outerWidth = outerContainer.clientWidth;
-        const scaleFactor = outerWidth / widthNative;
-
-        innerContainer.style.transformOrigin = "top center";
-        // Remove horizontal translation to avoid potential cutoff
-        innerContainer.style.transform = `scale(${scaleFactor})`;
-        outerContainer.style.height = `${heightNative * scaleFactor}px`;
-      }
-
-      // Re-scale on window resize
-      let resizeTimeout;
-      window.addEventListener("resize", () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(scalePatchView, 200);
-      });
     });
   </script>
 </body>
