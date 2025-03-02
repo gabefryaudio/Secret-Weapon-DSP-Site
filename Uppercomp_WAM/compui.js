@@ -226,7 +226,8 @@ class UpperCompGUI extends HTMLElement {
       const knob = this.knobs[param];
       if (knob.isDragging) {
         const deltaY = e.clientY - knob.lastY;
-        knob.lastY   = e.clientY;
+        console.log(`Dragging knob ${param}: deltaY=${deltaY}`);
+        knob.lastY = e.clientY;
         this.adjustKnobValue(param, deltaY);
       }
     });
@@ -255,10 +256,11 @@ class UpperCompGUI extends HTMLElement {
   }
 
   adjustKnobValue(param, deltaY) {
-    const knob  = this.knobs[param];
+    const knob = this.knobs[param];
     const range = knob.max - knob.min;
-    const sensitivity = 0.3;
+    const sensitivity = 1.0; // try tweaking this value
     const change = (deltaY * sensitivity * range) / 100;
+    console.log(`Knob ${param} change calculated: ${change}`);
     knob.targetValue = Math.max(knob.min, Math.min(knob.max, knob.targetValue - change));
   }
 
