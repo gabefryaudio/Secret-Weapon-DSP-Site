@@ -4,17 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
-
-  <!-- Content Security Policy: allows 'unsafe-eval' (not recommended) -->
+  
+  <!-- Content Security Policy meta tag allowing inline scripts/styles and external HTTPS resources -->
   <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self'; 
-    script-src 'self' 'unsafe-eval' https://cdnjs.cloudflare.com; 
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
-    font-src 'self' https://fonts.gstatic.com; 
-    connect-src 'self'; 
-    object-src 'none';
+    default-src 'self' data: https:; 
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; 
+    style-src 'self' 'unsafe-inline' https:; 
+    img-src 'self' data: https:; 
+    font-src 'self' https:;
   ">
-
+  
   <!-- Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap"
@@ -40,34 +39,29 @@
       --body-font: 'Inter', sans-serif;
     }
 
-    /*
-     * 1) Force vertical scroll (Code A feature)
-     */
+    /* Force vertical scroll */
     body::after {
       content: "";
       display: block;
       height: 1px;
-      margin-bottom: 100vh; /* ensures there's always enough page to scroll */
+      margin-bottom: 100vh;
     }
     html, body {
-      overflow-x: hidden; /* Prevent horizontal overflow */
-      overflow-y: auto;   /* Allow vertical scrolling */
+      overflow-x: hidden;
+      overflow-y: auto;
     }
-
     body {
       font-family: var(--body-font);
       background-color: var(--main-bg-color);
       color: var(--text-color);
       line-height: 1.6;
-      overflow-y: auto !important;  /* from code a */
+      overflow-y: auto !important;
     }
-
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
     }
-
     /* Header */
     header {
       padding: 20px 0;
@@ -94,7 +88,6 @@
     .nav-links a:hover {
       color: var(--accent-color);
     }
-
     /* Hero Section */
     .hero {
       padding: 80px 0;
@@ -129,7 +122,6 @@
       transform: translateY(-3px);
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
-
     /* Plugin Showcase Section */
     .plugin-showcase {
       padding: 80px 0;
@@ -154,7 +146,6 @@
       font-size: 2.5rem;
       margin-bottom: 20px;
     }
-
     /* Features Section */
     .features {
       padding: 80px 0;
@@ -207,7 +198,6 @@
       margin-right: 10px;
       box-shadow: 0 0 8px rgba(46,125,50,0.8);
     }
-
     /* Demo Section */
     .demo-section {
       padding: 80px 0;
@@ -232,7 +222,6 @@
       background: linear-gradient(135deg, rgba(46,125,50,0.05) 0%, transparent 100%);
       pointer-events: none;
     }
-
     .track-selector {
       display: flex;
       gap: 15px;
@@ -258,7 +247,6 @@
     .track-button.active {
       border: 1px solid rgba(255,255,255,0.2);
     }
-
     .plugin-waveform {
       height: 150px;
       background-color: rgba(0,0,0,0.3);
@@ -285,7 +273,6 @@
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
     }
-
     .demo-controls {
       display: flex;
       align-items: center;
@@ -329,7 +316,6 @@
       margin-left: 0;
       color: #000;
     }
-
     .volume-container {
       display: flex;
       align-items: center;
@@ -342,14 +328,12 @@
     .volume-container input[type="range"] {
       width: 120px;
     }
-
     /* Patch container (same IDs from Code A for patch scaling) */
     #patchViewOuterContainer {
       margin: 40px auto;
       width: 100%;
       max-width: 1200px;
     }
-
     /* Download Section */
     .download-section {
       padding: 80px 0;
@@ -431,7 +415,6 @@
       border-color: var(--accent-color);
       box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
     }
-
     .newsletter {
       max-width: 500px;
       margin: 60px auto 0;
@@ -485,7 +468,6 @@
       transform: translateY(-2px);
       box-shadow: 0 0 15px rgba(46,125,50,0.8);
     }
-
     /* Footer: Social icon styling from Code B (example) */
     footer {
       padding: 60px 0;
@@ -728,7 +710,7 @@
         </p>
 
         <form class="email-form">
-          <input type="email" placeholder="Your email address" />
+          <input type="email" placeholder="Your email address" id="email" name="email" />
           <button type="submit" class="submit-button">Subscribe</button>
         </form>
       </div>
@@ -739,10 +721,6 @@
   <footer id="contact">
     <div class="container">
       <div class="social-links">
-        <!-- 
-           If Code B had actual URLs, place them in the href values below.
-           Example: href="https://facebook.com/yourpage" 
-        -->
         <a href="#" class="social-icon" title="Facebook">
           <i class="fab fa-facebook-f"></i>
         </a>
@@ -914,7 +892,6 @@
         const scaleFactor = outerWidth / widthNative;
 
         innerContainer.style.transformOrigin = "top center";
-        // small horizontal shift if needed, then scale
         innerContainer.style.transform = `translateX(-45px) scale(${scaleFactor})`;
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
