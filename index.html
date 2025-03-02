@@ -667,7 +667,36 @@
         flex-direction: column;
         gap: 30px;
       }
+
+      /* LED and mobile control fixes */
+      .control-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 15px;
+      }
+      .knob-container {
+        position: relative !important;
+        display: inline-block;
+        margin: 10px;
+      }
+      .led-indicator {
+        position: absolute;
+        top: -15px; /* Adjust as needed */
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .control-label {
+        text-align: center;
+        width: 100%;
+        margin-top: 5px;
+      }
+      .value-display {
+        text-align: center;
+        width: 100%;
+      }
     }
+    
     @media (max-width: 480px) {
       h1 {
         font-size: 2.5rem;
@@ -693,63 +722,7 @@
       .container {
         padding: 0 15px;
       }
-    }
-
-    /* Additional LED positioning and mobile control fixes */
-    /* Add these styles to fix the LED positioning on mobile devices */
-    /* Target the LED elements specifically */
-    .led-indicator {
-      position: absolute;
-      z-index: 10;
-    }
-    /* Adjust layout for mobile screens */
-    @media (max-width: 768px) {
-      /* Ensure the plugin container maintains proper scaling */
-      #patchViewInnerContainer {
-        transform: scale(1) !important;
-        width: 100% !important;
-        height: auto !important;
-      }
-      
-      /* Ensure controls are properly spaced */
-      .control-row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-bottom: 15px;
-      }
-      
-      /* Adjust knob containers for better mobile layout */
-      .knob-container {
-        position: relative !important;
-        display: inline-block;
-        margin: 10px;
-      }
-      
-      /* Position LED indicators correctly on mobile */
-      .led-indicator {
-        position: absolute;
-        top: -15px; /* Adjust as needed */
-        left: 50%;
-        transform: translateX(-50%);
-      }
-      
-      /* Ensure labels remain visible and properly positioned */
-      .control-label {
-        text-align: center;
-        width: 100%;
-        margin-top: 5px;
-      }
-      
-      /* Make sure value displays are properly aligned */
-      .value-display {
-        text-align: center;
-        width: 100%;
-      }
-    }
-    
-    /* Additional specific fix for the LED between saturation knobs */
-    @media (max-width: 480px) {
+      /* Specific LED fix for saturation knob */
       .saturation-led {
         position: absolute;
         top: -10px;
