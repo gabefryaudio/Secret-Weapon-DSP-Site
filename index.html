@@ -6,13 +6,8 @@
   <title>Secret Weapon DSP - UPPERCOMP</title>
   
   <!-- Content Security Policy:
-       This CSP allows:
-         - Scripts from 'self', inline scripts ('unsafe-inline'), eval ('unsafe-eval'),
-           HTTPS sources, and data URLs.
-         - Inline styles ('unsafe-inline') and styles from HTTPS.
-         - Images and fonts from self, data, and HTTPS.
-         - Worker scripts from self (needed for worklets).
-       NOTE: Allowing 'unsafe-inline' and 'unsafe-eval' reduces security and should be used only if refactoring inline code is not an option.
+       Allows inline scripts ('unsafe-inline'), eval ('unsafe-eval'), data: URIs,
+       external HTTPS sources, and self. This is less secure but lets your inline code and eval run.
   -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self' data: https:;
@@ -31,7 +26,7 @@
     rel="stylesheet"
   />
 
-  <!-- Font Awesome (CDN or kit) -->
+  <!-- Font Awesome (CDN) -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
@@ -73,6 +68,7 @@
       margin: 0 auto;
       padding: 0 20px;
     }
+
     /* Header */
     header {
       padding: 20px 0;
@@ -99,6 +95,7 @@
     .nav-links a:hover {
       color: var(--accent-color);
     }
+
     /* Hero Section */
     .hero {
       padding: 80px 0;
@@ -133,6 +130,7 @@
       transform: translateY(-3px);
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
+
     /* Plugin Showcase Section */
     .plugin-showcase {
       padding: 80px 0;
@@ -157,6 +155,7 @@
       font-size: 2.5rem;
       margin-bottom: 20px;
     }
+
     /* Features Section */
     .features {
       padding: 80px 0;
@@ -209,6 +208,7 @@
       margin-right: 10px;
       box-shadow: 0 0 8px rgba(46,125,50,0.8);
     }
+
     /* Demo Section */
     .demo-section {
       padding: 80px 0;
@@ -233,6 +233,7 @@
       background: linear-gradient(135deg, rgba(46,125,50,0.05) 0%, transparent 100%);
       pointer-events: none;
     }
+
     .track-selector {
       display: flex;
       gap: 15px;
@@ -258,6 +259,7 @@
     .track-button.active {
       border: 1px solid rgba(255,255,255,0.2);
     }
+
     .plugin-waveform {
       height: 150px;
       background-color: rgba(0,0,0,0.3);
@@ -284,6 +286,7 @@
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
     }
+
     .demo-controls {
       display: flex;
       align-items: center;
@@ -327,6 +330,7 @@
       margin-left: 0;
       color: #000;
     }
+
     .volume-container {
       display: flex;
       align-items: center;
@@ -339,12 +343,14 @@
     .volume-container input[type="range"] {
       width: 120px;
     }
-    /* Patch container */
+
+    /* Patch container (same IDs from Code A for patch scaling) */
     #patchViewOuterContainer {
       margin: 40px auto;
       width: 100%;
       max-width: 1200px;
     }
+
     /* Download Section */
     .download-section {
       padding: 80px 0;
@@ -426,6 +432,7 @@
       border-color: var(--accent-color);
       box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
     }
+
     .newsletter {
       max-width: 500px;
       margin: 60px auto 0;
@@ -448,7 +455,7 @@
       gap: 10px;
       justify-content: center;
     }
-    /* Updated email input with id, name, and autocomplete attributes */
+    /* Email input with ID, name, and autocomplete for autofill */
     .email-form input {
       flex: 1;
       padding: 15px;
@@ -480,6 +487,7 @@
       transform: translateY(-2px);
       box-shadow: 0 0 15px rgba(46,125,50,0.8);
     }
+
     /* Footer */
     footer {
       padding: 60px 0;
@@ -593,6 +601,7 @@
         UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings
         analog character to your digital workflow.
       </p>
+
       <div class="features-grid">
         <div class="feature-card">
           <h3>Vintage British Preamp</h3>
@@ -601,6 +610,7 @@
             richness before compression even begins.
           </p>
         </div>
+
         <div class="feature-card">
           <h3>DBX Gold Can VCA</h3>
           <p>
@@ -608,6 +618,7 @@
             that familiar punch and control that made them legendary.
           </p>
         </div>
+
         <div class="feature-card">
           <h3>Diode-Based Envelope</h3>
           <p>
@@ -615,6 +626,7 @@
             characterful compression unlike flat digital algorithms.
           </p>
         </div>
+
         <div class="feature-card">
           <h3>Parallel Processing</h3>
           <p>
@@ -622,6 +634,7 @@
             of clean and processed signal.
           </p>
         </div>
+
         <div class="feature-card">
           <h3>Advanced Controls</h3>
           <p>
@@ -629,6 +642,7 @@
             compression behavior and character.
           </p>
         </div>
+
         <div class="feature-card">
           <h3>Versatile Applications</h3>
           <p>
@@ -648,6 +662,7 @@
         Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear
         how it transforms your tracks.
       </p>
+
       <div class="demo-container">
         <!-- Track Selector -->
         <div class="track-selector">
@@ -673,7 +688,8 @@
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
           </div>
         </div>
-        <!-- Plugin UI Container -->
+
+        <!-- Where plugin UI is placed -->
         <div id="patchViewOuterContainer">
           <div id="patchViewInnerContainer">
             <!-- The patch's GUI is inserted dynamically by the script -->
@@ -690,23 +706,28 @@
       <p>
         Download UPPERCOMP and experience the punch and character that will elevate your mixes.
       </p>
+
       <div class="pricing-box">
         <h3 class="pricing-title">Pay What You Think It's Worth</h3>
         <p>
           We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal,
           support future development at a price that feels right.
         </p>
+
         <div class="price-input">
           <span>$</span>
           <input type="number" value="25" min="0" />
         </div>
+
         <a href="#" class="cta-button">Download Now</a>
       </div>
+
       <div class="newsletter">
         <h3>Stay Updated</h3>
         <p>
           Sign up to receive updates about UPPERCOMP and future Secret Weapon DSP releases.
         </p>
+
         <form class="email-form">
           <input type="email" placeholder="Your email address" id="email" name="email" autocomplete="email" />
           <button type="submit" class="submit-button">Subscribe</button>
@@ -796,9 +817,11 @@
           const source = audioContext.createBufferSource();
           source.buffer = audioBuffer;
           source.loop = true;
+
           // Connect sample source -> plugin
           source.connect(pluginNode);
           source.start();
+
           currentSource = source;
           currentTrackName = trackName;
           const trackInfo = document.getElementById('trackInfo');
@@ -816,6 +839,7 @@
         btn.addEventListener('click', () => {
           trackButtons.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
+
           const text = btn.textContent.trim();
           let filePath = '';
           if (text === 'Kick (Sub)') filePath = './Audio_Files/Kick_(Sub).wav';
@@ -824,6 +848,7 @@
           else if (text === 'Tom') filePath = './Audio_Files/Tom.wav';
           else if (text === 'Overheads') filePath = './Audio_Files/Overheads.wav';
           else if (text === 'Room') filePath = './Audio_Files/Room.wav';
+
           if (filePath) {
             playSample(filePath, text);
           }
@@ -880,10 +905,11 @@
 
       function scalePatchView() {
         if (!outerContainer || !innerContainer) return;
-        const widthNative = 1200;
+        const widthNative = 1200; // your plugin's native width
         const heightNative = 400;
         const outerWidth = outerContainer.clientWidth;
         const scaleFactor = outerWidth / widthNative;
+
         innerContainer.style.transformOrigin = "top center";
         innerContainer.style.transform = `translateX(-45px) scale(${scaleFactor})`;
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
