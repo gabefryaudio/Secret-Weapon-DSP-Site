@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Standard viewport tag -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
   <!-- Fonts -->
@@ -19,24 +18,18 @@
   />
 
   <style>
-    /* Global scrolling and touch settings for the document */
-    html, body {
-      touch-action: pan-y;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior-y: auto;
-      overflow-x: hidden;
-      overflow-y: auto;
-      margin: 0;
-      padding: 0;
-    }
-
     :root {
-      --main-bg-color: #1a1a1a;
-      --accent-color: #2E7D32;
+      --main-bg-color: #1a1a1a; /* darker background from the plugin UI */
+      --accent-color: #2E7D32;   /* green accent, same as plugin meters */
       --text-color: #ccc;
       --secondary-bg: #1e1e1e;
       --header-font: 'Audiowide', sans-serif;
       --body-font: 'Inter', sans-serif;
+    }
+
+    html, body {
+      overflow-x: hidden; /* Prevent horizontal overflow */
+      overflow-y: auto;   /* Allow vertical scrolling */
     }
 
     body {
@@ -44,6 +37,7 @@
       background-color: var(--main-bg-color);
       color: var(--text-color);
       line-height: 1.6;
+      overflow-y: auto !important;  /* from code a */
     }
 
     .container {
@@ -327,24 +321,13 @@
       width: 120px;
     }
 
-    /* Patch container settings */
+    /* Patch container (IDs from Code A for patch scaling) */
     #patchViewOuterContainer {
-      margin: 40px auto;
-      width: 100%;
-      max-width: 1200px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      overflow: visible;
-      position: relative;
-      touch-action: pan-y;
+      margin: 40px auto; /* or whatever margin you like */
+      width: 100%;       /* let it fill the parent container’s width */
+      max-width: 1200px; /* or whichever maximum makes sense */
     }
-    #patchViewInnerContainer {
-      touch-action: auto;
-      transform-origin: top center;
-      width: 100%;
-    }
-    
+
     /* Download Section */
     .download-section {
       padding: 80px 0;
@@ -513,33 +496,20 @@
       box-shadow: 0 5px 15px rgba(46,125,50,0.5);
     }
 
-    /* Mobile-specific adjustments */
-    @media (max-width: 500px) {
-      #patchViewOuterContainer {
-        overflow-x: hidden;
-      }
-      .container {
-        max-width: 100%;
-        padding: 0 10px;
-      }
-    }
-
+    /* Media Query for Mobile Navigation Fix */
     @media (max-width: 768px) {
-      .plugin-showcase {
+      nav {
         flex-direction: column;
-        text-align: center;
+        align-items: flex-start; /* or center, if you prefer */
       }
-      h1 {
-        font-size: 3rem;
-      }
-      .hero p {
-        font-size: 1.2rem;
-      }
-      .plugin-details {
-        text-align: center;
-      }
-      .email-form {
+      .nav-links {
         flex-direction: column;
+        gap: 15px;
+        margin-top: 15px;
+      }
+      .logo {
+        width: 150px; /* reduce logo width on mobile if needed */
+        margin-bottom: 10px;
       }
     }
   </style>
@@ -764,29 +734,14 @@
 
   <!-- Single merged script: sets up the plugin, routes audio through it, and does patch scaling. -->
   <script type="module">
-    // Add a passive touchmove event to ensure default scrolling behavior
-    document.addEventListener('touchmove', function(e) {
-      // Do not prevent default so scrolling works
-    }, { passive: true });
-
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
 
     document.addEventListener("DOMContentLoaded", async () => {
-      // Create AudioContext for the plugin
+      // 1) Create an AudioContext for the plugin
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-      // Mobile audio fix: resume AudioContext on first touch
-      const resumeAudioContext = async () => {
-        if (audioContext.state === 'suspended') {
-          await audioContext.resume();
-          console.log('AudioContext resumed on touchstart');
-        }
-        document.removeEventListener('touchstart', resumeAudioContext);
-      };
-      document.addEventListener('touchstart', resumeAudioContext, { passive: true });
-
-      // Initialize the Uppercomp patch connection
+      // 2) Initialize the Uppercomp patch connection
       let connection;
       try {
         connection = await createUppercompPatchConnection(audioContext, "uppercomp-worklet");
@@ -795,29 +750,43 @@
         return;
       }
 
-      // Find a connectable AudioNode from the connection
-      let pluginNode = connection.node || connection.patchNode || connection.audioWorkletPatchNode || connection.audioNode;
-      if (!pluginNode || typeof pluginNode.connect !== "function") {
+      // 3) Find a connectable AudioNode from the connection
+      let pluginNode = null;
+      if (connection.node && typeof connection.node.connect === "function") {
+        pluginNode = connection.node;
+      } else if (connection.patchNode && typeof connection.patchNode.connect === "function") {
+        pluginNode = connection.patchNode;
+      } else if (connection.audioWorkletPatchNode && typeof connection.audioWorkletPatchNode.connect === "function") {
+        pluginNode = connection.audioWorkletPatchNode;
+      } else if (connection.audioNode && typeof connection.audioNode.connect === "function") {
+        pluginNode = connection.audioNode;
+      } else {
         console.error("No connectable AudioNode found in Uppercomp connection.");
         return;
       }
 
-      // Create a master GainNode
+      // 4) Create a GainNode for overall volume control (master)
       const gainNode = audioContext.createGain();
       gainNode.gain.value = 1;
+      // plugin -> gain -> destination
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // --- Enhanced Audio Player Code ---
+      // ---------------------------------------------------------------------
+      // ENHANCED AUDIO PLAYER WITH SMOOTH CROSSFADE TRANSITIONS (NEW CODE)
+      // ---------------------------------------------------------------------
       let currentSource = null;
       let currentTrackName = 'Kick (Sub)';
       let isPlaying = false;
-      let audioBufferCache = {};
-      let currentGainNode = null;
+      let audioBufferCache = {}; 
+      let currentGainNode = null; 
       const CROSSFADE_TIME = 0.2; // 200ms crossfade
 
       async function loadSample(url) {
-        if (audioBufferCache[url]) return audioBufferCache[url];
+        // Return cached buffer if available
+        if (audioBufferCache[url]) {
+          return audioBufferCache[url];
+        }
         try {
           const response = await fetch(url);
           if (!response.ok) {
@@ -825,7 +794,7 @@
           }
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-          audioBufferCache[url] = audioBuffer;
+          audioBufferCache[url] = audioBuffer; // Cache
           return audioBuffer;
         } catch (error) {
           console.error(`Error loading audio file ${url}:`, error);
@@ -836,24 +805,44 @@
       function stopCurrentTrack(immediate = false) {
         if (currentSource) {
           if (immediate) {
-            try { currentSource.stop(); } catch (e) {}
-            if (currentGainNode) currentGainNode.disconnect();
+            // Immediate stop (stop button explicitly pressed)
+            try {
+              currentSource.stop();
+              if (currentGainNode) {
+                currentGainNode.disconnect();
+              }
+            } catch (e) {
+              // Ignore if already stopped
+            }
             currentSource = null;
             currentGainNode = null;
             isPlaying = false;
           } else {
+            // Smooth fade-out for a normal track change
             const now = audioContext.currentTime;
             if (currentGainNode) {
               currentGainNode.gain.setValueAtTime(currentGainNode.gain.value, now);
               currentGainNode.gain.linearRampToValueAtTime(0, now + CROSSFADE_TIME);
+
+              // Store references to stop after fade completes
               const sourceToStop = currentSource;
               const gainToDisconnect = currentGainNode;
+
               setTimeout(() => {
-                try { sourceToStop.stop(); } catch (e) {}
+                try {
+                  sourceToStop.stop();
+                } catch (e) {
+                  // Ignore if already stopped
+                }
                 gainToDisconnect.disconnect();
               }, CROSSFADE_TIME * 1000 + 50);
             } else {
-              try { currentSource.stop(); } catch (e) {}
+              // Fallback if no gain node
+              try {
+                currentSource.stop();
+              } catch (e) {
+                // Ignore
+              }
             }
           }
         }
@@ -861,44 +850,68 @@
 
       async function playSample(url, trackName, crossfade = true) {
         try {
-          if (audioContext.state === 'suspended') await audioContext.resume();
+          // Resume audio context if suspended
+          if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+          }
+
+          // Load the sample
           const audioBuffer = await loadSample(url);
+
           const now = audioContext.currentTime;
           const newGainNode = audioContext.createGain();
 
           if (crossfade && isPlaying) {
+            // Crossfade in the new track
             newGainNode.gain.setValueAtTime(0, now);
             newGainNode.gain.linearRampToValueAtTime(1, now + CROSSFADE_TIME);
+
+            // Fade out the old track
             if (currentSource && currentGainNode) {
               currentGainNode.gain.setValueAtTime(currentGainNode.gain.value, now);
               currentGainNode.gain.linearRampToValueAtTime(0, now + CROSSFADE_TIME);
+
               const oldSource = currentSource;
               const oldGain = currentGainNode;
+
               setTimeout(() => {
-                try { oldSource.stop(); } catch (e) {}
+                try {
+                  oldSource.stop();
+                } catch (e) {
+                  // Ignore
+                }
                 oldGain.disconnect();
               }, CROSSFADE_TIME * 1000 + 50);
             } else {
+              // If no current track, just do an immediate stop
               stopCurrentTrack(true);
             }
           } else {
+            // No crossfade needed
             stopCurrentTrack(true);
             newGainNode.gain.setValueAtTime(1, now);
           }
 
+          // Create and configure new source
           const source = audioContext.createBufferSource();
           source.buffer = audioBuffer;
           source.loop = true;
+
+          // Connect new source -> new gain -> plugin
           source.connect(newGainNode);
           newGainNode.connect(pluginNode);
           source.start();
 
+          // Update references
           currentSource = source;
           currentGainNode = newGainNode;
           currentTrackName = trackName;
           isPlaying = true;
+
+          // Update UI
           updateTrackInfo(trackName, "Now Playing");
           updatePlayButtonState(true);
+
           return true;
         } catch (error) {
           console.error('Error playing sample:', error);
@@ -928,6 +941,7 @@
         }
       }
 
+      // Map track names -> file paths
       const trackFilePaths = {
         'Kick (Sub)': './Audio_Files/Kick_(Sub).wav',
         'Kick In': './Audio_Files/Kick_In.wav',
@@ -937,11 +951,14 @@
         'Room': './Audio_Files/Room.wav'
       };
 
+      // Handle track buttons
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', async () => {
+          // Update UI for responsiveness
           trackButtons.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
+
           const trackName = btn.textContent.trim();
           const filePath = trackFilePaths[trackName];
           if (!filePath) {
@@ -949,8 +966,14 @@
             updateTrackInfo(trackName, "File Not Found");
             return;
           }
+
+          // Show loading status
           updateTrackInfo(trackName, "Loading...");
+
+          // Play the track with crossfade
           const success = await playSample(filePath, trackName, true);
+
+          // Fallback if it fails
           if (!success && currentTrackName && trackFilePaths[currentTrackName]) {
             console.log(`Falling back to previous track: ${currentTrackName}`);
             await playSample(trackFilePaths[currentTrackName], currentTrackName, false);
@@ -958,15 +981,20 @@
         });
       });
 
+      // Play button
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
-          if (isPlaying) return;
+          if (isPlaying) return; // Already playing
           if (currentTrackName && trackFilePaths[currentTrackName]) {
+            // Resume current track (no crossfade from stop)
             await playSample(trackFilePaths[currentTrackName], currentTrackName, false);
           } else {
+            // Default to first track
             const defaultTrack = 'Kick (Sub)';
             await playSample(trackFilePaths[defaultTrack], defaultTrack, false);
+
+            // Update UI for default track
             trackButtons.forEach(btn => {
               if (btn.textContent.trim() === defaultTrack) {
                 btn.classList.add('active');
@@ -978,6 +1006,7 @@
         });
       }
 
+      // Stop button (immediate stop)
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
@@ -987,16 +1016,18 @@
         });
       }
 
+      // Volume slider -> master gainNode
       const volumeSlider = document.getElementById('volumeSlider');
       if (volumeSlider) {
         volumeSlider.addEventListener('input', () => {
           gainNode.gain.value = volumeSlider.value;
         });
       }
+      // ---------------------------------------------------------------------
+      // END CROSSFADE-ENHANCED AUDIO PLAYER CODE
+      // ---------------------------------------------------------------------
 
-      // ---------------------------------------------------------------------
-      // Patch View GUI Setup and Scaling
-      // ---------------------------------------------------------------------
+      // 5) Create and insert the plugin UI, with patch-scaling logic
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
 
@@ -1011,7 +1042,6 @@
         console.error("Error creating patch view:", guiError);
       }
 
-      // Updated scalePatchView function to avoid horizontal overflow on mobile:
       function scalePatchView() {
         if (!outerContainer || !innerContainer) return;
         const widthNative = 1200;
@@ -1020,9 +1050,8 @@
         const scaleFactor = outerWidth / widthNative;
 
         innerContainer.style.transformOrigin = "top center";
-        // On narrow screens, remove the negative left offset to prevent overflow
-        let translateOffset = outerWidth < 500 ? "0px" : "-45px";
-        innerContainer.style.transform = `translateX(${translateOffset}) scale(${scaleFactor})`;
+        // Slight left shift for layout, then scale
+        innerContainer.style.transform = `translateX(-45px) scale(${scaleFactor})`;
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
 
