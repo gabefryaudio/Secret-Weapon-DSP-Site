@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <!-- Updated meta viewport tag -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <!-- Minimal viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Secret Weapon DSP - UPPERCOMP</title>
+  
   <!-- Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap"
@@ -19,20 +20,9 @@
   />
 
   <style>
-    /* Critical Body/HTML Overflow Settings */
-    html, body {
-      height: auto !important;
-      overflow-y: auto !important;
-      position: relative !important;
-      margin: 0;
-      padding: 0;
-      background-color: var(--main-bg-color);
-      color: var(--text-color);
-      font-family: var(--body-font);
-      line-height: 1.6;
-    }
-
-    /* Global Variables */
+    /* -------------------------------------------------------------
+       GLOBAL STYLES & RESET
+    ------------------------------------------------------------- */
     :root {
       --main-bg-color: #1a1a1a;
       --accent-color: #2E7D32;
@@ -42,7 +32,19 @@
       --body-font: 'Inter', sans-serif;
     }
 
-    /* Global resets */
+    /* Reset & Base */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: auto;
+      background-color: var(--main-bg-color);
+      color: var(--text-color);
+      font-family: var(--body-font);
+      line-height: 1.6;
+      overflow-x: hidden; /* Hide horizontal overflow */
+      overflow-y: auto;   /* Single vertical scrollbar */
+    }
     * {
       box-sizing: border-box;
     }
@@ -51,32 +53,19 @@
       height: auto;
     }
 
-    /* Ensure containers and sections are flexible */
-    .container,
-    section,
-    header,
-    footer {
+    /* Container: used throughout sections */
+    .container {
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
-      overflow: visible !important;
-      height: auto !important;
     }
 
-    /* Ensure key sections are flexible */
-    .hero, 
-    .features, 
-    .plugin-showcase, 
-    .demo-section, 
-    .download-section {
-      height: auto !important;
-      position: relative !important;
-      overflow: visible !important;
-    }
-
-    /* Header styles */
+    /* -------------------------------------------------------------
+       HEADER
+    ------------------------------------------------------------- */
     header {
+      width: 100%;
       padding: 20px 0;
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
@@ -106,7 +95,9 @@
       color: var(--accent-color);
     }
 
-    /* Hero Section */
+    /* -------------------------------------------------------------
+       HERO SECTION
+    ------------------------------------------------------------- */
     .hero {
       padding: 60px 0;
       text-align: center;
@@ -142,25 +133,25 @@
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
 
-    /* Plugin Showcase Section */
+    /* -------------------------------------------------------------
+       PLUGIN SHOWCASE
+       (Centering the entire section content)
+    ------------------------------------------------------------- */
     .plugin-showcase {
       padding: 60px 0;
-    }
-    .plugin-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
+      text-align: center; /* Force center alignment */
     }
     .plugin-image {
-      text-align: center;
+      margin-bottom: 30px;
     }
     .plugin-image img {
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border-radius: 10px;
     }
     .plugin-details {
-      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center; /* If you prefer left, change to left */
     }
     h2 {
       font-family: var(--header-font);
@@ -168,10 +159,13 @@
       margin-bottom: 20px;
     }
 
-    /* Features Section */
+    /* -------------------------------------------------------------
+       FEATURES SECTION
+    ------------------------------------------------------------- */
     .features {
-      background-color: var(--secondary-bg);
+      width: 100%;
       padding: 60px 0;
+      background-color: var(--secondary-bg);
     }
     .features-grid {
       display: grid;
@@ -221,19 +215,21 @@
       box-shadow: 0 0 8px rgba(46,125,50,0.8);
     }
 
-    /* Demo Section */
+    /* -------------------------------------------------------------
+       DEMO SECTION
+    ------------------------------------------------------------- */
     .demo-section {
       padding: 60px 0;
+      text-align: center;
     }
     .demo-container {
-      overflow: visible !important;
-      height: auto !important;
       background-color: rgba(255,255,255,0.05);
       padding: 20px;
       border-radius: 10px;
       margin-top: 40px;
       border: 1px solid rgba(46,125,50,0.1);
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      position: relative;
     }
     .demo-container::after {
       content: '';
@@ -249,6 +245,7 @@
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      justify-content: center;
       margin-bottom: 20px;
     }
     .track-button {
@@ -302,6 +299,7 @@
       align-items: center;
       gap: 15px;
       flex-wrap: wrap;
+      justify-content: center;
     }
     .play-button,
     .stop-button {
@@ -355,26 +353,26 @@
       width: 100%;
     }
 
-    /* Fix for the outerScrollWrapper */
+    /* Outer scroll wrapper for the plugin - only horizontal if needed */
     .outerScrollWrapper {
-      position: relative !important;
-      width: 100% !important;
-      overflow-y: visible !important;
-      height: auto !important;
+      width: 100%;
+      margin: 30px 0;
+      overflow: visible;
     }
-
-    /* Plugin Container: fixed height and horizontal scrolling */
+    /* Force only horizontal scrolling for the plugin container */
     #patchViewOuterContainer {
-      height: 400px !important;
-      overflow-x: auto !important;
-      overflow-y: hidden !important;
-      width: 100% !important;
-      min-width: 320px !important;
-      max-width: 100% !important;
-      position: relative !important;
+      width: 100%;
+      max-width: 1200px;
+      height: auto;
+      overflow-x: auto;
+      overflow-y: hidden; /* No second vertical scrollbar */
+      margin: 0 auto;     /* Center horizontally if narrower than screen */
+      display: block;
     }
 
-    /* Download Section */
+    /* -------------------------------------------------------------
+       DOWNLOAD SECTION
+    ------------------------------------------------------------- */
     .download-section {
       padding: 60px 0;
       text-align: center;
@@ -511,7 +509,9 @@
       box-shadow: 0 0 15px rgba(46,125,50,0.8);
     }
 
-    /* Footer */
+    /* -------------------------------------------------------------
+       FOOTER
+    ------------------------------------------------------------- */
     footer {
       padding: 30px 0;
       text-align: center;
@@ -531,29 +531,24 @@
       color: var(--accent-color);
     }
 
+    /* Media Queries */
     @media (min-width: 768px) {
-      .plugin-content {
-        flex-direction: row;
-        align-items: center;
-      }
-      .plugin-image, .plugin-details {
-        width: 50%;
-      }
-      .demo-controls {
-        align-items: center;
-      }
-      .volume-container {
-        width: auto;
+      .plugin-details {
+        text-align: left; /* If you prefer left alignment on larger screens */
       }
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
+  <!-- HEADER -->
   <header>
     <div class="container">
       <nav>
-        <img src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/refs/heads/main/Secret%20Weapon%20DSP%20logo%20(straight).svg" alt="Secret Weapon DSP Logo" class="logo" />
+        <img
+          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/refs/heads/main/Secret%20Weapon%20DSP%20logo%20(straight).svg"
+          alt="Secret Weapon DSP Logo"
+          class="logo"
+        />
         <div class="nav-links">
           <a href="#features">Features</a>
           <a href="#demo">Demo</a>
@@ -564,7 +559,7 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
+  <!-- HERO SECTION -->
   <section class="hero">
     <div class="container">
       <h1>UPPERCOMP</h1>
@@ -573,75 +568,78 @@
     </div>
   </section>
 
-  <!-- Plugin Showcase Section -->
+  <!-- PLUGIN SHOWCASE -->
   <section class="plugin-showcase">
     <div class="container">
       <div class="plugin-image">
-        <img src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png" alt="Uppercomp Plugin Interface" />
+        <img
+          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png"
+          alt="Uppercomp Plugin Interface"
+        />
       </div>
       <div class="plugin-details">
         <h2>MEET UPPERCOMP</h2>
         <p>
-          UPPERCOMP delivers the punch and density of classic hardware compressors with modern flexibility.
-          It combines the character of vintage British preamps with the precision of DBX gold can VCAs,
+          UPPERCOMP delivers the punch and density of classic hardware compressors with modern flexibility. 
+          It combines the character of vintage British preamps with the precision of DBX gold can VCAs, 
           creating a compressor that brings life and energy to any source.
         </p>
         <p>
-          Whether you're looking to add punch to drums, glue to a mix, or character to vocals,
+          Whether you're looking to add punch to drums, glue to a mix, or character to vocals, 
           UPPERCOMP delivers with an intuitive interface and a sound that stands out in the digital realm.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- Features Section -->
+  <!-- FEATURES SECTION -->
   <section class="features" id="features">
     <div class="container">
       <h2>FEATURES</h2>
       <p>
-        UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings
+        UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings 
         analog character to your digital workflow.
       </p>
       <div class="features-grid">
         <div class="feature-card">
           <h3>Vintage British Preamp</h3>
           <p>
-            The front-end is modeled after classic British console preamps, adding subtle harmonic
+            The front-end is modeled after classic British console preamps, adding subtle harmonic 
             richness before compression even begins.
           </p>
         </div>
         <div class="feature-card">
           <h3>DBX Gold Can VCA</h3>
           <p>
-            The compression circuit is inspired by the sought-after DBX gold can VCAs, delivering
+            The compression circuit is inspired by the sought-after DBX gold can VCAs, delivering 
             that familiar punch and control that made them legendary.
           </p>
         </div>
         <div class="feature-card">
           <h3>Diode-Based Envelope</h3>
           <p>
-            A state space half-wave rectifier diode-based envelope follower creates colorful,
+            A state space half-wave rectifier diode-based envelope follower creates colorful, 
             characterful compression unlike flat digital algorithms.
           </p>
         </div>
         <div class="feature-card">
           <h3>Parallel Processing</h3>
           <p>
-            Built-in saturation mix and compression mix controls let you dial in the perfect blend
+            Built-in saturation mix and compression mix controls let you dial in the perfect blend 
             of clean and processed signal.
           </p>
         </div>
         <div class="feature-card">
           <h3>Advanced Controls</h3>
           <p>
-            Lookahead functionality and sidechain filtering give you precise control over
+            Lookahead functionality and sidechain filtering give you precise control over 
             compression behavior and character.
           </p>
         </div>
         <div class="feature-card">
           <h3>Versatile Applications</h3>
           <p>
-            While it excels on drums, UPPERCOMP enhances any source that benefits from punchy,
+            While it excels on drums, UPPERCOMP enhances any source that benefits from punchy, 
             character-rich compression.
           </p>
         </div>
@@ -649,12 +647,12 @@
     </div>
   </section>
 
-  <!-- Demo Section -->
+  <!-- DEMO SECTION -->
   <section class="demo-section" id="demo">
     <div class="container">
       <h2>HEAR IT IN ACTION</h2>
       <p>
-        Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear
+        Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear 
         how it transforms your tracks.
       </p>
       <div class="demo-container">
@@ -693,7 +691,7 @@
     </div>
   </section>
 
-  <!-- Download Section -->
+  <!-- DOWNLOAD SECTION -->
   <section class="download-section" id="download">
     <div class="container">
       <h2>GET UPPERCOMP</h2>
@@ -703,7 +701,7 @@
       <div class="pricing-box">
         <h3 class="pricing-title">Pay What You Think It's Worth</h3>
         <p>
-          We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal,
+          We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal, 
           support future development at a price that feels right.
         </p>
         <div class="price-input">
@@ -725,7 +723,7 @@
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- FOOTER -->
   <footer id="contact">
     <div class="container">
       <div class="social-links">
@@ -746,36 +744,17 @@
     </div>
   </footer>
 
-  <!-- JavaScript Fix for Touch Events and Viewport -->
+  <!-- SCRIPT: Setup Uppercomp and audio routing -->
   <script type="module">
-    document.addEventListener('DOMContentLoaded', function() {
-      // Allow default scrolling by ensuring touchmove events don't block it
-      document.addEventListener('touchmove', function(e) {
-        // This empty handler with passive:true allows default scrolling behavior.
-      }, { passive: true });
-      
-      // Prevent any click events from interfering with scrolling
-      document.addEventListener('click', function(e) {
-        e.stopPropagation();
-      }, { passive: true });
-      
-      // Fix viewport issues by resetting the meta viewport and forcing a repaint.
-      function fixViewport() {
-        const viewport = document.querySelector('meta[name="viewport"]');
-        if (viewport) {
-          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0');
-        }
-        document.body.style.display = 'none';
-        document.body.offsetHeight; // Trigger reflow
-        document.body.style.display = '';
-      }
-      fixViewport();
-      window.addEventListener('resize', fixViewport);
+    // Allow normal scrolling on touch devices
+    document.addEventListener('touchmove', function(e) {
+      // Empty handler, passive: true by default in modules
+      // This ensures we don't block default scrolling
     });
-    
-    // Audio demo and scrolling setup
+
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
+
     document.addEventListener("DOMContentLoaded", async () => {
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       let connection;
@@ -785,6 +764,7 @@
         console.error("Error during Uppercomp initialization:", error);
         return;
       }
+
       let pluginNode = null;
       if (connection.node && typeof connection.node.connect === "function") {
         pluginNode = connection.node;
@@ -798,16 +778,19 @@
         console.error("No connectable AudioNode found in Uppercomp connection.");
         return;
       }
+
       const gainNode = audioContext.createGain();
       gainNode.gain.value = 1;
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
+
       let currentSource = null;
       let currentTrackName = 'Kick (Sub)';
       let isPlaying = false;
       let audioBufferCache = {};
       let currentGainNode = null;
       const CROSSFADE_TIME = 0.2;
+
       async function loadSample(url) {
         if (audioBufferCache[url]) {
           return audioBufferCache[url];
@@ -826,6 +809,7 @@
           throw error;
         }
       }
+
       function stopCurrentTrack(immediate = false) {
         if (currentSource) {
           if (immediate) {
@@ -853,6 +837,7 @@
           }
         }
       }
+
       async function playSample(url, trackName, crossfade = true) {
         try {
           if (audioContext.state === 'suspended') {
@@ -861,6 +846,7 @@
           const audioBuffer = await loadSample(url);
           const now = audioContext.currentTime;
           const newGainNode = audioContext.createGain();
+
           if (crossfade && isPlaying) {
             newGainNode.gain.setValueAtTime(0, now);
             newGainNode.gain.linearRampToValueAtTime(1, now + CROSSFADE_TIME);
@@ -880,12 +866,14 @@
             stopCurrentTrack(true);
             newGainNode.gain.setValueAtTime(1, now);
           }
+
           const source = audioContext.createBufferSource();
           source.buffer = audioBuffer;
           source.loop = true;
           source.connect(newGainNode);
           newGainNode.connect(pluginNode);
           source.start();
+
           currentSource = source;
           currentGainNode = newGainNode;
           currentTrackName = trackName;
@@ -899,12 +887,14 @@
           return false;
         }
       }
+
       function updateTrackInfo(trackName, status) {
         const trackInfo = document.getElementById('trackInfo');
         if (trackInfo) {
           trackInfo.textContent = `${trackName} - "${status}"`;
         }
       }
+
       function updatePlayButtonState(playing) {
         const playBtn = document.querySelector('.play-button');
         const stopBtn = document.querySelector('.stop-button');
@@ -918,6 +908,7 @@
           }
         }
       }
+
       const trackFilePaths = {
         'Kick (Sub)': './Audio_Files/Kick_(Sub).wav',
         'Kick In': './Audio_Files/Kick_In.wav',
@@ -926,6 +917,7 @@
         'Overheads': './Audio_Files/Overheads.wav',
         'Room': './Audio_Files/Room.wav'
       };
+
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', async () => {
@@ -946,6 +938,7 @@
           }
         });
       });
+
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
@@ -965,6 +958,7 @@
           }
         });
       }
+
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
@@ -973,14 +967,17 @@
           updatePlayButtonState(false);
         });
       }
+
       const volumeSlider = document.getElementById('volumeSlider');
       if (volumeSlider) {
         volumeSlider.addEventListener('input', () => {
           gainNode.gain.value = volumeSlider.value;
         });
       }
+
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
+
       try {
         const patchView = await createPatchView(connection);
         innerContainer.innerHTML = "";
