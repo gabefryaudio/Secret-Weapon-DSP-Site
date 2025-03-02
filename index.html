@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
   
-  <!-- Content Security Policy: 
-       - Allows scripts from self, inline scripts, eval, HTTPS and data URLs.
-       - Allows worker scripts from self (for worklets).
-       - Allows inline styles and styles from HTTPS.
-       - Allows images and fonts from self, data and HTTPS.
+  <!-- Content Security Policy:
+       This CSP allows:
+         - Scripts from 'self', inline scripts ('unsafe-inline'), eval ('unsafe-eval'),
+           HTTPS sources, and data URLs.
+         - Inline styles ('unsafe-inline') and styles from HTTPS.
+         - Images and fonts from self, data, and HTTPS.
+         - Worker scripts from self (needed for worklets).
+       NOTE: Allowing 'unsafe-inline' and 'unsafe-eval' reduces security and should be used only if refactoring inline code is not an option.
   -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self' data: https:;
@@ -445,7 +448,7 @@
       gap: 10px;
       justify-content: center;
     }
-    /* Added id, name, and autocomplete attributes for better autofill support */
+    /* Updated email input with id, name, and autocomplete attributes */
     .email-form input {
       flex: 1;
       padding: 15px;
@@ -477,7 +480,7 @@
       transform: translateY(-2px);
       box-shadow: 0 0 15px rgba(46,125,50,0.8);
     }
-    /* Footer: Social icon styling */
+    /* Footer */
     footer {
       padding: 60px 0;
       text-align: center;
@@ -590,7 +593,6 @@
         UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings
         analog character to your digital workflow.
       </p>
-
       <div class="features-grid">
         <div class="feature-card">
           <h3>Vintage British Preamp</h3>
@@ -599,7 +601,6 @@
             richness before compression even begins.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>DBX Gold Can VCA</h3>
           <p>
@@ -607,7 +608,6 @@
             that familiar punch and control that made them legendary.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Diode-Based Envelope</h3>
           <p>
@@ -615,7 +615,6 @@
             characterful compression unlike flat digital algorithms.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Parallel Processing</h3>
           <p>
@@ -623,7 +622,6 @@
             of clean and processed signal.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Advanced Controls</h3>
           <p>
@@ -631,7 +629,6 @@
             compression behavior and character.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Versatile Applications</h3>
           <p>
@@ -651,8 +648,6 @@
         Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear
         how it transforms your tracks.
       </p>
-
-      <!-- Demo Container -->
       <div class="demo-container">
         <!-- Track Selector -->
         <div class="track-selector">
@@ -678,8 +673,7 @@
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
           </div>
         </div>
-
-        <!-- Where plugin UI is placed -->
+        <!-- Plugin UI Container -->
         <div id="patchViewOuterContainer">
           <div id="patchViewInnerContainer">
             <!-- The patch's GUI is inserted dynamically by the script -->
@@ -696,28 +690,23 @@
       <p>
         Download UPPERCOMP and experience the punch and character that will elevate your mixes.
       </p>
-
       <div class="pricing-box">
         <h3 class="pricing-title">Pay What You Think It's Worth</h3>
         <p>
           We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal,
           support future development at a price that feels right.
         </p>
-
         <div class="price-input">
           <span>$</span>
           <input type="number" value="25" min="0" />
         </div>
-
         <a href="#" class="cta-button">Download Now</a>
       </div>
-
       <div class="newsletter">
         <h3>Stay Updated</h3>
         <p>
           Sign up to receive updates about UPPERCOMP and future Secret Weapon DSP releases.
         </p>
-
         <form class="email-form">
           <input type="email" placeholder="Your email address" id="email" name="email" autocomplete="email" />
           <button type="submit" class="submit-button">Subscribe</button>
@@ -807,11 +796,9 @@
           const source = audioContext.createBufferSource();
           source.buffer = audioBuffer;
           source.loop = true;
-
           // Connect sample source -> plugin
           source.connect(pluginNode);
           source.start();
-
           currentSource = source;
           currentTrackName = trackName;
           const trackInfo = document.getElementById('trackInfo');
@@ -829,7 +816,6 @@
         btn.addEventListener('click', () => {
           trackButtons.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-
           const text = btn.textContent.trim();
           let filePath = '';
           if (text === 'Kick (Sub)') filePath = './Audio_Files/Kick_(Sub).wav';
@@ -838,7 +824,6 @@
           else if (text === 'Tom') filePath = './Audio_Files/Tom.wav';
           else if (text === 'Overheads') filePath = './Audio_Files/Overheads.wav';
           else if (text === 'Room') filePath = './Audio_Files/Room.wav';
-
           if (filePath) {
             playSample(filePath, text);
           }
