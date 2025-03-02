@@ -17,39 +17,48 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
-
   <style>
-    :root {
-      --main-bg-color: #1a1a1a;
-      --accent-color: #2E7D32;
-      --text-color: #ccc;
-      --secondary-bg: #1e1e1e;
-      --header-font: 'Audiowide', sans-serif;
-      --body-font: 'Inter', sans-serif;
-    }
-
-    /* Global resets – allow horizontal overflow */
+    /* Global styling to fix mobile scrolling */
     html, body {
+      overflow-x: auto; /* Allow horizontal scrolling at the document level */
+      max-width: 100%;
+      width: 100%;
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      /* We want horizontal scroll if needed */
-      overflow-x: visible;
-      overflow-y: auto;
-      background-color: var(--main-bg-color);
-      color: var(--text-color);
-      font-family: var(--body-font);
+      background-color: #1a1a1a;
+      color: #ccc;
+      font-family: 'Inter', sans-serif;
       line-height: 1.6;
     }
-
-    /* Normal container for most sections */
+    
+    /* Make container responsive for small screens */
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
+      width: 100%;
+      box-sizing: border-box;
     }
-
-    /* Header styles */
+    
+    /* Fix the outer scroll wrapper */
+    .outerScrollWrapper {
+      width: 100% !important; /* Remove the fixed width */
+      min-width: auto !important; /* Allow it to be smaller */
+      overflow-x: auto; /* Allow scrolling within this component */
+      -webkit-overflow-scrolling: touch;
+      margin: 40px auto;
+    }
+    
+    /* Make the patch container responsive yet scrollable */
+    #patchViewOuterContainer {
+      width: 1200px; /* Keep this width as needed for the plugin UI */
+      height: 400px;
+      margin: 0 auto;
+      /* This container will scroll inside the responsive outerScrollWrapper */
+    }
+    
+    /* Header */
     header {
       padding: 20px 0;
       border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -68,22 +77,22 @@
       gap: 30px;
     }
     .nav-links a {
-      color: var(--text-color);
+      color: #ccc;
       text-decoration: none;
       font-weight: 500;
       transition: color 0.3s ease;
     }
     .nav-links a:hover {
-      color: var(--accent-color);
+      color: #2E7D32;
     }
-
+    
     /* Hero Section */
     .hero {
       padding: 80px 0;
       text-align: center;
     }
     h1 {
-      font-family: var(--header-font);
+      font-family: 'Audiowide', sans-serif;
       font-size: 5rem;
       margin-bottom: 20px;
       letter-spacing: 4px;
@@ -96,7 +105,7 @@
     }
     .cta-button {
       display: inline-block;
-      background-color: var(--accent-color);
+      background-color: #2E7D32;
       color: #000;
       padding: 15px 30px;
       font-weight: bold;
@@ -111,7 +120,7 @@
       transform: translateY(-3px);
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
-
+    
     /* Plugin Showcase Section */
     .plugin-showcase {
       padding: 80px 0;
@@ -132,15 +141,15 @@
       flex: 1;
     }
     h2 {
-      font-family: var(--header-font);
+      font-family: 'Audiowide', sans-serif;
       font-size: 2.5rem;
       margin-bottom: 20px;
     }
-
+    
     /* Features Section */
     .features {
       padding: 80px 0;
-      background-color: var(--secondary-bg);
+      background-color: #1e1e1e;
     }
     .features-grid {
       display: grid;
@@ -164,7 +173,7 @@
       left: 0;
       width: 100%;
       height: 4px;
-      background: linear-gradient(90deg, var(--accent-color), transparent);
+      background: linear-gradient(90deg, #2E7D32, transparent);
       opacity: 0.7;
     }
     .feature-card:hover {
@@ -174,7 +183,7 @@
     .feature-card h3 {
       font-size: 1.5rem;
       margin-bottom: 15px;
-      color: var(--accent-color);
+      color: #2E7D32;
       text-shadow: 0 0 6px rgba(46,125,50,0.7);
       display: flex;
       align-items: center;
@@ -184,12 +193,12 @@
       display: inline-block;
       width: 6px;
       height: 6px;
-      background-color: var(--accent-color);
+      background-color: #2E7D32;
       border-radius: 50%;
       margin-right: 10px;
       box-shadow: 0 0 8px rgba(46,125,50,0.8);
     }
-
+    
     /* Demo Section */
     .demo-section {
       padding: 80px 0;
@@ -202,7 +211,6 @@
       border: 1px solid rgba(46,125,50,0.1);
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       position: relative;
-      /* Ensure this container does not restrict horizontal overflow */
       overflow: visible;
     }
     .demo-container::after {
@@ -226,14 +234,14 @@
       background-color: rgba(255,255,255,0.1);
       border: none;
       border-radius: 5px;
-      color: var(--text-color);
+      color: #ccc;
       cursor: pointer;
       transition: all 0.3s ease;
       border: 1px solid transparent;
     }
     .track-button:hover,
     .track-button.active {
-      background-color: var(--accent-color);
+      background-color: #2E7D32;
       color: #000;
       box-shadow: 0 0 10px rgba(46,125,50,0.5);
     }
@@ -255,11 +263,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg,
-        rgba(46,125,50,0) 0%,
-        rgba(46,125,50,0.3) 50%,
-        rgba(46,125,50,0) 100%
-      );
+      background: linear-gradient(90deg, rgba(46,125,50,0) 0%, rgba(46,125,50,0.3) 50%, rgba(46,125,50,0) 100%);
       animation: waveformMove 2s infinite linear;
     }
     @keyframes waveformMove {
@@ -276,7 +280,7 @@
     .stop-button {
       width: 60px;
       height: 60px;
-      background-color: var(--accent-color);
+      background-color: #2E7D32;
       border: none;
       border-radius: 50%;
       cursor: pointer;
@@ -321,35 +325,24 @@
     .volume-container input[type="range"] {
       width: 120px;
     }
-
+    
     /* NEW: Outer scroll wrapper for the plugin.
-       Instead of being constrained by .container, we force it to a fixed width.
-       This wrapper will always be 1200px wide and allow horizontal scrolling on mobile. */
+       This wrapper is now fully responsive (100% width) so that the document-level
+       horizontal scrolling works properly. The plugin itself remains 1200px wide.
+    */
     .outerScrollWrapper {
-      width: 1200px !important;
-      min-width: 1200px !important;
+      width: 100% !important;
+      min-width: auto !important;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       margin: 40px auto;
     }
-
-    /* The patch container is fixed at its native size. */
-    #patchViewOuterContainer {
-      width: 1200px;
-      height: 400px;
-      margin: 0 auto;
-    }
-    #patchViewInnerContainer {
-      width: 100%;
-      height: 100%;
-      transform: none !important;
-    }
-
+    
     /* Download Section */
     .download-section {
       padding: 80px 0;
       text-align: center;
-      background-color: var(--secondary-bg);
+      background-color: #1e1e1e;
       position: relative;
       overflow: hidden;
     }
@@ -390,7 +383,7 @@
       pointer-events: none;
     }
     .pricing-title {
-      font-family: var(--body-font);
+      font-family: 'Inter', sans-serif;
       font-size: 2rem;
       margin-bottom: 20px;
       font-weight: 600;
@@ -407,7 +400,7 @@
     .price-input span {
       font-size: 1.5rem;
       font-weight: bold;
-      color: var(--accent-color);
+      color: #2E7D32;
     }
     .price-input input {
       width: 150px;
@@ -416,14 +409,14 @@
       border-radius: 5px;
       font-size: 1.5rem;
       background-color: rgba(0,0,0,0.2);
-      color: var(--text-color);
+      color: #ccc;
       text-align: center;
       transition: all 0.3s ease;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
     }
     .price-input input:focus {
       outline: none;
-      border-color: var(--accent-color);
+      border-color: #2E7D32;
       box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
     }
     .newsletter {
@@ -434,9 +427,9 @@
     .newsletter h3 {
       margin-bottom: 20px;
       font-size: 1.6rem;
-      font-family: var(--body-font);
+      font-family: 'Inter', sans-serif;
       font-weight: 600;
-      color: var(--accent-color);
+      color: #2E7D32;
       text-shadow: none;
     }
     .newsletter p {
@@ -454,18 +447,18 @@
       border: 2px solid rgba(46,125,50,0.2);
       border-radius: 5px;
       background-color: rgba(0,0,0,0.2);
-      color: var(--text-color);
+      color: #ccc;
       transition: all 0.3s ease;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
     }
     .email-form input:focus {
       outline: none;
-      border-color: var(--accent-color);
+      border-color: #2E7D32;
       box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
     }
     .submit-button {
       padding: 15px 20px;
-      background-color: var(--accent-color);
+      background-color: #2E7D32;
       color: #000;
       border: none;
       border-radius: 5px;
@@ -486,11 +479,7 @@
   <header>
     <div class="container">
       <nav>
-        <img
-          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/refs/heads/main/Secret%20Weapon%20DSP%20logo%20(straight).svg"
-          alt="Secret Weapon DSP Logo"
-          class="logo"
-        />
+        <img src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/refs/heads/main/Secret%20Weapon%20DSP%20logo%20(straight).svg" alt="Secret Weapon DSP Logo" class="logo" />
         <div class="nav-links">
           <a href="#features">Features</a>
           <a href="#demo">Demo</a>
@@ -500,7 +489,7 @@
       </nav>
     </div>
   </header>
-
+  
   <!-- Hero Section -->
   <section class="hero">
     <div class="container">
@@ -509,15 +498,12 @@
       <a href="#download" class="cta-button">Download Now</a>
     </div>
   </section>
-
+  
   <!-- Plugin Showcase Section -->
   <section class="plugin-showcase">
     <div class="container">
       <div class="plugin-image">
-        <img 
-          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png" 
-          alt="Uppercomp Plugin Interface" 
-        />
+        <img src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/cf6d735ba6d11ebf6f8924c502fb9363c68ad944/Uppercomp%20still%201.png" alt="Uppercomp Plugin Interface" />
       </div>
       <div class="plugin-details">
         <h2>MEET UPPERCOMP</h2>
@@ -533,7 +519,7 @@
       </div>
     </div>
   </section>
-
+  
   <!-- Features Section -->
   <section class="features" id="features">
     <div class="container">
@@ -542,7 +528,6 @@
         UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings 
         analog character to your digital workflow.
       </p>
-
       <div class="features-grid">
         <div class="feature-card">
           <h3>Vintage British Preamp</h3>
@@ -551,7 +536,6 @@
             richness before compression even begins.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>DBX Gold Can VCA</h3>
           <p>
@@ -559,7 +543,6 @@
             that familiar punch and control that made them legendary.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Diode-Based Envelope</h3>
           <p>
@@ -567,7 +550,6 @@
             characterful compression unlike flat digital algorithms.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Parallel Processing</h3>
           <p>
@@ -575,7 +557,6 @@
             of clean and processed signal.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Advanced Controls</h3>
           <p>
@@ -583,7 +564,6 @@
             compression behavior and character.
           </p>
         </div>
-
         <div class="feature-card">
           <h3>Versatile Applications</h3>
           <p>
@@ -594,7 +574,7 @@
       </div>
     </div>
   </section>
-
+  
   <!-- Demo Section -->
   <section class="demo-section" id="demo">
     <div class="container">
@@ -603,10 +583,7 @@
         Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear 
         how it transforms your tracks.
       </p>
-
-      <!-- Demo Container -->
       <div class="demo-container">
-        <!-- Track Selector -->
         <div class="track-selector">
           <button class="track-button active">Kick (Sub)</button>
           <button class="track-button">Kick In</button>
@@ -630,9 +607,7 @@
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
           </div>
         </div>
-
-        <!-- Remove the .container wrapper for the plugin scroll area.
-             Instead, insert the scrollable wrapper directly. -->
+        <!-- Outer scroll wrapper for the plugin -->
         <div class="outerScrollWrapper">
           <div id="patchViewOuterContainer">
             <div id="patchViewInnerContainer">
@@ -643,7 +618,7 @@
       </div>
     </div>
   </section>
-
+  
   <!-- Download Section -->
   <section class="download-section" id="download">
     <div class="container">
@@ -651,28 +626,23 @@
       <p>
         Download UPPERCOMP and experience the punch and character that will elevate your mixes.
       </p>
-
       <div class="pricing-box">
         <h3 class="pricing-title">Pay What You Think It's Worth</h3>
         <p>
           We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal, 
           support future development at a price that feels right.
         </p>
-
         <div class="price-input">
           <span>$</span>
           <input type="number" value="25" min="0" />
         </div>
-
         <a href="#" class="cta-button">Download Now</a>
       </div>
-
       <div class="newsletter">
         <h3>Stay Updated</h3>
         <p>
           Sign up to receive updates about UPPERCOMP and future Secret Weapon DSP releases.
         </p>
-
         <form class="email-form">
           <input type="email" placeholder="Your email address" />
           <button type="submit" class="submit-button">Subscribe</button>
@@ -680,7 +650,7 @@
       </div>
     </div>
   </section>
-
+  
   <!-- Footer -->
   <footer id="contact">
     <div class="container">
@@ -701,17 +671,13 @@
       <p>© 2025 Secret Weapon DSP. All rights reserved.</p>
     </div>
   </footer>
-
+  
   <!-- Script: Setup Uppercomp and audio routing -->
   <script type="module">
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
-
     document.addEventListener("DOMContentLoaded", async () => {
-      // Create an AudioContext for the plugin
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-      // Initialize the Uppercomp patch connection
       let connection;
       try {
         connection = await createUppercompPatchConnection(audioContext, "uppercomp-worklet");
@@ -719,8 +685,6 @@
         console.error("Error during Uppercomp initialization:", error);
         return;
       }
-
-      // Find a connectable AudioNode from the connection
       let pluginNode = null;
       if (connection.node && typeof connection.node.connect === "function") {
         pluginNode = connection.node;
@@ -734,22 +698,16 @@
         console.error("No connectable AudioNode found in Uppercomp connection.");
         return;
       }
-
-      // Create a GainNode for overall volume control (master)
       const gainNode = audioContext.createGain();
       gainNode.gain.value = 1;
-      // Connect plugin -> gain -> destination
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
-
-      // AUDIO PLAYER CODE (crossfade, track switching, etc.)
       let currentSource = null;
       let currentTrackName = 'Kick (Sub)';
       let isPlaying = false;
       let audioBufferCache = {};
       let currentGainNode = null;
-      const CROSSFADE_TIME = 0.2; // 200ms crossfade
-
+      const CROSSFADE_TIME = 0.2;
       async function loadSample(url) {
         if (audioBufferCache[url]) {
           return audioBufferCache[url];
@@ -768,7 +726,6 @@
           throw error;
         }
       }
-
       function stopCurrentTrack(immediate = false) {
         if (currentSource) {
           if (immediate) {
@@ -796,7 +753,6 @@
           }
         }
       }
-
       async function playSample(url, trackName, crossfade = true) {
         try {
           if (audioContext.state === 'suspended') {
@@ -843,14 +799,12 @@
           return false;
         }
       }
-
       function updateTrackInfo(trackName, status) {
         const trackInfo = document.getElementById('trackInfo');
         if (trackInfo) {
           trackInfo.textContent = `${trackName} - "${status}"`;
         }
       }
-
       function updatePlayButtonState(playing) {
         const playBtn = document.querySelector('.play-button');
         const stopBtn = document.querySelector('.stop-button');
@@ -864,7 +818,6 @@
           }
         }
       }
-
       const trackFilePaths = {
         'Kick (Sub)': './Audio_Files/Kick_(Sub).wav',
         'Kick In': './Audio_Files/Kick_In.wav',
@@ -873,7 +826,6 @@
         'Overheads': './Audio_Files/Overheads.wav',
         'Room': './Audio_Files/Room.wav'
       };
-
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', async () => {
@@ -894,7 +846,6 @@
           }
         });
       });
-
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
@@ -914,7 +865,6 @@
           }
         });
       }
-
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
@@ -923,15 +873,12 @@
           updatePlayButtonState(false);
         });
       }
-
       const volumeSlider = document.getElementById('volumeSlider');
       if (volumeSlider) {
         volumeSlider.addEventListener('input', () => {
           gainNode.gain.value = volumeSlider.value;
         });
       }
-
-      // Create and insert the plugin UI without scaling logic.
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
       try {
