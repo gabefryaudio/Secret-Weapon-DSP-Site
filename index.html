@@ -1138,7 +1138,7 @@
         console.error("Error creating patch view:", guiError);
       }
 
-      function scalePatchView() {
+           function scalePatchView() {
         if (!outerContainer || !innerContainer) return;
         
         const widthNative = 1200;
@@ -1146,13 +1146,19 @@
         const outerWidth = outerContainer.clientWidth;
         const scaleFactor = outerWidth / widthNative;
       
-        innerContainer.style.position = "absolute";
-        innerContainer.style.left = "50%";
-        innerContainer.style.transformOrigin = "top left";
-        innerContainer.style.transform = `translateX(-50%) scale(${scaleFactor})`;
-      
-        outerContainer.style.position = "relative";
+        // Set the inner container's width explicitly to match the native width
+        innerContainer.style.width = `${widthNative}px`;
+        
+        // Center the plugin using margins instead of transforms
+        innerContainer.style.position = "relative";
+        innerContainer.style.margin = "0 auto";
+        innerContainer.style.transformOrigin = "top center";
+        innerContainer.style.transform = `scale(${scaleFactor})`;
+        
+        // Set the outer container's height to accommodate the scaled height
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
+        // Ensure the outer container allows overflow to be hidden
+        outerContainer.style.overflow = "hidden";
       }
 
       // Re-scale on window resize
