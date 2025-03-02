@@ -72,14 +72,7 @@
       text-decoration: none;
     }
 
-    /* Force vertical scroll */
-    body::after {
-      content: "";
-      display: block;
-      height: 1px;
-      margin-bottom: 100vh;
-    }
-    /* Allow horizontal scroll if needed */
+    /* Allow horizontal and vertical scroll as needed */
     html, body {
       overflow-x: auto;
       overflow-y: auto;
@@ -127,6 +120,59 @@
       color: var(--text-color);
       font-size: 1.5rem;
       cursor: pointer;
+    }
+
+    /* Mobile Navigation - Added proper styling */
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 80%;
+      max-width: 300px;
+      height: 100vh;
+      background-color: var(--main-bg-color);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      padding: 60px 30px 30px;
+      transition: right 0.3s ease;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+    }
+    .mobile-nav.active {
+      right: 0;
+    }
+    .mobile-nav a {
+      color: var(--text-color);
+      text-decoration: none;
+      padding: 15px 0;
+      font-size: 1.2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .mobile-nav a:hover {
+      color: var(--accent-color);
+    }
+    .close-menu {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+    }
+    .backdrop.active {
+      display: block;
     }
 
     /* Hero Section */
@@ -574,19 +620,8 @@
       box-shadow: 0 5px 15px rgba(46,125,50,0.5);
     }
 
-    /* 
-    ------------------------------------------------------------
-    RESPONSIVE MEDIA QUERIES (Retained except for plugin reflow)
-    ------------------------------------------------------------
-    */
+    /* Modified responsive media queries */
     @media (max-width: 992px) {
-      /* 
-      NOTE: We comment out plugin-showcase reflow:
-      .plugin-showcase {
-        flex-direction: column;
-        gap: 30px;
-      }
-      */
       .plugin-details {
         text-align: center;
       }
@@ -627,6 +662,10 @@
       }
       .features, .demo-section, .download-section {
         padding: 40px 0;
+      }
+      .plugin-showcase {
+        flex-direction: column;
+        gap: 30px;
       }
     }
     @media (max-width: 480px) {
@@ -677,6 +716,7 @@
   </header>
 
   <!-- Mobile Navigation -->
+  <div class="backdrop"></div>
   <div class="mobile-nav">
     <button class="close-menu" aria-label="Close mobile menu">
       <i class="fas fa-times"></i>
@@ -870,12 +910,33 @@
     </div>
   </footer>
 
-  <!-- Single merged script: sets up the plugin, routes audio through it, and does patch scaling. -->
+  <!-- Single merged script: sets up the plugin, routes audio through it, does patch scaling, and manages the mobile menu -->
   <script type="module">
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
 
     document.addEventListener("DOMContentLoaded", async () => {
+      // Mobile menu toggle logic
+      const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+      const mobileNav = document.querySelector('.mobile-nav');
+      const closeMenuBtn = document.querySelector('.close-menu');
+      const backdrop = document.querySelector('.backdrop');
+
+      mobileMenuToggle.addEventListener('click', () => {
+        mobileNav.classList.add('active');
+        backdrop.classList.add('active');
+      });
+
+      closeMenuBtn.addEventListener('click', () => {
+        mobileNav.classList.remove('active');
+        backdrop.classList.remove('active');
+      });
+
+      backdrop.addEventListener('click', () => {
+        mobileNav.classList.remove('active');
+        backdrop.classList.remove('active');
+      });
+
       // 1) Create an AudioContext for the plugin
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -929,7 +990,6 @@
               currentGain = null;
             }, fadeTime * 1000);
           } else {
-            // Immediate stop (for track switching)
             currentSource.stop();
             currentSource.disconnect();
             currentGain.disconnect();
@@ -1049,13 +1109,11 @@
         const outerWidth = outerContainer.clientWidth;
         const scaleFactor = outerWidth / widthNative;
       
-        // Position the inner container absolutely and center it by translating -50%
         innerContainer.style.position = "absolute";
         innerContainer.style.left = "50%";
         innerContainer.style.transformOrigin = "top left";
         innerContainer.style.transform = `translateX(-50%) scale(${scaleFactor})`;
       
-        // Ensure the outer container is relatively positioned and sized properly
         outerContainer.style.position = "relative";
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
