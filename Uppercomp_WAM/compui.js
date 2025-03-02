@@ -101,9 +101,9 @@ class UpperCompGUI extends HTMLElement {
     if (this.paramListener) {
       this.patchConnection.removeAllParameterListener(this.paramListener);
     }
-    this.patchConnection.removeEndpointListener('gainReduction',   this.gainReductionListener);
-    this.patchConnection.removeEndpointListener('inputMeter',      this.inputMeterListener);
-    this.patchConnection.removeEndpointListener('outputMeter',     this.outputMeterListener);
+    this.patchConnection.removeEndpointListener('gainReduction', this.gainReductionListener);
+    this.patchConnection.removeEndpointListener('inputMeter', this.inputMeterListener);
+    this.patchConnection.removeEndpointListener('outputMeter', this.outputMeterListener);
   }
 
   // ------------------------------------------------------------------
@@ -114,7 +114,7 @@ class UpperCompGUI extends HTMLElement {
     this.paramListener = ({ endpointID, value }) => {
       const knobObj = this.knobs[endpointID];
       if (!knobObj) return;
-      knobObj.targetValue  = value;
+      knobObj.targetValue = value;
       knobObj.currentValue = value;
       this.updateKnobRotation(endpointID, value);
       this.updateKnobDisplayValue(endpointID, value);
@@ -152,12 +152,9 @@ class UpperCompGUI extends HTMLElement {
       if (btn) btn.classList.toggle('active', v);
     });
 
-    // -----------------------------
     // LED for post-saturation meter
-    // -----------------------------
     this.patchConnection.addEndpointListener('postSatMeter', (value) => {
       const led = this.querySelector('#saturationLed');
-      // Set a threshold for turning the LED on (adjust as needed)
       const ledThreshold = 8.0;
       if (led) {
         if (value >= ledThreshold) {
@@ -176,9 +173,9 @@ class UpperCompGUI extends HTMLElement {
     this.knobs = {};
     const knobEls = this.querySelectorAll('.knob');
     knobEls.forEach(knobEl => {
-      const param   = knobEl.dataset.param;
-      const minVal  = parseFloat(knobEl.dataset.min);
-      const maxVal  = parseFloat(knobEl.dataset.max);
+      const param = knobEl.dataset.param;
+      const minVal = parseFloat(knobEl.dataset.min);
+      const maxVal = parseFloat(knobEl.dataset.max);
       const initVal = parseFloat(knobEl.dataset.value);
       this.knobs[param] = {
         element: knobEl,
@@ -203,22 +200,23 @@ class UpperCompGUI extends HTMLElement {
       knobEl.addEventListener('touchstart', e => this.startKnobTouch(e, knobEl.dataset.param), { passive: false });
     });
 
-    document.addEventListener('mousemove',  e => this.handleKnobDrag(e));
-    document.addEventListener('mouseup',    () => this.stopKnobDrag());
-    document.addEventListener('touchmove',  e => this.handleKnobTouch(e), { passive: false });
-    document.addEventListener('touchend',   () => this.stopKnobDrag());
+    document.addEventListener('mousemove', e => this.handleKnobDrag(e));
+    document.addEventListener('mouseup', () => this.stopKnobDrag());
+    document.addEventListener('touchmove', e => this.handleKnobTouch(e), { passive: false });
+    document.addEventListener('touchend', () => this.stopKnobDrag());
   }
 
   startKnobDrag(e, param) {
     e.preventDefault();
+    console.log(`Start dragging knob ${param} with mouse`);
     this.knobs[param].isDragging = true;
-    this.knobs[param].lastY      = e.clientY;
+    this.knobs[param].lastY = e.clientY;
   }
 
-  // Removed e.preventDefault() to allow normal scrolling on touchstart when not dragging
   startKnobTouch(e, param) {
+    console.log(`Start dragging knob ${param} with touch`);
     this.knobs[param].isDragging = true;
-    this.knobs[param].lastY      = e.touches[0].clientY;
+    this.knobs[param].lastY = e.touches[0].clientY;
   }
 
   handleKnobDrag(e) {
@@ -233,7 +231,6 @@ class UpperCompGUI extends HTMLElement {
     });
   }
 
-  // Wrap preventDefault() to only block scrolling if a knob is actively being dragged
   handleKnobTouch(e) {
     const anyDragging = Object.keys(this.knobs).some(param => this.knobs[param].isDragging);
     if (anyDragging) {
@@ -243,7 +240,8 @@ class UpperCompGUI extends HTMLElement {
       const knob = this.knobs[param];
       if (knob.isDragging && e.touches.length) {
         const deltaY = e.touches[0].clientY - knob.lastY;
-        knob.lastY   = e.touches[0].clientY;
+        console.log(`Touch dragging knob ${param}: deltaY=${deltaY}`);
+        knob.lastY = e.touches[0].clientY;
         this.adjustKnobValue(param, deltaY);
       }
     });
@@ -251,33 +249,36 @@ class UpperCompGUI extends HTMLElement {
 
   stopKnobDrag() {
     Object.keys(this.knobs).forEach(param => {
+      if (this.knobs[param].isDragging) {
+        console.log(`Stopped dragging knob ${param}`);
+      }
       this.knobs[param].isDragging = false;
     });
   }
 
+  // Increase sensitivity by using a higher sensitivity value
   adjustKnobValue(param, deltaY) {
     const knob = this.knobs[param];
     const range = knob.max - knob.min;
-    const sensitivity = 1.0; // try tweaking this value
+    const sensitivity = 1.0; // Adjust sensitivity if needed
     const change = (deltaY * sensitivity * range) / 100;
     console.log(`Knob ${param} change calculated: ${change}`);
     knob.targetValue = Math.max(knob.min, Math.min(knob.max, knob.targetValue - change));
   }
 
   updateKnobRotation(param, value) {
-    const knob  = this.knobs[param];
+    const knob = this.knobs[param];
     const range = knob.max - knob.min;
-    const pct   = (value - knob.min) / range;
+    const pct = (value - knob.min) / range;
     // 270° total, offset -135 => 0 => -135°, 1 => +135°
-    const deg   = pct * 270 - 135;
+    const deg = pct * 270 - 135;
     knob.element.style.transform = `rotate(${deg}deg)`;
   }
 
   updateKnobDisplayValue(param, value) {
-    const knob  = this.knobs[param];
+    const knob = this.knobs[param];
     const label = knob.element.parentElement.querySelector('.knob-value');
     if (!label) return;
-
     let text = '';
     switch (param) {
       case 'drive':
@@ -320,7 +321,7 @@ class UpperCompGUI extends HTMLElement {
     this.waveformCanvas = this.querySelector('#waveform');
     if (!this.waveformCanvas) return;
     const rect = this.waveformCanvas.getBoundingClientRect();
-    this.waveformCanvas.width  = rect.width;
+    this.waveformCanvas.width = rect.width;
     this.waveformCanvas.height = rect.height;
     this.ctx = this.waveformCanvas.getContext('2d');
   }
@@ -328,31 +329,24 @@ class UpperCompGUI extends HTMLElement {
   drawWaveform() {
     if (!this.ctx || !this.waveformCanvas) return;
     const ctx = this.ctx;
-    const w   = this.waveformCanvas.width;
-    const h   = this.waveformCanvas.height;
-
-    // Clear
+    const w = this.waveformCanvas.width;
+    const h = this.waveformCanvas.height;
     ctx.fillStyle = '#1a1a1a';
     ctx.fillRect(0, 0, w, h);
-
-    // Horizontal dB lines
     ctx.strokeStyle = '#333';
-    ctx.lineWidth   = 1;
-    const dbLevels  = [-60, -48, -36, -24, -12, 0, 12];
+    ctx.lineWidth = 1;
+    const dbLevels = [-60, -48, -36, -24, -12, 0, 12];
     dbLevels.forEach(db => {
       const y = this.dbToY(db, h);
       ctx.beginPath();
       ctx.moveTo(0, y);
       ctx.lineTo(w, y);
       ctx.stroke();
-
-      ctx.fillStyle  = '#666';
-      ctx.font       = '10px "JetBrains Mono"';
-      ctx.textAlign  = 'right';
+      ctx.fillStyle = '#666';
+      ctx.font = '10px "JetBrains Mono"';
+      ctx.textAlign = 'right';
       ctx.fillText(`${db} dB`, w - 5, y - 5);
     });
-
-    // Vertical lines
     const timeDiv = 5;
     for (let i = 1; i < timeDiv; i++) {
       const x = w * (i / timeDiv);
@@ -361,33 +355,29 @@ class UpperCompGUI extends HTMLElement {
       ctx.lineTo(x, h);
       ctx.stroke();
     }
-
-    // Waveform history bars (green)
     if (this.waveformHistory.length > 0) {
       const barW = w / this.historyLength;
       ctx.fillStyle = '#4CAF50';
       this.waveformHistory.forEach((sample, i) => {
-        const x   = i * barW;
+        const x = i * barW;
         const lvl = sample.inputLevel;
-        const y   = this.dbToY(lvl, h);
-        const barH= h - y;
+        const y = this.dbToY(lvl, h);
+        const barH = h - y;
         if (barH > 0) ctx.fillRect(x, y, barW - 1, barH);
       });
     }
-
-    // Threshold line
     const thrY = this.dbToY(this.currentThresholdDb, h);
     ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-    ctx.lineWidth   = 2;
+    ctx.lineWidth = 2;
     ctx.setLineDash([5, 3]);
     ctx.beginPath();
     ctx.moveTo(0, thrY);
     ctx.lineTo(w, thrY);
     ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle  = 'rgba(255,255,255,0.7)';
-    ctx.font       = '11px "JetBrains Mono"';
-    ctx.textAlign  = 'left';
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = '11px "JetBrains Mono"';
+    ctx.textAlign = 'left';
     ctx.fillText(`Threshold: ${this.currentThresholdDb.toFixed(1)} dB`, 10, thrY - 5);
   }
 
@@ -404,9 +394,9 @@ class UpperCompGUI extends HTMLElement {
   // Meters
   // ------------------------------------------------------------------
   initializeMetersWithMarkers() {
-    this.initMeter('inputMeter',  inputOutputDbMarkers,  -36, 6,  false);
-    this.initMeter('outputMeter', inputOutputDbMarkers,  -36, 6,  false);
-    this.initMeter('grMeter',     gainReductionDbMarkers, 0,   -36, true);
+    this.initMeter('inputMeter', inputOutputDbMarkers, -36, 6, false);
+    this.initMeter('outputMeter', inputOutputDbMarkers, -36, 6, false);
+    this.initMeter('grMeter', gainReductionDbMarkers, 0, -36, true);
     this.positionAllScaleMarkers();
   }
 
@@ -416,7 +406,6 @@ class UpperCompGUI extends HTMLElement {
     const dots = el.querySelectorAll('.meter-dot');
     const total = dots.length;
     const rng = Math.abs(maxDb - minDb);
-
     markers.forEach(marker => {
       const frac = reversed
         ? (minDb - marker) / rng
@@ -428,28 +417,25 @@ class UpperCompGUI extends HTMLElement {
   }
 
   positionAllScaleMarkers() {
-    this.posMeterScale('inputMeterScale',  'inputMeter',  inputOutputDbMarkers,  -36, 6);
-    this.posMeterScale('grMeterScale',     'grMeter',     gainReductionDbMarkers, 0,   -36);
-    this.posMeterScale('outputMeterScale','outputMeter', inputOutputDbMarkers,  -36, 6);
+    this.posMeterScale('inputMeterScale', 'inputMeter', inputOutputDbMarkers, -36, 6);
+    this.posMeterScale('grMeterScale', 'grMeter', gainReductionDbMarkers, 0, -36);
+    this.posMeterScale('outputMeterScale', 'outputMeter', inputOutputDbMarkers, -36, 6);
   }
 
   posMeterScale(scaleId, dotsId, markers, minDb, maxDb) {
     const scaleEl = this.querySelector(`#${scaleId}`);
-    const dotsEl  = this.querySelector(`#${dotsId}`);
+    const dotsEl = this.querySelector(`#${dotsId}`);
     if (!scaleEl || !dotsEl) return;
     scaleEl.innerHTML = '';
-
-    const totalDots = 30;  // Your meter-dot count
-    const stepW     = 16;  // Each dot+gap ~16px
-    const rng       = Math.abs(maxDb - minDb);
-    const offset    = 10;  // Horizontal shift so label centers under dot
-
+    const totalDots = 30;
+    const stepW = 16;
+    const rng = Math.abs(maxDb - minDb);
+    const offset = 10;
     markers.forEach(dbVal => {
       const frac = (minDb < maxDb)
         ? (dbVal - minDb) / rng
         : (minDb - dbVal) / rng;
       const i = Math.round(Math.max(0, Math.min(1, frac)) * (totalDots - 1));
-
       const label = document.createElement('div');
       label.classList.add('scale-marker');
       label.textContent = dbVal > 0 ? `+${dbVal} dB` : `${dbVal} dB`;
@@ -459,16 +445,13 @@ class UpperCompGUI extends HTMLElement {
   }
 
   // ------------------------------------------------------------------
-  // Updated Animation Loop (implements code A's meter clearing logic)
+  // Animation Loop (implements meter clearing logic)
   // ------------------------------------------------------------------
   animate() {
-    // 1) If input is very low, force gain reduction to zero
     if (this.meters.inputLevel.value < -50) {
       this.meters.gainReduction.value = 0;
-      this.meters.gainReduction.peak  = 0;
+      this.meters.gainReduction.peak = 0;
     }
-
-    // 2) Decay peaks for input & output
     this.meters.inputLevel.peak = Math.max(
       this.meters.inputLevel.value,
       this.meters.inputLevel.peak - this.decayRate
@@ -477,57 +460,45 @@ class UpperCompGUI extends HTMLElement {
       this.meters.outputLevel.value,
       this.meters.outputLevel.peak - this.decayRate
     );
-
-    // 3) If the gain reduction is near zero, force it to 0
-    //    (prevents "hanging" with tiny dB values)
     if (Math.abs(this.meters.gainReduction.value) < 0.05) {
-      this.meters.gainReduction.peak  = 0;
+      this.meters.gainReduction.peak = 0;
       this.meters.gainReduction.value = 0;
     } else {
-      // Otherwise let it track the current value
       this.meters.gainReduction.peak = this.meters.gainReduction.value;
     }
-
-    // 4) Smooth knob transitions
+    // Smooth knob transitions (easing multiplier increased to 0.5)
     Object.keys(this.knobs).forEach(param => {
       const knob = this.knobs[param];
       const diff = knob.targetValue - knob.currentValue;
       if (Math.abs(diff) > 0.0001) {
-        knob.currentValue += diff * 0.2;
+        knob.currentValue += diff * 0.5;
         this.updateKnobRotation(param, knob.currentValue);
         this.updateKnobDisplayValue(param, knob.currentValue);
         this.patchConnection.sendEventOrValue(param, knob.currentValue);
-
         if (param === 'thresholdDbIn') {
           this.currentThresholdDb = knob.currentValue;
         }
       }
     });
-
-    // 5) Waveform history
     this.frameCount++;
     if (this.frameCount >= this.historyUpdateRate) {
       this.frameCount = 0;
       this.waveformHistory.push({
-        inputLevel:    this.meters.inputLevel.value,
+        inputLevel: this.meters.inputLevel.value,
         gainReduction: this.meters.gainReduction.value,
-        outputLevel:   this.meters.outputLevel.value
+        outputLevel: this.meters.outputLevel.value
       });
       if (this.waveformHistory.length > this.historyLength) {
         this.waveformHistory.shift();
       }
     }
-
-    // 6) Redraw the waveform & meters
     this.drawWaveform();
     this.updateMeters();
-
-    // Request next frame
     this.animationFrameRequest = requestAnimationFrame(() => this.animate());
   }
 
   // ------------------------------------------------------------------
-  // Updated Meter-LED Coloring (same approach, but we zero out GR if near zero)
+  // Meter-LED Coloring (zero out GR if near zero)
   // ------------------------------------------------------------------
   updateMeters() {
     const meterMap = {
@@ -541,39 +512,28 @@ class UpperCompGUI extends HTMLElement {
         id: 'outputMeter', minDb: -36, maxDb: 6, ascending: true
       }
     };
-
     Object.keys(meterMap).forEach(param => {
       const cfg = meterMap[param];
       const meterEl = this.querySelector(`#${cfg.id}`);
       if (!meterEl) return;
-
-      const dots  = meterEl.querySelectorAll('.meter-dot');
+      const dots = meterEl.querySelectorAll('.meter-dot');
       const valEl = meterEl.parentElement.querySelector('.meter-value');
-
-      // If gainReduction is near zero, forcibly display as 0.0
       let meterValue = this.meters[param].peak;
       if (param === 'gainReduction' && Math.abs(meterValue) < 0.05) {
         meterValue = 0.0;
       }
-
-      // Update numeric readout
       if (valEl) {
         valEl.textContent = `${meterValue.toFixed(1)} dB`;
       }
-
-      // For per-dot coloring:
-      const total  = dots.length;
-      const rng    = Math.abs(cfg.maxDb - cfg.minDb);
+      const total = dots.length;
+      const rng = Math.abs(cfg.maxDb - cfg.minDb);
       const dbStep = rng / (total - 1);
-
       for (let i = 0; i < total; i++) {
         const dotDb = cfg.ascending
           ? cfg.minDb + i * dbStep
           : cfg.minDb - i * dbStep;
-
         let intensity;
         if (cfg.ascending) {
-          // For input/output
           if (meterValue >= dotDb) {
             intensity = 1.0;
           } else if (meterValue < dotDb - dbStep) {
@@ -582,8 +542,6 @@ class UpperCompGUI extends HTMLElement {
             intensity = (meterValue - (dotDb - dbStep)) / dbStep;
           }
         } else {
-          // For gain reduction
-          // clampVal ensures we never go above 0 dB for GR
           const clampVal = Math.min(0, meterValue);
           if (clampVal >= -0.01) {
             intensity = 0.0;
@@ -595,21 +553,13 @@ class UpperCompGUI extends HTMLElement {
             intensity = (dotDb + dbStep - clampVal) / dbStep;
           }
         }
-
         intensity = Math.max(0, Math.min(1, intensity));
-
-        // Pick color
-        const activeColor =
-          (param === 'gainReduction')
-            ? redColor
-            : (dotDb < -12 ? greenColor : (dotDb < 0 ? yellowColor : redColor));
-
-        // Interpolate
+        const activeColor = (param === 'gainReduction')
+          ? redColor
+          : (dotDb < -12 ? greenColor : (dotDb < 0 ? yellowColor : redColor));
         const color = lerpColor(offColor, activeColor, intensity);
         dots[i].style.background = color;
         dots[i].classList.toggle('active', intensity > 0);
-
-        // Slight glow if marker-led & intensity > 0.5
         dots[i].style.boxShadow =
           (dots[i].classList.contains('marker-led') && intensity > 0.5)
             ? '0 0 4px rgba(255,255,255,0.3)'
@@ -644,24 +594,18 @@ class UpperCompGUI extends HTMLElement {
   // ------------------------------------------------------------------
   getHTML() {
     const makeDots = () => '<div class="meter-dot"></div>'.repeat(24);
-
     return `
       <style>
       @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
-
       :host {
-        /* Let the parent container define how wide we can go, up to 1200px */
         display: block;
         width: 100%;
         max-width: 1200px;
       }
-
-      /* #compressor:
-         Use aspect-ratio: 3/1 to maintain your ~1200×400 design proportion. */
       #compressor {
         position: relative;
         width: 100%;
-        aspect-ratio: 3 / 1; /* 3:1 ratio => 1200×400 at full size */
+        aspect-ratio: 3 / 1;
         max-width: 1200px;
         background: linear-gradient(145deg, #262626, #1e1e1e);
         border-radius: 12px;
@@ -670,14 +614,12 @@ class UpperCompGUI extends HTMLElement {
         overflow: hidden;
         padding: 16px;
       }
-
       .sections-container {
         display: flex;
         gap: 16px;
         width: 100%;
         height: 100%;
       }
-
       .knobs-section {
         display: flex;
         flex-direction: column;
@@ -695,7 +637,6 @@ class UpperCompGUI extends HTMLElement {
         width: 80px;
         text-align: center;
       }
-      /* Assign IDs to the first two wrappers for LED positioning */
       #satWrapper { }
       #satMixWrapper { }
       .knob {
@@ -726,7 +667,6 @@ class UpperCompGUI extends HTMLElement {
         margin-top: 3px;
         font-weight: 500;
       }
-
       .toggle-switches {
         display: flex;
         gap: 10px;
@@ -759,7 +699,6 @@ class UpperCompGUI extends HTMLElement {
           inset 0 1px 1px rgba(255,255,255,0.2),
           0 0 4px rgba(76,175,80,0.4);
       }
-
       .visualization-section {
         display: flex;
         flex-direction: column;
@@ -794,7 +733,6 @@ class UpperCompGUI extends HTMLElement {
         width: 100%;
         height: 100%;
       }
-
       .meters-section {
         display: flex;
         flex-direction: column;
@@ -876,7 +814,6 @@ class UpperCompGUI extends HTMLElement {
           inset 0 1px 2px rgba(255,255,255,0.3),
           0 0 4px rgba(244,67,54,0.8);
       }
-
       .logo-container {
         position: absolute;
         bottom: 40px;
@@ -891,7 +828,6 @@ class UpperCompGUI extends HTMLElement {
         width: 150px;
         height: auto;
       }
-
       /* --- LED Styles --- */
       #saturationLedWrapper {
         position: absolute;
@@ -910,7 +846,6 @@ class UpperCompGUI extends HTMLElement {
         box-shadow: 0 0 12px 4px rgba(255, 0, 0, 1.0);
       }
       </style>
-
       <div id="compressor">
         <div class="sections-container">
           <!-- Knobs Section -->
@@ -957,7 +892,7 @@ class UpperCompGUI extends HTMLElement {
                 <div class="knob-value">-28.0 dB</div>
               </div>
             </div>
-            <!-- LED for Saturation (positioned between drive and satMixIn) -->
+            <!-- LED for Saturation -->
             <div id="saturationLedWrapper" class="led-wrapper">
               <div id="saturationLed"></div>
             </div>
@@ -1019,7 +954,6 @@ class UpperCompGUI extends HTMLElement {
               </button>
             </div>
           </div>
-
           <!-- Visualization Section -->
           <div class="visualization-section">
             <div class="visualization-box">
@@ -1027,7 +961,6 @@ class UpperCompGUI extends HTMLElement {
               <canvas id="waveform"></canvas>
             </div>
           </div>
-
           <!-- Meters Section -->
           <div class="meters-section">
             <div class="meter-block">
@@ -1040,7 +973,6 @@ class UpperCompGUI extends HTMLElement {
               </div>
               <div class="meter-scale" id="inputMeterScale"></div>
             </div>
-
             <div class="meter-block">
               <div class="meter-header">
                 <span class="meter-label">Gain Reduction</span>
@@ -1051,7 +983,6 @@ class UpperCompGUI extends HTMLElement {
               </div>
               <div class="meter-scale" id="grMeterScale"></div>
             </div>
-
             <div class="meter-block">
               <div class="meter-header">
                 <span class="meter-label">Output Level</span>
@@ -1062,7 +993,6 @@ class UpperCompGUI extends HTMLElement {
               </div>
               <div class="meter-scale" id="outputMeterScale"></div>
             </div>
-
             <div class="logo-container">
               <img
                 class="secret-weapon-logo"
