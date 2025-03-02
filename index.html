@@ -23,13 +23,17 @@
       touch-action: pan-y !important;
       -webkit-overflow-scrolling: touch !important;
       overscroll-behavior-y: auto !important;
-      overflow-x: hidden; /* Prevent horizontal overflow */
-      overflow-y: auto;   /* Allow vertical scrolling */
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    /* If the patch view contains any canvas elements, let them use default touch behavior */
+    canvas {
+      touch-action: auto !important;
     }
 
     :root {
-      --main-bg-color: #1a1a1a; /* darker background from the plugin UI */
-      --accent-color: #2E7D32;   /* green accent, same as plugin meters */
+      --main-bg-color: #1a1a1a;
+      --accent-color: #2E7D32;
       --text-color: #ccc;
       --secondary-bg: #1e1e1e;
       --header-font: 'Audiowide', sans-serif;
@@ -326,16 +330,16 @@
     }
 
     /* Patch container: ensure proper touch behavior and centering */
-    /* The outer container is now explicitly scrollable with momentum scrolling enabled */
-    #patchViewOuterContainer {
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y !important;
-      pointer-events: auto !important;
-    }
+    #patchViewOuterContainer, 
     #patchViewInnerContainer {
       touch-action: pan-y !important; 
       pointer-events: auto !important;
+    }
+    #patchViewInnerContainer {
+      transform-origin: top center !important;
+      display: flex !important;
+      justify-content: center !important;
+      width: 100% !important;
     }
     
     /* Download Section */
@@ -1028,15 +1032,15 @@
           scaleFactor = 1;
         }
         
-        // Center the plugin UI horizontally
+        // Center the plugin UI horizontally and update transform properties
         innerContainer.style.transformOrigin = "top center";
         innerContainer.style.transform = `scale(${scaleFactor})`;
         innerContainer.style.width = `${widthNative}px`;
         innerContainer.style.display = "flex";
         innerContainer.style.justifyContent = "center";
         
-        // Adjust height while maintaining aspect ratio
-        outerContainer.style.height = `${heightNative * scaleFactor}px`;
+        // Commenting out forced height so the container grows naturally:
+        // outerContainer.style.height = `${heightNative * scaleFactor}px`;
         
         // Ensure the containers allow vertical scrolling
         outerContainer.style.touchAction = "pan-y";
