@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Secret Weapon DSP - UPPERCOMP</title>
+
   <!-- Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600&display=swap"
@@ -16,6 +17,7 @@
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
   />
+
   <style>
     :root {
       --main-bg-color: #1a1a1a;
@@ -46,7 +48,7 @@
       height: auto;
     }
 
-    /* Simple container */
+    /* Container */
     .container {
       width: 100%;
       max-width: 1200px;
@@ -148,26 +150,146 @@
       position: relative;
     }
 
-    /* Outer wrapper that allows horizontal scroll on the plugin */
+    .track-selector {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .track-button {
+      padding: 8px 15px;
+      background-color: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 5px;
+      color: var(--text-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+      font-size: 0.9rem;
+    }
+    .track-button:hover,
+    .track-button.active {
+      background-color: var(--accent-color);
+      color: #000;
+      box-shadow: 0 0 10px rgba(46,125,50,0.5);
+    }
+    .track-button.active {
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .plugin-waveform {
+      height: 120px;
+      background-color: rgba(0,0,0,0.3);
+      margin: 20px 0;
+      position: relative;
+      overflow: hidden;
+      border-radius: 5px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+    .waveform-animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg,
+        rgba(46,125,50,0) 0%,
+        rgba(46,125,50,0.3) 50%,
+        rgba(46,125,50,0) 100%
+      );
+      animation: waveformMove 2s infinite linear;
+    }
+    @keyframes waveformMove {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .demo-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .play-button,
+    .stop-button {
+      width: 50px;
+      height: 50px;
+      background-color: var(--accent-color);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(46,125,50,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: bold;
+    }
+    .play-button:hover,
+    .stop-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(46,125,50,0.6);
+    }
+    .play-button::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      border-left: 16px solid #000;
+      margin-left: 3px;
+    }
+    .stop-button::after {
+      content: '■';
+      font-size: 1.3rem;
+      margin-left: 0;
+      color: #000;
+    }
+    .volume-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 300px;
+    }
+    .volume-container label {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .volume-container input[type="range"] {
+      width: 100%;
+    }
+
+    /* Outer wrapper: horizontal scroll if plugin is wide */
     .outerScrollWrapper {
       width: 100%;
-      overflow-x: auto;
+      overflow-x: auto;                /* horizontal scroll */
       -webkit-overflow-scrolling: touch;
-      touch-action: pan-x;  /* critical for iOS to scroll horizontally */
+      touch-action: pan-x;             /* needed for iOS horizontal scroll */
       margin: 30px 0;
     }
-    /* Plugin container is 1200px wide so user can scroll if narrower than phone */
+    /* Plugin container set to a fixed width so you get horizontal scrolling if narrower than 1200px */
     #patchViewOuterContainer {
-      width: 1200px;     /* Force horizontal scroll if screen < 1200px */
-      height: 400px;     /* Keep plugin height consistent */
-      overflow-x: auto;  /* Horizontal only if needed */
-      overflow-y: hidden;
+      width: 1200px;
+      height: 400px;
+      overflow-y: hidden;   /* hide vertical scroll inside plugin container */
+      overflow-x: auto;     /* horizontal scroll if plugin is bigger than phone screen */
+      background: #222;     /* just so we see the area, remove if you want transparent */
     }
 
     /* Footer */
     footer {
       padding: 30px 0;
       text-align: center;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
     }
   </style>
 </head>
@@ -226,18 +348,44 @@
   <section class="demo-section" id="demo">
     <div class="container">
       <h2>HEAR IT IN ACTION</h2>
-      <p>
-        Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear 
-        how it transforms your tracks.
-      </p>
+      <p>Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear how it transforms your tracks.</p>
+
       <div class="demo-container">
-        <!-- Outer wrapper that allows horizontal scroll -->
+        <!-- Track Selector -->
+        <div class="track-selector">
+          <button class="track-button active">Kick (Sub)</button>
+          <button class="track-button">Kick In</button>
+          <button class="track-button">Snare</button>
+          <button class="track-button">Tom</button>
+          <button class="track-button">Overheads</button>
+          <button class="track-button">Room</button>
+        </div>
+
+        <!-- Visual "waveform" area -->
+        <div class="plugin-waveform">
+          <div class="waveform-animation"></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="demo-controls">
+          <button class="play-button" title="Play / Resume Audio"></button>
+          <button class="stop-button" title="Stop Audio"></button>
+          <div>
+            <p id="trackInfo">Kick (Sub) - "Choose a track"</p>
+            <p>Toggle processing with button above</p>
+          </div>
+          <div class="volume-container">
+            <label for="volumeSlider">Volume:</label>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+          </div>
+        </div>
+
+        <!-- Outer scroll wrapper for the plugin GUI -->
         <div class="outerScrollWrapper">
           <div id="patchViewOuterContainer">
-            <!-- Your plugin code or container goes here -->
-            <h3 style="color: #fff; text-align:center; margin-top: 150px;">
-              (Plugin interface here)
-            </h3>
+            <div id="patchViewInnerContainer">
+              <!-- The actual plugin GUI will be dynamically inserted here -->
+            </div>
           </div>
         </div>
       </div>
@@ -251,12 +399,256 @@
     </div>
   </footer>
 
-  <!-- Minimal JS to ensure no scroll blocking -->
-  <script>
+  <!-- Script references: Setup Uppercomp and audio routing -->
+  <script type="module">
     // Passive touch listener so we don't block default scrolling
     document.addEventListener('touchmove', function(e) {
-      // This ensures default scrolling is allowed
+      // empty => ensures default scroll
     }, { passive: true });
+
+    /* 
+      1) Ensure you have the correct paths for cmaj_Uppercomp.js, cmaj-patch-view.js, and your audio files.
+      2) If these scripts or files are in a different directory, update the paths accordingly.
+    */
+    import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
+    import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      // 1. Setup audio context and plugin
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      let connection;
+      try {
+        connection = await createUppercompPatchConnection(audioContext, "uppercomp-worklet");
+      } catch (error) {
+        console.error("Error during Uppercomp initialization:", error);
+        return;
+      }
+
+      let pluginNode = null;
+      if (connection.node && typeof connection.node.connect === "function") {
+        pluginNode = connection.node;
+      } else if (connection.patchNode && typeof connection.patchNode.connect === "function") {
+        pluginNode = connection.patchNode;
+      } else if (connection.audioWorkletPatchNode && typeof connection.audioWorkletPatchNode.connect === "function") {
+        pluginNode = connection.audioWorkletPatchNode;
+      } else if (connection.audioNode && typeof connection.audioNode.connect === "function") {
+        pluginNode = connection.audioNode;
+      } else {
+        console.error("No connectable AudioNode found in Uppercomp connection.");
+        return;
+      }
+
+      // 2. Create a gain node for volume control, connect plugin -> gain -> destination
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 1;
+      pluginNode.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      // 3. Load and play audio files with crossfade
+      let currentSource = null;
+      let currentTrackName = 'Kick (Sub)';
+      let isPlaying = false;
+      let audioBufferCache = {};
+      let currentGainNode = null;
+      const CROSSFADE_TIME = 0.2;
+
+      async function loadSample(url) {
+        if (audioBufferCache[url]) {
+          return audioBufferCache[url];
+        }
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+          }
+          const arrayBuffer = await response.arrayBuffer();
+          const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+          audioBufferCache[url] = audioBuffer;
+          return audioBuffer;
+        } catch (error) {
+          console.error(`Error loading audio file ${url}:`, error);
+          throw error;
+        }
+      }
+
+      function stopCurrentTrack(immediate = false) {
+        if (currentSource) {
+          if (immediate) {
+            try {
+              currentSource.stop();
+              if (currentGainNode) currentGainNode.disconnect();
+            } catch (e) {}
+            currentSource = null;
+            currentGainNode = null;
+            isPlaying = false;
+          } else {
+            const now = audioContext.currentTime;
+            if (currentGainNode) {
+              currentGainNode.gain.setValueAtTime(currentGainNode.gain.value, now);
+              currentGainNode.gain.linearRampToValueAtTime(0, now + CROSSFADE_TIME);
+              const sourceToStop = currentSource;
+              const gainToDisconnect = currentGainNode;
+              setTimeout(() => {
+                try { sourceToStop.stop(); } catch (e) {}
+                gainToDisconnect.disconnect();
+              }, CROSSFADE_TIME * 1000 + 50);
+            } else {
+              try { currentSource.stop(); } catch (e) {}
+            }
+          }
+        }
+      }
+
+      async function playSample(url, trackName, crossfade = true) {
+        try {
+          if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+          }
+          const audioBuffer = await loadSample(url);
+          const now = audioContext.currentTime;
+          const newGainNode = audioContext.createGain();
+
+          if (crossfade && isPlaying) {
+            newGainNode.gain.setValueAtTime(0, now);
+            newGainNode.gain.linearRampToValueAtTime(1, now + CROSSFADE_TIME);
+            if (currentSource && currentGainNode) {
+              currentGainNode.gain.setValueAtTime(currentGainNode.gain.value, now);
+              currentGainNode.gain.linearRampToValueAtTime(0, now + CROSSFADE_TIME);
+              const oldSource = currentSource;
+              const oldGain = currentGainNode;
+              setTimeout(() => {
+                try { oldSource.stop(); } catch (e) {}
+                oldGain.disconnect();
+              }, CROSSFADE_TIME * 1000 + 50);
+            } else {
+              stopCurrentTrack(true);
+            }
+          } else {
+            stopCurrentTrack(true);
+            newGainNode.gain.setValueAtTime(1, now);
+          }
+
+          const source = audioContext.createBufferSource();
+          source.buffer = audioBuffer;
+          source.loop = true;
+          source.connect(newGainNode);
+          newGainNode.connect(pluginNode);
+          source.start();
+
+          currentSource = source;
+          currentGainNode = newGainNode;
+          currentTrackName = trackName;
+          isPlaying = true;
+          updateTrackInfo(trackName, "Now Playing");
+          updatePlayButtonState(true);
+          return true;
+        } catch (error) {
+          console.error('Error playing sample:', error);
+          updateTrackInfo(trackName, "Error Loading");
+          return false;
+        }
+      }
+
+      function updateTrackInfo(trackName, status) {
+        const trackInfo = document.getElementById('trackInfo');
+        if (trackInfo) {
+          trackInfo.textContent = `${trackName} - "${status}"`;
+        }
+      }
+      function updatePlayButtonState(playing) {
+        const playBtn = document.querySelector('.play-button');
+        const stopBtn = document.querySelector('.stop-button');
+        if (playBtn && stopBtn) {
+          if (playing) {
+            playBtn.classList.add('active');
+            stopBtn.classList.remove('active');
+          } else {
+            playBtn.classList.remove('active');
+            stopBtn.classList.add('active');
+          }
+        }
+      }
+
+      // 4. File paths for each track (update these if needed)
+      const trackFilePaths = {
+        'Kick (Sub)': './Audio_Files/Kick_(Sub).wav',
+        'Kick In': './Audio_Files/Kick_In.wav',
+        'Snare': './Audio_Files/Snare.wav',
+        'Tom': './Audio_Files/Tom.wav',
+        'Overheads': './Audio_Files/Overheads.wav',
+        'Room': './Audio_Files/Room.wav'
+      };
+
+      // 5. Handle track button clicks
+      const trackButtons = document.querySelectorAll('.track-button');
+      trackButtons.forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          trackButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const trackName = btn.textContent.trim();
+          const filePath = trackFilePaths[trackName];
+          if (!filePath) {
+            console.error(`No file path found for track: ${trackName}`);
+            updateTrackInfo(trackName, "File Not Found");
+            return;
+          }
+          updateTrackInfo(trackName, "Loading...");
+          const success = await playSample(filePath, trackName, true);
+          if (!success && currentTrackName && trackFilePaths[currentTrackName]) {
+            console.log(`Falling back to previous track: ${currentTrackName}`);
+            await playSample(trackFilePaths[currentTrackName], currentTrackName, false);
+          }
+        });
+      });
+
+      // 6. Play / Stop button
+      const playBtn = document.querySelector('.play-button');
+      if (playBtn) {
+        playBtn.addEventListener('click', async () => {
+          if (isPlaying) return; // already playing
+          if (currentTrackName && trackFilePaths[currentTrackName]) {
+            await playSample(trackFilePaths[currentTrackName], currentTrackName, false);
+          } else {
+            const defaultTrack = 'Kick (Sub)';
+            await playSample(trackFilePaths[defaultTrack], defaultTrack, false);
+            trackButtons.forEach(btn => {
+              if (btn.textContent.trim() === defaultTrack) {
+                btn.classList.add('active');
+              } else {
+                btn.classList.remove('active');
+              }
+            });
+          }
+        });
+      }
+      const stopBtn = document.querySelector('.stop-button');
+      if (stopBtn) {
+        stopBtn.addEventListener('click', () => {
+          stopCurrentTrack(true);
+          updateTrackInfo(currentTrackName, "Stopped");
+          updatePlayButtonState(false);
+        });
+      }
+
+      // 7. Volume slider
+      const volumeSlider = document.getElementById('volumeSlider');
+      if (volumeSlider) {
+        volumeSlider.addEventListener('input', () => {
+          gainNode.gain.value = volumeSlider.value;
+        });
+      }
+
+      // 8. Create the plugin GUI in #patchViewInnerContainer
+      const outerContainer = document.getElementById("patchViewOuterContainer");
+      const innerContainer = document.getElementById("patchViewInnerContainer");
+      try {
+        const patchView = await createPatchView(connection);
+        innerContainer.innerHTML = "";
+        innerContainer.appendChild(patchView);
+      } catch (guiError) {
+        console.error("Error creating patch view:", guiError);
+      }
+    });
   </script>
 </body>
 </html>
