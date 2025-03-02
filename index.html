@@ -1131,14 +1131,14 @@
         const patchView = await createPatchView(connection);
         innerContainer.innerHTML = "";
         innerContainer.appendChild(patchView);
-        scalePatchView();
+        ();
         const observer = new MutationObserver(() => scalePatchView());
         observer.observe(innerContainer, { childList: true, subtree: true });
       } catch (guiError) {
         console.error("Error creating patch view:", guiError);
       }
 
-           function scalePatchView() {
+      function scalePatchView() {
         if (!outerContainer || !innerContainer) return;
         
         const widthNative = 1200;
