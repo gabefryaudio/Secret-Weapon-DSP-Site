@@ -19,79 +19,20 @@
   />
 
   <style>
-    /* Critical fix: Replace your existing body/html styles with these */
+    /* Critical Body/HTML Overflow Settings */
     html, body {
+      height: auto !important;
+      overflow-y: auto !important;
+      position: relative !important;
       margin: 0;
       padding: 0;
       background-color: var(--main-bg-color);
       color: var(--text-color);
       font-family: var(--body-font);
       line-height: 1.6;
-      position: relative !important;
-      height: auto !important;
-      min-height: 100% !important;
     }
 
-    /* Remove any overflow hidden from global elements */
-    html {
-      overflow-y: auto !important;
-      overflow-x: hidden;
-    }
-    body {
-      overflow: auto !important;
-      -webkit-overflow-scrolling: touch !important;
-    }
-
-    /* Fix container dimensions and scrolling */
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      overflow: visible !important;
-    }
-    /* Fix all sections */
-    section {
-      width: 100%;
-      overflow: visible !important;
-      position: relative !important;
-      height: auto !important;
-    }
-    /* Fix demo plugin container */
-    .demo-container {
-      overflow: visible !important;
-      height: auto !important;
-    }
-    /* Critical: Fix for the outerScrollWrapper */
-    .outerScrollWrapper {
-      position: relative !important;
-      width: 100% !important;
-      overflow-y: visible !important;
-      height: auto !important;
-    }
-    /* Make the plugin container horizontally scrollable but not block vertical scrolling */
-    #patchViewOuterContainer {
-      width: 100% !important;
-      min-width: 320px !important;
-      max-width: 100% !important;
-      height: 400px !important;
-      overflow-x: auto !important;
-      overflow-y: hidden !important;
-      position: relative !important;
-    }
-
-    /* Add important touch handling for mobile devices */
-    @media (max-width: 768px) {
-      * {
-        touch-action: pan-y !important;
-      }
-      /* Ensure fixed height containers don't block scrolling */
-      .hero, .features, .plugin-showcase, .demo-section, .download-section {
-        height: auto !important;
-        position: relative !important;
-      }
-    }
-
+    /* Global Variables */
     :root {
       --main-bg-color: #1a1a1a;
       --accent-color: #2E7D32;
@@ -110,11 +51,34 @@
       height: auto;
     }
 
+    /* Ensure containers and sections are flexible */
+    .container,
+    section,
+    header,
+    footer {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      overflow: visible !important;
+      height: auto !important;
+    }
+
+    /* Ensure key sections are flexible */
+    .hero, 
+    .features, 
+    .plugin-showcase, 
+    .demo-section, 
+    .download-section {
+      height: auto !important;
+      position: relative !important;
+      overflow: visible !important;
+    }
+
     /* Header styles */
     header {
       padding: 20px 0;
       border-bottom: 1px solid rgba(255,255,255,0.1);
-      width: 100%;
     }
     nav {
       display: flex;
@@ -146,7 +110,6 @@
     .hero {
       padding: 60px 0;
       text-align: center;
-      width: 100%;
     }
     h1 {
       font-family: var(--header-font);
@@ -182,7 +145,6 @@
     /* Plugin Showcase Section */
     .plugin-showcase {
       padding: 60px 0;
-      width: 100%;
     }
     .plugin-content {
       display: flex;
@@ -191,11 +153,9 @@
       gap: 30px;
     }
     .plugin-image {
-      width: 100%;
       text-align: center;
     }
     .plugin-image img {
-      max-width: 100%;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border-radius: 10px;
     }
@@ -210,9 +170,8 @@
 
     /* Features Section */
     .features {
-      padding: 60px 0;
       background-color: var(--secondary-bg);
-      width: 100%;
+      padding: 60px 0;
     }
     .features-grid {
       display: grid;
@@ -265,7 +224,6 @@
     /* Demo Section */
     .demo-section {
       padding: 60px 0;
-      width: 100%;
     }
     .demo-container {
       overflow: visible !important;
@@ -405,6 +363,17 @@
       height: auto !important;
     }
 
+    /* Plugin Container: fixed height and horizontal scrolling */
+    #patchViewOuterContainer {
+      height: 400px !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      width: 100% !important;
+      min-width: 320px !important;
+      max-width: 100% !important;
+      position: relative !important;
+    }
+
     /* Download Section */
     .download-section {
       padding: 60px 0;
@@ -412,7 +381,6 @@
       background-color: var(--secondary-bg);
       position: relative;
       overflow: hidden;
-      width: 100%;
     }
     .download-section::before {
       content: '';
@@ -542,6 +510,7 @@
       transform: translateY(-2px);
       box-shadow: 0 0 15px rgba(46,125,50,0.8);
     }
+
     /* Footer */
     footer {
       padding: 30px 0;
@@ -561,6 +530,7 @@
     .social-icon:hover {
       color: var(--accent-color);
     }
+
     @media (min-width: 768px) {
       .plugin-content {
         flex-direction: row;
@@ -583,11 +553,7 @@
   <header>
     <div class="container">
       <nav>
-        <img
-          src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/refs/heads/main/Secret%20Weapon%20DSP%20logo%20(straight).svg"
-          alt="Secret Weapon DSP Logo"
-          class="logo"
-        />
+        <img src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/refs/heads/main/Secret%20Weapon%20DSP%20logo%20(straight).svg" alt="Secret Weapon DSP Logo" class="logo" />
         <div class="nav-links">
           <a href="#features">Features</a>
           <a href="#demo">Demo</a>
@@ -616,12 +582,12 @@
       <div class="plugin-details">
         <h2>MEET UPPERCOMP</h2>
         <p>
-          UPPERCOMP delivers the punch and density of classic hardware compressors with modern flexibility. 
-          It combines the character of vintage British preamps with the precision of DBX gold can VCAs, 
+          UPPERCOMP delivers the punch and density of classic hardware compressors with modern flexibility.
+          It combines the character of vintage British preamps with the precision of DBX gold can VCAs,
           creating a compressor that brings life and energy to any source.
         </p>
         <p>
-          Whether you're looking to add punch to drums, glue to a mix, or character to vocals, 
+          Whether you're looking to add punch to drums, glue to a mix, or character to vocals,
           UPPERCOMP delivers with an intuitive interface and a sound that stands out in the digital realm.
         </p>
       </div>
@@ -633,49 +599,49 @@
     <div class="container">
       <h2>FEATURES</h2>
       <p>
-        UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings 
+        UPPERCOMP isn't just another digital compressor – it's a meticulously crafted tool that brings
         analog character to your digital workflow.
       </p>
       <div class="features-grid">
         <div class="feature-card">
           <h3>Vintage British Preamp</h3>
           <p>
-            The front-end is modeled after classic British console preamps, adding subtle harmonic 
+            The front-end is modeled after classic British console preamps, adding subtle harmonic
             richness before compression even begins.
           </p>
         </div>
         <div class="feature-card">
           <h3>DBX Gold Can VCA</h3>
           <p>
-            The compression circuit is inspired by the sought-after DBX gold can VCAs, delivering 
+            The compression circuit is inspired by the sought-after DBX gold can VCAs, delivering
             that familiar punch and control that made them legendary.
           </p>
         </div>
         <div class="feature-card">
           <h3>Diode-Based Envelope</h3>
           <p>
-            A state space half-wave rectifier diode-based envelope follower creates colorful, 
+            A state space half-wave rectifier diode-based envelope follower creates colorful,
             characterful compression unlike flat digital algorithms.
           </p>
         </div>
         <div class="feature-card">
           <h3>Parallel Processing</h3>
           <p>
-            Built-in saturation mix and compression mix controls let you dial in the perfect blend 
+            Built-in saturation mix and compression mix controls let you dial in the perfect blend
             of clean and processed signal.
           </p>
         </div>
         <div class="feature-card">
           <h3>Advanced Controls</h3>
           <p>
-            Lookahead functionality and sidechain filtering give you precise control over 
+            Lookahead functionality and sidechain filtering give you precise control over
             compression behavior and character.
           </p>
         </div>
         <div class="feature-card">
           <h3>Versatile Applications</h3>
           <p>
-            While it excels on drums, UPPERCOMP enhances any source that benefits from punchy, 
+            While it excels on drums, UPPERCOMP enhances any source that benefits from punchy,
             character-rich compression.
           </p>
         </div>
@@ -688,7 +654,7 @@
     <div class="container">
       <h2>HEAR IT IN ACTION</h2>
       <p>
-        Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear 
+        Experience UPPERCOMP on different audio sources. Use the interactive plugin below to hear
         how it transforms your tracks.
       </p>
       <div class="demo-container">
@@ -737,7 +703,7 @@
       <div class="pricing-box">
         <h3 class="pricing-title">Pay What You Think It's Worth</h3>
         <p>
-          We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal, 
+          We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal,
           support future development at a price that feels right.
         </p>
         <div class="price-input">
@@ -780,26 +746,25 @@
     </div>
   </footer>
 
-  <!-- JavaScript Fix for Touch Events -->
+  <!-- JavaScript Fix for Touch Events and Viewport -->
   <script type="module">
     document.addEventListener('DOMContentLoaded', function() {
-      // Fix for touch scrolling
+      // Allow default scrolling by ensuring touchmove events don't block it
       document.addEventListener('touchmove', function(e) {
-        // This ensures default scrolling behavior isn't blocked
+        // This empty handler with passive:true allows default scrolling behavior.
       }, { passive: true });
       
-      // Prevent any click events from blocking scrolling
+      // Prevent any click events from interfering with scrolling
       document.addEventListener('click', function(e) {
         e.stopPropagation();
       }, { passive: true });
       
-      // Fix viewport issues that might occur
+      // Fix viewport issues by resetting the meta viewport and forcing a repaint.
       function fixViewport() {
         const viewport = document.querySelector('meta[name="viewport"]');
         if (viewport) {
           viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0');
         }
-        // Force a repaint which can fix some stubborn scroll issues
         document.body.style.display = 'none';
         document.body.offsetHeight; // Trigger reflow
         document.body.style.display = '';
