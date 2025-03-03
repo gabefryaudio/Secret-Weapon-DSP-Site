@@ -621,18 +621,8 @@
       box-shadow: 0 5px 15px rgba(46,125,50,0.5);
     }
 
-    /* 
-    ------------------------------------------------------------
-    RESPONSIVE MEDIA QUERIES (Partially commented to avoid reflow)
-    ------------------------------------------------------------
-    */
+    /* RESPONSIVE MEDIA QUERIES */
     @media (max-width: 992px) {
-      /* We do NOT reflow .plugin-showcase to avoid LED displacement
-      .plugin-showcase {
-        flex-direction: column;
-        gap: 30px;
-      }
-      */
       .plugin-details {
         text-align: center;
       }
@@ -882,8 +872,8 @@
           <span>$</span>
           <input type="number" value="25" min="0" />
         </div>
-        <!-- Shopify Buy Button integration replaces the original Download Now button -->
-        <div id='product-component-1740957968600'></div>
+        <!-- Shopify Buy Button integration -->
+        <div id="product-component-1740968930863"></div>
         <script type="text/javascript">
         /*<![CDATA[*/
         (function () {
@@ -912,7 +902,7 @@
             ShopifyBuy.UI.onReady(client).then(function (ui) {
               ui.createComponent('product', {
                 id: '7649057734795',
-                node: document.getElementById('product-component-1740957968600'),
+                node: document.getElementById('product-component-1740968930863'),
                 moneyFormat: '%24%7B%7Bamount%7D%7D',
                 options: {
                   "product": {
