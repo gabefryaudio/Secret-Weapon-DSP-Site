@@ -1243,12 +1243,12 @@
         const scaleFactor = outerWidth / widthNative;
       
         innerContainer.style.position = "absolute";
-        innerContainer.style.left = "50%";
+        innerContainer.style.left = "40%"; // Changed from 50% to 40% to shift left
         innerContainer.style.transformOrigin = "top left";
-        innerContainer.style.transform = translateX(-50%) scale(${scaleFactor});
+        innerContainer.style.transform = `translateX(-50%) scale(${scaleFactor})`;
       
         outerContainer.style.position = "relative";
-        outerContainer.style.height = ${heightNative * scaleFactor}px;
+        outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
 
       // Re-scale on window resize
