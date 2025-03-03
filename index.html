@@ -1158,7 +1158,7 @@
           // Update track info UI
           const trackInfo = document.getElementById('trackInfo');
           if (trackInfo) {
-            trackInfo.textContent = `${trackName} - "Now Playing"`;
+            trackInfo.textContent = ${trackName} - "Now Playing";
           }
           source.start();
         } catch (error) {
@@ -1206,7 +1206,7 @@
           stopCurrentTrack(true);
           const trackInfo = document.getElementById('trackInfo');
           if (trackInfo) {
-            trackInfo.textContent = `${currentTrackName} - "Stopped"`;
+            trackInfo.textContent = ${currentTrackName} - "Stopped";
           }
         });
       }
@@ -1236,23 +1236,20 @@
 
       function scalePatchView() {
         if (!outerContainer || !innerContainer) return;
-      
+        
         const widthNative = 1200;
         const heightNative = 400;
         const outerWidth = outerContainer.clientWidth;
         const scaleFactor = outerWidth / widthNative;
       
         innerContainer.style.position = "absolute";
-        // Shift it left by setting left to 45% (instead of 50%)
-        innerContainer.style.left = "49%";
+        innerContainer.style.left = "50%";
         innerContainer.style.transformOrigin = "top left";
-        // Keep translateX(-50%) to stay roughly centered, but slightly left
-        innerContainer.style.transform = `translateX(-50%) scale(${scaleFactor})`;
+        innerContainer.style.transform = translateX(-50%) scale(${scaleFactor});
       
         outerContainer.style.position = "relative";
-        outerContainer.style.height = `${heightNative * scaleFactor}px`;
+        outerContainer.style.height = ${heightNative * scaleFactor}px;
       }
-
 
       // Re-scale on window resize
       let resizeTimeout;
