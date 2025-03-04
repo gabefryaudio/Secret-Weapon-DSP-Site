@@ -1125,7 +1125,7 @@
     });
   </script>
 
-  <!-- Subscription Script for MailerLite Integration -->
+  <!-- Subscription Script for calling your Vercel endpoint -->
   <script>
     // Listen for form submission on the newsletter form
     document.querySelector('.email-form').addEventListener('submit', async (event) => {
@@ -1134,30 +1134,25 @@
       const emailInput = document.getElementById('email');
       const email = emailInput.value.trim();
 
-      // Simple client-side validation
       if (!email) {
         alert("Please enter a valid email address.");
         return;
       }
 
       // Build the payload
-      const payload = { email: email };
+      const payload = { email };
 
       try {
-        // Send the POST request to MailerLite API
-        const response = await fetch("https://connect.mailerlite.com/api/subscribers", {
+        // Replace the URL below with your actual Vercel endpoint
+        // Example: "https://mailerlite-proxy-gabefryaudio.vercel.app/api/subscribe"
+        const response = await fetch("https://YOUR-VERCEL-PROJECT.vercel.app/api/subscribe", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            // IMPORTANT: Do not expose your API key in production client code.
-            "Authorization": "Bearer YOUR_API_KEY_HERE",
-            "X-Version": "2038-01-19"
+            "Content-Type": "application/json"
           },
           body: JSON.stringify(payload)
         });
 
-        // Check if the request was successful
         if (!response.ok) {
           const errorData = await response.json();
           console.error("Error subscribing:", errorData);
