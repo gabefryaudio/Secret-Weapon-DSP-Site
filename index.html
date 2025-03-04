@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <!-- Disable phone number detection on iOS -->
   <meta name="format-detection" content="telephone=no" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
   
@@ -44,6 +43,139 @@
     referrerpolicy="no-referrer"
   />
 
+  <!-- Shopify Buy Button Script (placed in the header) -->
+  <script type="text/javascript">
+  /*<![CDATA[*/
+  (function () {
+    var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+    if (window.ShopifyBuy) {
+      if (window.ShopifyBuy.UI) {
+        ShopifyBuyInit();
+      } else {
+        loadScript();
+      }
+    } else {
+      loadScript();
+    }
+    function loadScript() {
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = scriptURL;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+      script.onload = ShopifyBuyInit;
+    }
+    function ShopifyBuyInit() {
+      var client = ShopifyBuy.buildClient({
+        domain: 'vckhed-ia.myshopify.com',
+        storefrontAccessToken: 'df7325f00afa869a92034415d3428d8e'
+      });
+      ShopifyBuy.UI.onReady(client).then(function (ui) {
+        ui.createComponent('product', {
+          id: '7649057734795',
+          node: document.getElementById('product-component-1741049060913'),
+          moneyFormat: '%24%7B%7Bamount%7D%7D',
+          options: {
+            "product": {
+              "styles": {
+                "product": {
+                  "@media (min-width: 601px)": {
+                    "max-width": "calc(25% - 20px)",
+                    "margin-left": "20px",
+                    "margin-bottom": "50px"
+                  }
+                },
+                "button": {
+                  ":hover": {
+                    "background-color": "#29712d"
+                  },
+                  "background-color": "#2e7d32",
+                  ":focus": {
+                    "background-color": "#29712d"
+                  }
+                }
+              },
+              "buttonDestination": "checkout",
+              "text": {
+                "button": "Buy now"
+              }
+            },
+            "productSet": {
+              "styles": {
+                "products": {
+                  "@media (min-width: 601px)": {
+                    "margin-left": "-20px"
+                  }
+                }
+              }
+            },
+            "modalProduct": {
+              "contents": {
+                "img": false,
+                "imgWithCarousel": true,
+                "button": false,
+                "buttonWithQuantity": true
+              },
+              "styles": {
+                "product": {
+                  "@media (min-width: 601px)": {
+                    "max-width": "100%",
+                    "margin-left": "0px",
+                    "margin-bottom": "0px"
+                  }
+                },
+                "button": {
+                  ":hover": {
+                    "background-color": "#29712d"
+                  },
+                  "background-color": "#2e7d32",
+                  ":focus": {
+                    "background-color": "#29712d"
+                  }
+                }
+              },
+              "text": {
+                "button": "Add to cart"
+              }
+            },
+            "option": {},
+            "cart": {
+              "styles": {
+                "button": {
+                  ":hover": {
+                    "background-color": "#29712d"
+                  },
+                  "background-color": "#2e7d32",
+                  ":focus": {
+                    "background-color": "#29712d"
+                  }
+                }
+              },
+              "text": {
+                "total": "Subtotal",
+                "button": "Checkout"
+              }
+            },
+            "toggle": {
+              "styles": {
+                "toggle": {
+                  "background-color": "#2e7d32",
+                  ":hover": {
+                    "background-color": "#29712d"
+                  },
+                  ":focus": {
+                    "background-color": "#29712d"
+                  }
+                }
+              }
+            }
+          }
+        });
+      });
+    }
+  })();
+  /*]]>*/
+  </script>
+
   <style>
     :root {
       --main-bg-color: #1a1a1a;
@@ -53,12 +185,10 @@
       --header-font: 'Audiowide', sans-serif;
       --body-font: 'Inter', sans-serif;
     }
-
     /* Remove iOS tap highlight, unify link states */
     a, button {
       -webkit-tap-highlight-color: transparent;
     }
-    /* Force visited links to stay the same color as normal links */
     .nav-links a:link,
     .nav-links a:visited {
       color: var(--text-color);
@@ -71,9 +201,6 @@
       outline: none;
       text-decoration: none;
     }
-
-    /* Force vertical scroll */
-    /* Allow horizontal and vertical scroll as needed */
     html, body {
       overflow-x: auto;
       overflow-y: auto;
@@ -94,7 +221,6 @@
       width: 100%;
       box-sizing: border-box;
     }
-
     /* Header */
     header {
       padding: 20px 0;
@@ -122,7 +248,6 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
-
     /* Mobile Navigation */
     .backdrop {
       position: fixed;
@@ -175,7 +300,6 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
-
     /* Hero Section */
     .hero {
       padding: 60px 0;
@@ -210,7 +334,6 @@
       transform: translateY(-3px);
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
-
     /* Plugin Showcase Section */
     .plugin-showcase {
       padding: 60px 0;
@@ -236,7 +359,6 @@
       font-size: 2.5rem;
       margin-bottom: 20px;
     }
-
     /* Features Section */
     .features {
       padding: 60px 0;
@@ -289,7 +411,6 @@
       margin-right: 10px;
       box-shadow: 0 0 8px rgba(46,125,50,0.8);
     }
-
     /* Demo Section */
     .demo-section {
       padding: 60px 0;
@@ -433,7 +554,6 @@
     .volume-container input[type="range"] {
       width: 120px;
     }
-
     /* Plugin UI container */
     .plugin-container {
       width: 100%;
@@ -451,7 +571,6 @@
       transform-origin: top left;
       position: relative;
     }
-
     /* Download Section */
     .download-section {
       padding: 60px 0;
@@ -533,7 +652,6 @@
       border-color: var(--accent-color);
       box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
     }
-
     .newsletter {
       max-width: 500px;
       margin: 60px auto 0;
@@ -588,7 +706,6 @@
       transform: translateY(-2px);
       box-shadow: 0 0 15px rgba(46,125,50,0.8);
     }
-
     /* Footer */
     footer {
       padding: 40px 0;
@@ -620,19 +737,7 @@
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(46,125,50,0.5);
     }
-
-    /* 
-    ------------------------------------------------------------
-    RESPONSIVE MEDIA QUERIES (Partially commented to avoid reflow)
-    ------------------------------------------------------------
-    */
     @media (max-width: 992px) {
-      /* We do NOT reflow .plugin-showcase to avoid LED displacement
-      .plugin-showcase {
-        flex-direction: column;
-        gap: 30px;
-      }
-      */
       .plugin-details {
         text-align: center;
       }
@@ -1117,11 +1222,10 @@
       let currentGain = null; // per-track gain node for fadeout
       let currentTrackName = 'Kick In';
 
-      // Accepts an optional parameter to determine if a fade-out should be applied.
       function stopCurrentTrack(fade = true) {
         if (currentSource && currentGain) {
           if (fade) {
-            const fadeTime = 1.0; // fade-out time in seconds
+            const fadeTime = 1.0;
             currentGain.gain.setValueAtTime(currentGain.gain.value, audioContext.currentTime);
             currentGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + fadeTime);
             setTimeout(() => {
@@ -1132,7 +1236,6 @@
               currentGain = null;
             }, fadeTime * 1000);
           } else {
-            // Immediate stop (for track switching)
             currentSource.stop();
             currentSource.disconnect();
             currentGain.disconnect();
@@ -1143,7 +1246,6 @@
       }
 
       async function playSample(url, trackName) {
-        // When switching tracks, stop any current source immediately.
         stopCurrentTrack(false);
         try {
           const response = await fetch(url);
@@ -1153,11 +1255,9 @@
           source.buffer = audioBuffer;
           source.loop = true;
           
-          // Create a per-track gain node for fade control
           const sampleGain = audioContext.createGain();
           sampleGain.gain.value = 1;
           
-          // Connect sample source -> sampleGain -> plugin node
           source.connect(sampleGain);
           sampleGain.connect(pluginNode);
           
@@ -1165,7 +1265,6 @@
           currentGain = sampleGain;
           currentTrackName = trackName;
           
-          // Update track info UI
           const trackInfo = document.getElementById('trackInfo');
           if (trackInfo) {
             trackInfo.textContent = `${trackName} - "Now Playing"`;
@@ -1176,7 +1275,6 @@
         }
       }
 
-      // 6) Handle track buttons
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -1196,7 +1294,6 @@
         });
       });
 
-      // 7) Play button: Default to "Kick In"
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
@@ -1209,7 +1306,6 @@
         });
       }
 
-      // 8) Stop button with fade out
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
@@ -1221,7 +1317,6 @@
         });
       }
 
-      // 9) Volume slider
       const volumeSlider = document.getElementById('volumeSlider');
       if (volumeSlider) {
         volumeSlider.addEventListener('input', () => {
@@ -1229,7 +1324,6 @@
         });
       }
 
-      // 10) Create and insert the plugin UI, with scale logic
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
 
@@ -1253,24 +1347,20 @@
         const scaleFactor = outerWidth / widthNative;
       
         innerContainer.style.position = "absolute";
-        // Shift it left by setting left to 45% (instead of 50%)
         innerContainer.style.left = "49%";
         innerContainer.style.transformOrigin = "top left";
-        // Keep translateX(-50%) to stay roughly centered, but slightly left
         innerContainer.style.transform = `translateX(-50%) scale(${scaleFactor})`;
       
         outerContainer.style.position = "relative";
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
 
-      // Re-scale on window resize
       let resizeTimeout;
       window.addEventListener("resize", () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(scalePatchView, 200);
       });
 
-      // Re-enforce vertical scroll if changed
       document.body.style.setProperty("overflow", "auto", "important");
       document.documentElement.style.setProperty("overflow", "auto", "important");
       const bodyObserver = new MutationObserver(mutations => {
