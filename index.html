@@ -17,25 +17,29 @@
          - Images and fonts from 'self', data:, and https:.
          - Worker scripts from 'self'.
          - Connect sources from 'self', https://monorail-edge.shopifysvc.com,
-           https://vckhed-ia.myshopify.com, and now https://connect.mailerlite.com.
+           https://vckhed-ia.myshopify.com, https://connect.mailerlite.com,
+           and your Vercel domains:
+           https://mailerlite-proxy.vercel.app,
+           https://mailerlite-proxy-git-main-secret-weapon-dsp.vercel.app,
+           https://mailerlite-proxy-bywgniqba-secret-weapon-dsp.vercel.app.
          - Object sources are disallowed.
   -->
-    <meta http-equiv="Content-Security-Policy" content="
-      default-src 'self' data: https:;
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:;
-      style-src 'self' 'unsafe-inline' https:;
-      img-src 'self' data: https:;
-      font-src 'self' https:;
-      worker-src 'self';
-      connect-src 'self' 
-        https://monorail-edge.shopifysvc.com
-        https://vckhed-ia.myshopify.com
-        https://connect.mailerlite.com
-        https://mailerlite-proxy.vercel.app
-        https://mailerlite-proxy-git-main-secret-weapon-dsp.vercel.app
-        https://mailerlite-proxy-bywgniqba-secret-weapon-dsp.vercel.app;
-      object-src 'none';
-    ">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self' data: https:;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:;
+    style-src 'self' 'unsafe-inline' https:;
+    img-src 'self' data: https:;
+    font-src 'self' https:;
+    worker-src 'self';
+    connect-src 'self'
+      https://monorail-edge.shopifysvc.com
+      https://vckhed-ia.myshopify.com
+      https://connect.mailerlite.com
+      https://mailerlite-proxy.vercel.app
+      https://mailerlite-proxy-git-main-secret-weapon-dsp.vercel.app
+      https://mailerlite-proxy-bywgniqba-secret-weapon-dsp.vercel.app;
+    object-src 'none';
+  ">
 
   <!-- Fonts -->
   <link
@@ -859,20 +863,6 @@
         Download UPPERCOMP and experience the punch and character that will elevate your mixes.
       </p>
 
-      <!-- Pay-What-You-Think is commented out:
-      <div class="pricing-box">
-        <h3 class="pricing-title">Pay What You Think It's Worth</h3>
-        <p>
-          We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal,
-          support future development at a price that feels right.
-        </p>
-        <div class="price-input">
-          <span>$</span>
-          <input type="number" value="25" min="0" />
-        </div>
-      </div>
-      -->
-
       <!-- Shopify Buy Button Container (centered) -->
       <div id="product-component-1741049060913" style="margin: 0 auto;"></div>
 
@@ -1149,9 +1139,8 @@
       const payload = { email };
 
       try {
-        // Replace the URL below with your actual Vercel endpoint
-        // Example: "https://mailerlite-proxy-gabefryaudio.vercel.app/api/subscribe"
-        const response = await fetch("https://YOUR-VERCEL-PROJECT.vercel.app/api/subscribe", {
+        // Call your Vercel serverless function endpoint.
+        const response = await fetch("https://mailerlite-proxy.vercel.app/api/subscribe", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
