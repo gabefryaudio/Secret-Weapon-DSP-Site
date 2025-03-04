@@ -73,15 +73,16 @@
       });
       ShopifyBuy.UI.onReady(client).then(function (ui) {
         ui.createComponent('product', {
+          // Product ID for the entire product:
           id: '7649057734795',
           node: document.getElementById('product-component-1741049060913'),
           moneyFormat: '%24%7B%7Bamount%7D%7D',
           options: {
             product: {
-              // Add a single variant ID to avoid multiple "cards" if multiple variants exist:
-              variantId: 'YOUR_VARIANT_ID', 
+              // Replace "YOUR_VARIANT_ID" with the single variant ID you want to display:
+              variantId: 'YOUR_VARIANT_ID',
+              // Hide variant dropdowns or multiple variant details:
               contents: {
-                // Hide variant title and dropdown (so no multi-variant UI)
                 variantTitle: false,
                 options: false
               },
@@ -572,11 +573,6 @@
       pointer-events: none;
     }
 
-    /* 
-    ------------------------------------------------------------
-    RESPONSIVE MEDIA QUERIES (Partially commented to avoid reflow)
-    ------------------------------------------------------------
-    */
     @media (max-width: 992px) {
       .plugin-details {
         text-align: center;
@@ -815,7 +811,7 @@
         Download UPPERCOMP and experience the punch and character that will elevate your mixes.
       </p>
 
-      <!-- (Optional) Pay-What-You-Think is commented out
+      <!-- Pay-What-You-Think is commented out:
       <div class="pricing-box">
         <h3 class="pricing-title">Pay What You Think It's Worth</h3>
         <p>
@@ -832,8 +828,8 @@
       <!-- Shopify Buy Button Container (centered) -->
       <div id="product-component-1741049060913" style="margin: 0 auto;"></div>
 
-      <!-- Newsletter Form -->
-      <div class="newsletter">
+      <!-- Extra spacing above the newsletter -->
+      <div class="newsletter" style="margin-top: 30px;">
         <h3>Stay Updated</h3>
         <p>
           Sign up to receive updates about UPPERCOMP and future Secret Weapon DSP releases.
