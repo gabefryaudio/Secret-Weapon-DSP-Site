@@ -73,15 +73,15 @@
       });
       ShopifyBuy.UI.onReady(client).then(function (ui) {
         ui.createComponent('product', {
-          // Product ID for the entire product:
+          // The main product ID:
           id: '7649057734795',
           node: document.getElementById('product-component-1741049060913'),
           moneyFormat: '%24%7B%7Bamount%7D%7D',
           options: {
             product: {
-              // Replace "YOUR_VARIANT_ID" with the single variant ID you want to display:
+              // If you have multiple variants, specify a single variant ID to show only one:
               variantId: 'YOUR_VARIANT_ID',
-              // Hide variant dropdowns or multiple variant details:
+              // Hide variant dropdown and extra variant details:
               contents: {
                 variantTitle: false,
                 options: false
@@ -204,6 +204,7 @@
       width: 100%;
       box-sizing: border-box;
     }
+
     /* Header */
     header {
       padding: 20px 0;
@@ -231,6 +232,7 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
+
     /* Mobile Navigation */
     .backdrop {
       position: fixed;
@@ -283,6 +285,7 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
+
     /* Hero Section */
     .hero {
       padding: 60px 0;
@@ -317,6 +320,7 @@
       transform: translateY(-3px);
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
+
     /* Plugin Showcase Section */
     .plugin-showcase {
       padding: 60px 0;
@@ -342,6 +346,7 @@
       font-size: 2.5rem;
       margin-bottom: 20px;
     }
+
     /* Features Section */
     .features {
       padding: 60px 0;
@@ -394,6 +399,7 @@
       margin-right: 10px;
       box-shadow: 0 0 8px rgba(46,125,50,0.8);
     }
+
     /* Demo Section */
     .demo-section {
       padding: 60px 0;
@@ -537,6 +543,7 @@
     .volume-container input[type="range"] {
       width: 120px;
     }
+
     /* Plugin UI container */
     .plugin-container {
       width: 100%;
@@ -554,6 +561,7 @@
       transform-origin: top left;
       position: relative;
     }
+
     /* Download Section */
     .download-section {
       padding: 60px 0;
@@ -571,6 +579,39 @@
       bottom: 0;
       background: radial-gradient(circle at center, rgba(46,125,50,0.1) 0%, transparent 70%);
       pointer-events: none;
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    .social-icon:hover {
+      background-color: var(--accent-color);
+      color: #000;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(46,125,50,0.5);
     }
 
     @media (max-width: 992px) {
