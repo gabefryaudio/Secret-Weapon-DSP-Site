@@ -16,7 +16,8 @@
          - Styles from 'self', inline styles ('unsafe-inline'), and https:.
          - Images and fonts from 'self', data:, and https:.
          - Worker scripts from 'self'.
-         - Connect sources from 'self' and the Shopify endpoints.
+         - Connect sources from 'self', https://monorail-edge.shopifysvc.com,
+           https://vckhed-ia.myshopify.com, and now https://connect.mailerlite.com.
          - Object sources are disallowed.
   -->
   <meta http-equiv="Content-Security-Policy" content="
@@ -26,7 +27,7 @@
     img-src 'self' data: https:;
     font-src 'self' https:;
     worker-src 'self';
-    connect-src 'self' https://monorail-edge.shopifysvc.com https://vckhed-ia.myshopify.com;
+    connect-src 'self' https://monorail-edge.shopifysvc.com https://vckhed-ia.myshopify.com https://connect.mailerlite.com;
     object-src 'none';
   ">
 
