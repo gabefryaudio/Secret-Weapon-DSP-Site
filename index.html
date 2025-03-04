@@ -4,20 +4,11 @@
   <meta charset="UTF-8" />
   <!-- Disable phone number detection on iOS -->
   <meta name="format-detection" content="telephone=no" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
   
   <!-- Content Security Policy:
-       This CSP allows:
-         - Default sources from 'self', data: and https:.
-         - Scripts from 'self', inline scripts ('unsafe-inline'), eval ('unsafe-eval'),
-           https: sources, and data URLs.
-         - Styles from 'self', inline styles ('unsafe-inline'), and https:.
-         - Images and fonts from 'self', data:, and https:.
-         - Worker scripts from 'self'.
-         - Connect sources from 'self' and the Shopify endpoints.
-         - Object sources are disallowed.
+       Allows connections to the Shopify endpoints so the Buy Button works.
   -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self' data: https:;
@@ -73,99 +64,93 @@
       });
       ShopifyBuy.UI.onReady(client).then(function (ui) {
         ui.createComponent('product', {
-          id: '7649057734795',
+          id: '7649057734795', // Your product ID
           node: document.getElementById('product-component-1741049060913'),
           moneyFormat: '%24%7B%7Bamount%7D%7D',
           options: {
-            "product": {
-              "styles": {
-                "product": {
-                  "@media (min-width: 601px)": {
-                    "max-width": "calc(25% - 20px)",
-                    "margin-left": "20px",
-                    "margin-bottom": "50px"
+            // We removed "productSet" so only a single product shows.
+            product: {
+              styles: {
+                product: {
+                  // Center the button container
+                  'text-align': 'center',
+                  '@media (min-width: 601px)': {
+                    'max-width': '300px',
+                    'margin': '0 auto',
+                    'margin-bottom': '20px'
                   }
                 },
-                "button": {
-                  ":hover": {
-                    "background-color": "#29712d"
+                button: {
+                  ':hover': {
+                    'background-color': '#29712d'
                   },
-                  "background-color": "#2e7d32",
-                  ":focus": {
-                    "background-color": "#29712d"
+                  'background-color': '#2e7d32',
+                  ':focus': {
+                    'background-color': '#29712d'
                   }
                 }
               },
-              "buttonDestination": "checkout",
-              "text": {
-                "button": "Buy now"
+              buttonDestination: 'checkout',
+              text: {
+                button: 'Buy now'
               }
             },
-            "productSet": {
-              "styles": {
-                "products": {
-                  "@media (min-width: 601px)": {
-                    "margin-left": "-20px"
-                  }
-                }
-              }
-            },
-            "modalProduct": {
-              "contents": {
-                "img": false,
-                "imgWithCarousel": true,
-                "button": false,
-                "buttonWithQuantity": true
+            modalProduct: {
+              contents: {
+                img: false,
+                imgWithCarousel: true,
+                button: false,
+                buttonWithQuantity: true
               },
-              "styles": {
-                "product": {
-                  "@media (min-width: 601px)": {
-                    "max-width": "100%",
-                    "margin-left": "0px",
-                    "margin-bottom": "0px"
+              styles: {
+                product: {
+                  '@media (min-width: 601px)': {
+                    'max-width': '100%',
+                    'margin-left': '0px',
+                    'margin-bottom': '0px'
                   }
                 },
-                "button": {
-                  ":hover": {
-                    "background-color": "#29712d"
+                button: {
+                  ':hover': {
+                    'background-color': '#29712d'
                   },
-                  "background-color": "#2e7d32",
-                  ":focus": {
-                    "background-color": "#29712d"
+                  'background-color': '#2e7d32',
+                  ':focus': {
+                    'background-color': '#29712d'
                   }
                 }
               },
-              "text": {
-                "button": "Add to cart"
+              text: {
+                button: 'Add to cart'
               }
             },
-            "option": {},
-            "cart": {
-              "styles": {
-                "button": {
-                  ":hover": {
-                    "background-color": "#29712d"
+            option: {},
+            cart: {
+              styles: {
+                button: {
+                  ':hover': {
+                    'background-color': '#29712d'
                   },
-                  "background-color": "#2e7d32",
-                  ":focus": {
-                    "background-color": "#29712d"
+                  'background-color': '#2e7d32',
+                  ':focus': {
+                    'background-color': '#29712d'
                   }
                 }
               },
-              "text": {
-                "total": "Subtotal",
-                "button": "Checkout"
+              text: {
+                total: 'Subtotal',
+                button: 'Checkout'
               }
             },
-            "toggle": {
-              "styles": {
-                "toggle": {
-                  "background-color": "#2e7d32",
-                  ":hover": {
-                    "background-color": "#29712d"
+            toggle: {
+              styles: {
+                toggle: {
+                  'background-color': '#2e7d32',
+                  ':hover': {
+                    'background-color': '#29712d'
                   },
-                  ":focus": {
-                    "background-color": "#29712d"
+                  ':focus': {
+                    'background-color': '#29712d'
                   }
                 }
               }
@@ -204,6 +189,7 @@
       outline: none;
       text-decoration: none;
     }
+
     html, body {
       overflow-x: auto;
       overflow-y: auto;
@@ -224,6 +210,7 @@
       width: 100%;
       box-sizing: border-box;
     }
+
     /* Header */
     header {
       padding: 20px 0;
@@ -251,6 +238,7 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
+
     /* Mobile Navigation */
     .backdrop {
       position: fixed;
@@ -303,6 +291,7 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
+
     /* Hero Section */
     .hero {
       padding: 60px 0;
@@ -337,6 +326,7 @@
       transform: translateY(-3px);
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
+
     /* Plugin Showcase Section */
     .plugin-showcase {
       padding: 60px 0;
@@ -362,6 +352,7 @@
       font-size: 2.5rem;
       margin-bottom: 20px;
     }
+
     /* Features Section */
     .features {
       padding: 60px 0;
@@ -414,6 +405,7 @@
       margin-right: 10px;
       box-shadow: 0 0 8px rgba(46,125,50,0.8);
     }
+
     /* Demo Section */
     .demo-section {
       padding: 60px 0;
@@ -557,6 +549,7 @@
     .volume-container input[type="range"] {
       width: 120px;
     }
+
     /* Plugin UI container */
     .plugin-container {
       width: 100%;
@@ -574,6 +567,7 @@
       transform-origin: top left;
       position: relative;
     }
+
     /* Download Section */
     .download-section {
       padding: 60px 0;
@@ -592,6 +586,13 @@
       background: radial-gradient(circle at center, rgba(46,125,50,0.1) 0%, transparent 70%);
       pointer-events: none;
     }
+
+    /* Commented out the Pay What You Think It's Worth section
+       <div class="pricing-box"> ... </div>
+       so it won't show up.
+    */
+
+    /* 
     .pricing-box {
       max-width: 500px;
       margin: 40px auto;
@@ -655,6 +656,8 @@
       border-color: var(--accent-color);
       box-shadow: 0 0 10px rgba(46,125,50,0.5), inset 0 2px 5px rgba(0,0,0,0.2);
     }
+    */
+
     .newsletter {
       max-width: 500px;
       margin: 60px auto 0;
@@ -709,6 +712,7 @@
       transform: translateY(-2px);
       box-shadow: 0 0 15px rgba(46,125,50,0.8);
     }
+
     /* Footer */
     footer {
       padding: 40px 0;
@@ -740,6 +744,7 @@
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(46,125,50,0.5);
     }
+
     @media (max-width: 992px) {
       .plugin-details {
         text-align: center;
@@ -790,9 +795,7 @@
       h2 {
         font-size: 2rem;
       }
-      .pricing-title {
-        font-size: 1.5rem;
-      }
+      /* .pricing-title { font-size: 1.5rem; } */
       .cta-button {
         padding: 12px 20px;
         font-size: 0.9rem;
@@ -980,150 +983,15 @@
       <p>
         Download UPPERCOMP and experience the punch and character that will elevate your mixes.
       </p>
-      <div class="pricing-box">
-        <h3 class="pricing-title">Pay What You Think It's Worth</h3>
-        <p>
-          We believe in fair value exchange. If UPPERCOMP becomes a secret weapon in your arsenal,
-          support future development at a price that feels right.
-        </p>
-        <div class="price-input">
-          <span>$</span>
-          <input type="number" value="25" min="0" />
-        </div>
-        <!-- Shopify Buy Button inserted directly into the pricing box -->
-        <div id="product-component-1741049060913"></div>
-      </div>
-      <script type="text/javascript">
-      /*<![CDATA[*/
-      (function () {
-        var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-        if (window.ShopifyBuy) {
-          if (window.ShopifyBuy.UI) {
-            ShopifyBuyInit();
-          } else {
-            loadScript();
-          }
-        } else {
-          loadScript();
-        }
-        function loadScript() {
-          var script = document.createElement('script');
-          script.async = true;
-          script.src = scriptURL;
-          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
-          script.onload = ShopifyBuyInit;
-        }
-        function ShopifyBuyInit() {
-          var client = ShopifyBuy.buildClient({
-            domain: 'vckhed-ia.myshopify.com',
-            storefrontAccessToken: 'df7325f00afa869a92034415d3428d8e',
-          });
-          ShopifyBuy.UI.onReady(client).then(function (ui) {
-            ui.createComponent('product', {
-              id: '7649057734795',
-              node: document.getElementById('product-component-1741049060913'),
-              moneyFormat: '%24%7B%7Bamount%7D%7D',
-              options: {
-                "product": {
-                  "styles": {
-                    "product": {
-                      "@media (min-width: 601px)": {
-                        "max-width": "300px",
-                        "margin-left": "0",
-                        "margin-bottom": "20px"
-                      }
-                    },
-                    "button": {
-                      ":hover": {
-                        "background-color": "#29712d"
-                      },
-                      "background-color": "#2e7d32",
-                      ":focus": {
-                        "background-color": "#29712d"
-                      }
-                    }
-                  },
-                  "buttonDestination": "checkout",
-                  "text": {
-                    "button": "Buy now"
-                  }
-                },
-                "productSet": {
-                  "styles": {
-                    "products": {
-                      "@media (min-width: 601px)": {
-                        "margin-left": "-20px"
-                      }
-                    }
-                  }
-                },
-                "modalProduct": {
-                  "contents": {
-                    "img": false,
-                    "imgWithCarousel": true,
-                    "button": false,
-                    "buttonWithQuantity": true
-                  },
-                  "styles": {
-                    "product": {
-                      "@media (min-width: 601px)": {
-                        "max-width": "100%",
-                        "margin-left": "0px",
-                        "margin-bottom": "0px"
-                      }
-                    },
-                    "button": {
-                      ":hover": {
-                        "background-color": "#29712d"
-                      },
-                      "background-color": "#2e7d32",
-                      ":focus": {
-                        "background-color": "#29712d"
-                      }
-                    }
-                  },
-                  "text": {
-                    "button": "Add to cart"
-                  }
-                },
-                "option": {},
-                "cart": {
-                  "styles": {
-                    "button": {
-                      ":hover": {
-                        "background-color": "#29712d"
-                      },
-                      "background-color": "#2e7d32",
-                      ":focus": {
-                        "background-color": "#29712d"
-                      }
-                    }
-                  },
-                  "text": {
-                    "total": "Subtotal",
-                    "button": "Checkout"
-                  }
-                },
-                "toggle": {
-                  "styles": {
-                    "toggle": {
-                      "background-color": "#2e7d32",
-                      ":hover": {
-                        "background-color": "#29712d"
-                      },
-                      ":focus": {
-                        "background-color": "#29712d"
-                      }
-                    }
-                  }
-                }
-              },
-            });
-          });
-        }
-      })();
-      /*]]>*/
-      </script>
+      
+      <!-- Commented out the Pay What You Think It's Worth pricing box
+           <div class="pricing-box"> ... </div>
+           so it doesn't appear now. 
+      -->
+      
+      <!-- The single Buy Button container -->
+      <div id="product-component-1741049060913"></div>
+
       <div class="newsletter">
         <h3>Stay Updated</h3>
         <p>
