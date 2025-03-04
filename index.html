@@ -20,16 +20,22 @@
            https://vckhed-ia.myshopify.com, and now https://connect.mailerlite.com.
          - Object sources are disallowed.
   -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self' data: https:;
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:;
-    style-src 'self' 'unsafe-inline' https:;
-    img-src 'self' data: https:;
-    font-src 'self' https:;
-    worker-src 'self';
-    connect-src 'self' https://monorail-edge.shopifysvc.com https://vckhed-ia.myshopify.com https://connect.mailerlite.com;
-    object-src 'none';
-  ">
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self' data: https:;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:;
+      style-src 'self' 'unsafe-inline' https:;
+      img-src 'self' data: https:;
+      font-src 'self' https:;
+      worker-src 'self';
+      connect-src 'self' 
+        https://monorail-edge.shopifysvc.com
+        https://vckhed-ia.myshopify.com
+        https://connect.mailerlite.com
+        https://mailerlite-proxy.vercel.app
+        https://mailerlite-proxy-git-main-secret-weapon-dsp.vercel.app
+        https://mailerlite-proxy-bywgniqba-secret-weapon-dsp.vercel.app;
+      object-src 'none';
+    ">
 
   <!-- Fonts -->
   <link
