@@ -425,16 +425,6 @@
       position: relative;
       overflow: hidden;
     }
-    .demo-container::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(46,125,50,0.05) 0%, transparent 100%);
-      pointer-events: none;
-    }
     .track-selector {
       display: flex;
       gap: 10px;
@@ -827,6 +817,7 @@
           <button class="track-button">Tom</button>
           <button class="track-button">Overheads</button>
           <button class="track-button">Room</button>
+          <button class="track-button">Bass Line</button>
         </div>
         <div class="plugin-waveform">
           <div class="waveform-animation"></div>
@@ -1013,7 +1004,7 @@
           
           const trackInfo = document.getElementById('trackInfo');
           if (trackInfo) {
-            trackInfo.textContent = ${trackName} - "Now Playing";
+            trackInfo.textContent = `${trackName} - "Now Playing"`;
           }
           source.start();
         } catch (error) {
@@ -1034,6 +1025,8 @@
           else if (text === 'Tom') filePath = './Audio_Files/Tom.wav';
           else if (text === 'Overheads') filePath = './Audio_Files/Overheads.wav';
           else if (text === 'Room') filePath = './Audio_Files/Room.wav';
+          else if (text === 'Bass Line') filePath = './Audio_Files/bass_line.wav';
+          
           if (filePath) {
             playSample(filePath, text);
           }
@@ -1058,7 +1051,7 @@
           stopCurrentTrack(true);
           const trackInfo = document.getElementById('trackInfo');
           if (trackInfo) {
-            trackInfo.textContent = ${currentTrackName} - "Stopped";
+            trackInfo.textContent = `${currentTrackName} - "Stopped"`;
           }
         });
       }
@@ -1095,10 +1088,10 @@
         innerContainer.style.position = "absolute";
         innerContainer.style.left = "49%";
         innerContainer.style.transformOrigin = "top left";
-        innerContainer.style.transform = translateX(-50%) scale(${scaleFactor});
+        innerContainer.style.transform = `translateX(-50%) scale(${scaleFactor})`;
       
         outerContainer.style.position = "relative";
-        outerContainer.style.height = ${heightNative * scaleFactor}px;
+        outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
 
       let resizeTimeout;
