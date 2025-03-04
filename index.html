@@ -884,6 +884,139 @@
         </div>
         <a href="#" class="cta-button">Download Now</a>
       </div>
+      <!-- Shopify Buy Button -->
+      <div id="product-component-1741049060913"></div>
+      <script type="text/javascript">
+      /*<![CDATA[*/
+      (function () {
+        var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+        if (window.ShopifyBuy) {
+          if (window.ShopifyBuy.UI) {
+            ShopifyBuyInit();
+          } else {
+            loadScript();
+          }
+        } else {
+          loadScript();
+        }
+        function loadScript() {
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = scriptURL;
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(script);
+          script.onload = ShopifyBuyInit;
+        }
+        function ShopifyBuyInit() {
+          var client = ShopifyBuy.buildClient({
+            domain: 'vckhed-ia.myshopify.com',
+            storefrontAccessToken: 'df7325f00afa869a92034415d3428d8e',
+          });
+          ShopifyBuy.UI.onReady(client).then(function (ui) {
+            ui.createComponent('product', {
+              id: '7649057734795',
+              node: document.getElementById('product-component-1741049060913'),
+              moneyFormat: '%24%7B%7Bamount%7D%7D',
+              options: {
+                "product": {
+                  "styles": {
+                    "product": {
+                      "@media (min-width: 601px)": {
+                        "max-width": "calc(25% - 20px)",
+                        "margin-left": "20px",
+                        "margin-bottom": "50px"
+                      }
+                    },
+                    "button": {
+                      ":hover": {
+                        "background-color": "#29712d"
+                      },
+                      "background-color": "#2e7d32",
+                      ":focus": {
+                        "background-color": "#29712d"
+                      }
+                    }
+                  },
+                  "buttonDestination": "checkout",
+                  "text": {
+                    "button": "Buy now"
+                  }
+                },
+                "productSet": {
+                  "styles": {
+                    "products": {
+                      "@media (min-width: 601px)": {
+                        "margin-left": "-20px"
+                      }
+                    }
+                  }
+                },
+                "modalProduct": {
+                  "contents": {
+                    "img": false,
+                    "imgWithCarousel": true,
+                    "button": false,
+                    "buttonWithQuantity": true
+                  },
+                  "styles": {
+                    "product": {
+                      "@media (min-width: 601px)": {
+                        "max-width": "100%",
+                        "margin-left": "0px",
+                        "margin-bottom": "0px"
+                      }
+                    },
+                    "button": {
+                      ":hover": {
+                        "background-color": "#29712d"
+                      },
+                      "background-color": "#2e7d32",
+                      ":focus": {
+                        "background-color": "#29712d"
+                      }
+                    }
+                  },
+                  "text": {
+                    "button": "Add to cart"
+                  }
+                },
+                "option": {},
+                "cart": {
+                  "styles": {
+                    "button": {
+                      ":hover": {
+                        "background-color": "#29712d"
+                      },
+                      "background-color": "#2e7d32",
+                      ":focus": {
+                        "background-color": "#29712d"
+                      }
+                    }
+                  },
+                  "text": {
+                    "total": "Subtotal",
+                    "button": "Checkout"
+                  }
+                },
+                "toggle": {
+                  "styles": {
+                    "toggle": {
+                      "background-color": "#2e7d32",
+                      ":hover": {
+                        "background-color": "#29712d"
+                      },
+                      ":focus": {
+                        "background-color": "#29712d"
+                      }
+                    }
+                  }
+                }
+              },
+            });
+          });
+        }
+      })();
+      /*]]>*/
+      </script>
       <div class="newsletter">
         <h3>Stay Updated</h3>
         <p>
@@ -897,26 +1030,26 @@
     </div>
   </section>
 
-    <!-- Footer -->
-    <footer id="contact">
-      <div class="container">
-        <div class="social-links">
-          <a href="https://www.facebook.com/profile.php?id=61573481446367" class="social-icon" title="Facebook">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://www.instagram.com/secretweapondsp" class="social-icon" title="Instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
-          <a href="https://www.youtube.com/@secretweapondsp" class="social-icon" title="YouTube">
-            <i class="fab fa-youtube"></i>
-          </a>
-          <a href="https://www.tiktok.com/@secretweapondsp" class="social-icon" title="TikTok">
-            <i class="fab fa-tiktok"></i>
-          </a>
-        </div>
-        <p>© 2025 Secret Weapon DSP. All rights reserved.</p>
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="container">
+      <div class="social-links">
+        <a href="https://www.facebook.com/profile.php?id=61573481446367" class="social-icon" title="Facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://www.instagram.com/secretweapondsp" class="social-icon" title="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.youtube.com/@secretweapondsp" class="social-icon" title="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://www.tiktok.com/@secretweapondsp" class="social-icon" title="TikTok">
+          <i class="fab fa-tiktok"></i>
+        </a>
       </div>
-    </footer>
+      <p>© 2025 Secret Weapon DSP. All rights reserved.</p>
+    </div>
+  </footer>
 
 
   <!-- Single merged script: sets up the plugin, routes audio through it, and manages the mobile menu & scaling. -->
@@ -1131,7 +1264,6 @@
         outerContainer.style.position = "relative";
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
-
 
       // Re-scale on window resize
       let resizeTimeout;
