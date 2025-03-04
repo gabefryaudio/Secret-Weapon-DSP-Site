@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <!-- Disable phone number detection on iOS -->
   <meta name="format-detection" content="telephone=no" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
   
@@ -15,7 +16,8 @@
          - Styles from 'self', inline styles ('unsafe-inline'), and https:.
          - Images and fonts from 'self', data:, and https:.
          - Worker scripts from 'self'.
-       WARNING: Allowing 'unsafe-inline' and 'unsafe-eval' reduces security.
+         - Connect sources from 'self' and the Shopify endpoints.
+         - Object sources are disallowed.
   -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self' data: https:;
@@ -24,7 +26,7 @@
     img-src 'self' data: https:;
     font-src 'self' https:;
     worker-src 'self';
-    connect-src 'self';
+    connect-src 'self' https://monorail-edge.shopifysvc.com https://vckhed-ia.myshopify.com;
     object-src 'none';
   ">
 
@@ -185,6 +187,7 @@
       --header-font: 'Audiowide', sans-serif;
       --body-font: 'Inter', sans-serif;
     }
+
     /* Remove iOS tap highlight, unify link states */
     a, button {
       -webkit-tap-highlight-color: transparent;
