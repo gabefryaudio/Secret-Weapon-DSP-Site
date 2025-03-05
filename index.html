@@ -40,7 +40,7 @@
     referrerpolicy="no-referrer"
   />
 
-  <!-- Shopify Buy Button Script (placed in the header) -->
+  <!-- Shopify Buy Button Script -->
   <script type="text/javascript">
   /*<![CDATA[*/
   (function () {
@@ -74,9 +74,7 @@
           moneyFormat: '%24%7B%7Bamount%7D%7D',
           options: {
             product: {
-              // If you have multiple variants, specify a single variant ID to show only one:
               variantId: 'YOUR_VARIANT_ID',
-              // Hide variant dropdown and extra variant details:
               contents: {
                 variantTitle: false,
                 options: false
@@ -99,7 +97,6 @@
               buttonDestination: 'checkout',
               text: { button: 'Buy now' }
             },
-            // Removed productSet to avoid multiple items
             modalProduct: {
               contents: {
                 img: false,
@@ -792,7 +789,6 @@
         how it transforms your tracks.
       </p>
       <div class="demo-container">
-        <!-- Track Selector: "Kick In" is first and default -->
         <div class="track-selector">
           <button class="track-button active">Kick In</button>
           <button class="track-button">Kick (Sub)</button>
@@ -840,7 +836,6 @@
       <!-- Shopify Buy Button Container (centered) -->
       <div id="product-component-1741049060913" style="margin: 0 auto;"></div>
 
-      <!-- Extra spacing above the newsletter: increased to 50px -->
       <div class="newsletter" style="margin-top: 50px;">
         <h3>Stay Updated</h3>
         <p>
@@ -892,22 +887,20 @@
           mobileNav.classList.add('active');
           backdrop.classList.add('active');
         });
-
         closeMenuBtn.addEventListener('click', () => {
           mobileNav.classList.remove('active');
           backdrop.classList.remove('active');
         });
-
         backdrop.addEventListener('click', () => {
           mobileNav.classList.remove('active');
           backdrop.classList.remove('active');
         });
       }
 
-      // 1) Create an AudioContext for the plugin
+      // Create an AudioContext
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-      // 2) Initialize the Uppercomp patch connection
+      // Initialize the Uppercomp patch
       let connection;
       try {
         connection = await createUppercompPatchConnection(audioContext, "uppercomp-worklet");
@@ -916,7 +909,7 @@
         return;
       }
 
-      // 3) Find a connectable AudioNode from the connection
+      // Identify the plugin node
       let pluginNode = null;
       if (connection.node && typeof connection.node.connect === "function") {
         pluginNode = connection.node;
@@ -931,37 +924,39 @@
         return;
       }
 
-      // 4) Create a GainNode for volume control, connect plugin -> gain -> destination
+      // Master GainNode
       const gainNode = audioContext.createGain();
       gainNode.gain.value = 1;
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // 5) Handle track playback logic with fade out and a timeout guard
+      // Variables for track logic
       let currentSource = null;
-      let currentGain = null; // per-track gain node for fadeout
+      let currentGain = null;
       let currentTrackName = 'Kick In';
-      let playTimeout = null; // used to ensure only the latest track starts
 
+      // Stop function with scheduled fade
       function stopCurrentTrack(fade = true) {
-        // Clear any pending playback from a previous call
-        if (playTimeout) {
-          clearTimeout(playTimeout);
-          playTimeout = null;
-        }
-
         if (currentSource && currentGain) {
           if (fade) {
-            const fadeTime = 1.0;
+            // e.g. 10 ms fade
+            const fadeTime = 0.01;
             currentGain.gain.setValueAtTime(currentGain.gain.value, audioContext.currentTime);
             currentGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + fadeTime);
-            setTimeout(() => {
-              currentSource.stop();
-              currentSource.disconnect();
-              currentGain.disconnect();
+            // Schedule the source to stop at the end of the fade
+            currentSource.stop(audioContext.currentTime + fadeTime);
+
+            // Once the audio ends, disconnect
+            currentSource.onended = () => {
+              if (currentSource) {
+                currentSource.disconnect();
+              }
+              if (currentGain) {
+                currentGain.disconnect();
+              }
               currentSource = null;
               currentGain = null;
-            }, fadeTime * 10);
+            };
           } else {
             currentSource.stop();
             currentSource.disconnect();
@@ -972,47 +967,50 @@
         }
       }
 
+      // Play function
       async function playSample(url, trackName) {
-        // Stop current track (with fade) and clear any old timeouts
+        // Stop any existing track quickly
         stopCurrentTrack(true);
 
-        // Set up a new timeout for starting the track after fade-out
-        playTimeout = setTimeout(async () => {
-          playTimeout = null; // we've started playback now
-          try {
-            const response = await fetch(url);
-            if (!response.ok) {
-              console.error(`Error: ${response.status} ${response.statusText}`);
-              return;
-            }
-            const arrayBuffer = await response.arrayBuffer();
-            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-            const source = audioContext.createBufferSource();
-            source.buffer = audioBuffer;
-            source.loop = true;
-            
-            const sampleGain = audioContext.createGain();
-            sampleGain.gain.value = 1;
-            
-            source.connect(sampleGain);
-            sampleGain.connect(pluginNode);
-            
-            currentSource = source;
-            currentGain = sampleGain;
-            currentTrackName = trackName;
-            
-            const trackInfo = document.getElementById('trackInfo');
-            if (trackInfo) {
-              trackInfo.textContent = `${trackName} - "Now Playing"`;
-            }
-            source.start();
-          } catch (error) {
-            console.error('Error playing sample:', error);
+        // Load the new sample
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            console.error(`Error: ${response.status} ${response.statusText}`);
+            return;
           }
-        }, 10); // fade duration of 1 second
+          const arrayBuffer = await response.arrayBuffer();
+          const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+          // Create a new source + gain
+          const source = audioContext.createBufferSource();
+          source.buffer = audioBuffer;
+          source.loop = true;
+          const sampleGain = audioContext.createGain();
+          sampleGain.gain.value = 1;
+
+          // Connect the chain
+          source.connect(sampleGain);
+          sampleGain.connect(pluginNode);
+
+          currentSource = source;
+          currentGain = sampleGain;
+          currentTrackName = trackName;
+
+          // Update UI
+          const trackInfo = document.getElementById('trackInfo');
+          if (trackInfo) {
+            trackInfo.textContent = `${trackName} - "Now Playing"`;
+          }
+
+          // Start playback
+          source.start();
+        } catch (error) {
+          console.error('Error playing sample:', error);
+        }
       }
 
-      // Track-button logic
+      // Track button logic
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -1027,28 +1025,28 @@
           else if (text === 'Overheads') filePath = './Audio_Files/Overheads.wav';
           else if (text === 'Room') filePath = './Audio_Files/Room.wav';
           else if (text === 'Bass Line') filePath = './Audio_Files/Bass_Line.wav';
-          
+
           if (filePath) {
             playSample(filePath, text);
           }
         });
       });
 
-      // Play button logic
+      // Play button
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
           if (audioContext.state === 'suspended') {
             await audioContext.resume();
           }
-          // If nothing is currently playing, default to Kick In
+          // If nothing is playing, start default
           if (!currentSource) {
             playSample('./Audio_Files/Kick_In.wav', 'Kick In');
           }
         });
       }
 
-      // Stop button logic
+      // Stop button
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
@@ -1123,23 +1121,16 @@
 
   <!-- Subscription Script for calling your Vercel endpoint -->
   <script>
-    // Listen for form submission on the newsletter form
     document.querySelector('.email-form').addEventListener('submit', async (event) => {
-      event.preventDefault(); // Prevent default form submission
-
+      event.preventDefault();
       const emailInput = document.getElementById('email');
       const email = emailInput.value.trim();
-
       if (!email) {
         alert("Please enter a valid email address.");
         return;
       }
-
-      // Build the payload
       const payload = { email };
-
       try {
-        // Call your Vercel serverless function endpoint.
         const response = await fetch("https://mailerlite-proxy.vercel.app/api/subscribe", {
           method: "POST",
           headers: {
@@ -1147,7 +1138,6 @@
           },
           body: JSON.stringify(payload)
         });
-
         if (!response.ok) {
           const errorData = await response.json();
           console.error("Error subscribing:", errorData);
@@ -1156,7 +1146,7 @@
           const result = await response.json();
           console.log("Subscription successful:", result);
           alert("Thank you for subscribing!");
-          emailInput.value = ""; // Clear the form
+          emailInput.value = "";
         }
       } catch (error) {
         console.error("Request failed:", error);
