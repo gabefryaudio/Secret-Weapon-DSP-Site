@@ -983,33 +983,40 @@
       }
 
       async function playSample(url, trackName) {
-        stopCurrentTrack(false);
-        try {
-          const response = await fetch(url);
-          const arrayBuffer = await response.arrayBuffer();
-          const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-          const source = audioContext.createBufferSource();
-          source.buffer = audioBuffer;
-          source.loop = true;
-          
-          const sampleGain = audioContext.createGain();
-          sampleGain.gain.value = 1;
-          
-          source.connect(sampleGain);
-          sampleGain.connect(pluginNode);
-          
-          currentSource = source;
-          currentGain = sampleGain;
-          currentTrackName = trackName;
-          
-          const trackInfo = document.getElementById('trackInfo');
-          if (trackInfo) {
-            trackInfo.textContent = `${trackName} - "Now Playing"`;
+        stopCurrentTrack(true);
+        // Wait for fade-out duration before starting the new track
+        setTimeout(async () => {
+          try {
+            const response = await fetch(url);
+            if (!response.ok) {
+              console.error(`Error: ${response.status} ${response.statusText}`);
+              return;
+            }
+            const arrayBuffer = await response.arrayBuffer();
+            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.loop = true;
+            
+            const sampleGain = audioContext.createGain();
+            sampleGain.gain.value = 1;
+            
+            source.connect(sampleGain);
+            sampleGain.connect(pluginNode);
+            
+            currentSource = source;
+            currentGain = sampleGain;
+            currentTrackName = trackName;
+            
+            const trackInfo = document.getElementById('trackInfo');
+            if (trackInfo) {
+              trackInfo.textContent = `${trackName} - "Now Playing"`;
+            }
+            source.start();
+          } catch (error) {
+            console.error('Error playing sample:', error);
           }
-          source.start();
-        } catch (error) {
-          console.error('Error playing sample:', error);
-        }
+        }, 1000); // fade duration of 1 second
       }
 
       const trackButtons = document.querySelectorAll('.track-button');
@@ -1025,7 +1032,7 @@
           else if (text === 'Tom') filePath = './Audio_Files/Tom.wav';
           else if (text === 'Overheads') filePath = './Audio_Files/Overheads.wav';
           else if (text === 'Room') filePath = './Audio_Files/Room.wav';
-          else if (text === 'Bass Line') filePath = './Audio_Files/bass_line.wav';
+          else if (text === 'Bass Line') filePath = './Audio_Files/Bass_Line.wav';
           
           if (filePath) {
             playSample(filePath, text);
