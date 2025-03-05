@@ -68,7 +68,6 @@
       });
       ShopifyBuy.UI.onReady(client).then(function (ui) {
         ui.createComponent('product', {
-          // The main product ID:
           id: '7649057734795',
           node: document.getElementById('product-component-1741049060913'),
           moneyFormat: '%24%7B%7Bamount%7D%7D',
@@ -159,8 +158,7 @@
       --header-font: 'Audiowide', sans-serif;
       --body-font: 'Inter', sans-serif;
     }
-
-    /* Remove iOS tap highlight, unify link states */
+    /* Basic reset and fonts */
     a, button {
       -webkit-tap-highlight-color: transparent;
     }
@@ -173,21 +171,18 @@
     .nav-links a:focus,
     .nav-links a:active {
       color: var(--accent-color);
-      outline: none;
-      text-decoration: none;
     }
     html, body {
-      overflow-x: auto;
-      overflow-y: auto;
       margin: 0;
       padding: 0;
+      overflow-x: auto;
+      overflow-y: auto;
     }
     body {
       font-family: var(--body-font);
       background-color: var(--main-bg-color);
       color: var(--text-color);
       line-height: 1.6;
-      overflow-y: auto !important;
     }
     .container {
       max-width: 1200px;
@@ -196,7 +191,6 @@
       width: 100%;
       box-sizing: border-box;
     }
-
     /* Header */
     header {
       padding: 20px 0;
@@ -208,14 +202,8 @@
       justify-content: space-between;
       align-items: center;
     }
-    .logo {
-      width: 180px;
-      max-width: 50%;
-    }
-    .nav-links {
-      display: flex;
-      gap: 30px;
-    }
+    .logo { width: 180px; max-width: 50%; }
+    .nav-links { display: flex; gap: 30px; }
     .mobile-menu-toggle {
       display: none;
       background: none;
@@ -224,27 +212,20 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
-
     /* Mobile Navigation */
     .backdrop {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-      display: none;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 999; display: none;
     }
-    .backdrop.active {
-      display: block;
-    }
+    .backdrop.active { display: block; }
     .mobile-nav {
       position: fixed;
       top: 0;
       right: -100%;
-      width: 80%;
-      max-width: 300px;
+      width: 80%; max-width: 300px;
       height: 100vh;
       background-color: var(--main-bg-color);
       z-index: 1000;
@@ -252,37 +233,28 @@
       flex-direction: column;
       padding: 60px 30px 30px;
       transition: right 0.3s ease;
-      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+      box-shadow: -5px 0 15px rgba(0,0,0,0.3);
     }
-    .mobile-nav.active {
-      right: 0;
-    }
+    .mobile-nav.active { right: 0; }
     .mobile-nav a {
       color: var(--text-color);
       text-decoration: none;
       padding: 15px 0;
       font-size: 1.2rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    .mobile-nav a:hover {
-      color: var(--accent-color);
-    }
+    .mobile-nav a:hover { color: var(--accent-color); }
     .close-menu {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 20px; right: 20px;
       background: none;
       border: none;
       color: var(--text-color);
       font-size: 1.5rem;
       cursor: pointer;
     }
-
     /* Hero Section */
-    .hero {
-      padding: 60px 0;
-      text-align: center;
-    }
+    .hero { padding: 60px 0; text-align: center; }
     h1 {
       font-family: var(--header-font);
       font-size: 5rem;
@@ -312,7 +284,6 @@
       transform: translateY(-3px);
       box-shadow: 0 0 25px rgba(46,125,50,1);
     }
-
     /* Plugin Showcase Section */
     .plugin-showcase {
       padding: 60px 0;
@@ -320,30 +291,21 @@
       align-items: center;
       gap: 50px;
     }
-    .plugin-image {
-      flex: 1;
-      text-align: center;
-    }
+    .plugin-image { flex: 1; text-align: center; }
     .plugin-image img {
       max-width: 100%;
       height: auto;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border-radius: 10px;
     }
-    .plugin-details {
-      flex: 1;
-    }
+    .plugin-details { flex: 1; }
     h2 {
       font-family: var(--header-font);
       font-size: 2.5rem;
       margin-bottom: 20px;
     }
-
     /* Features Section */
-    .features {
-      padding: 60px 0;
-      background-color: var(--secondary-bg);
-    }
+    .features { padding: 60px 0; background-color: var(--secondary-bg); }
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -362,10 +324,8 @@
     .feature-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
       background: linear-gradient(90deg, var(--accent-color), transparent);
       opacity: 0.7;
     }
@@ -391,11 +351,8 @@
       margin-right: 10px;
       box-shadow: 0 0 8px rgba(46,125,50,0.8);
     }
-
     /* Demo Section */
-    .demo-section {
-      padding: 60px 0;
-    }
+    .demo-section { padding: 60px 0; }
     .demo-container {
       background-color: rgba(255,255,255,0.05);
       padding: 20px;
@@ -430,9 +387,7 @@
       color: #000;
       box-shadow: 0 0 10px rgba(46,125,50,0.5);
     }
-    .track-button.active {
-      border: 1px solid rgba(255,255,255,0.2);
-    }
+    .track-button.active { border: 1px solid rgba(255,255,255,0.2); }
     .plugin-waveform {
       height: 120px;
       background-color: rgba(0,0,0,0.3);
@@ -444,10 +399,8 @@
     }
     .waveform-animation {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: linear-gradient(90deg,
         rgba(46,125,50,0) 0%,
         rgba(46,125,50,0.3) 50%,
@@ -457,12 +410,8 @@
       animation: waveformMove 2s infinite linear;
     }
     @keyframes waveformMove {
-      0% {
-        background-position: -100% 0;
-      }
-      100% {
-        background-position: 100% 0;
-      }
+      0% { background-position: -100% 0; }
+      100% { background-position: 100% 0; }
     }
     .demo-controls {
       display: flex;
@@ -471,7 +420,7 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-    /* Updated styling for consistent Play/Stop icons */
+    /* Consistent Play/Stop Button Styling using Font Awesome */
     .play-button,
     .stop-button {
       width: 50px;
@@ -506,25 +455,15 @@
       font-size: 1.2rem;
       color: #000;
     }
-
-    .track-info-container {
-      text-align: center;
-      margin: 10px 0;
-    }
+    .track-info-container { text-align: center; margin: 10px 0; }
     .volume-container {
       display: flex;
       align-items: center;
       gap: 10px;
       margin: 10px 0;
     }
-    .volume-container label {
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-    .volume-container input[type="range"] {
-      width: 120px;
-    }
-
+    .volume-container label { font-size: 0.9rem; font-weight: 500; }
+    .volume-container input[type="range"] { width: 120px; }
     /* Plugin UI container */
     .plugin-container {
       width: 100%;
@@ -542,7 +481,6 @@
       transform-origin: top left;
       position: relative;
     }
-
     /* Download Section */
     .download-section {
       padding: 60px 0;
@@ -554,14 +492,11 @@
     .download-section::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
       background: radial-gradient(circle at center, rgba(46,125,50,0.1) 0%, transparent 70%);
       pointer-events: none;
     }
-
     /* Footer */
     footer {
       padding: 40px 0;
@@ -594,72 +529,31 @@
       transform: translateY(-3px);
       box-shadow: 0 5px 15px rgba(46,125,50,0.5);
     }
-
+    /* Responsive adjustments */
     @media (max-width: 992px) {
-      .plugin-details {
-        text-align: center;
-      }
-      h1 {
-        font-size: 3.5rem;
-      }
-      .hero p {
-        font-size: 1.3rem;
-      }
+      .plugin-details { text-align: center; }
+      h1 { font-size: 3.5rem; }
+      .hero p { font-size: 1.3rem; }
     }
     @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-      .mobile-menu-toggle {
-        display: block;
-      }
-      h1 {
-        font-size: 3rem;
-      }
-      .hero p {
-        font-size: 1.2rem;
-      }
-      .feature-card h3 {
-        font-size: 1.3rem;
-      }
-      .features-grid {
-        grid-template-columns: 1fr;
-      }
-      .email-form {
-        flex-direction: column;
-      }
-      .submit-button {
-        width: 100%;
-      }
-      .hero {
-        padding: 40px 0;
-      }
-      .features, .demo-section, .download-section {
-        padding: 40px 0;
-      }
+      .nav-links { display: none; }
+      .mobile-menu-toggle { display: block; }
+      h1 { font-size: 3rem; }
+      .hero p { font-size: 1.2rem; }
+      .feature-card h3 { font-size: 1.3rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .email-form { flex-direction: column; }
+      .submit-button { width: 100%; }
+      .hero { padding: 40px 0; }
+      .features, .demo-section, .download-section { padding: 40px 0; }
     }
     @media (max-width: 480px) {
-      h1 {
-        font-size: 2.5rem;
-      }
-      h2 {
-        font-size: 2rem;
-      }
-      .cta-button {
-        padding: 12px 20px;
-        font-size: 0.9rem;
-      }
-      .play-button, .stop-button {
-        width: 45px;
-        height: 45px;
-      }
-      .track-button {
-        padding: 8px 10px;
-        font-size: 0.8rem;
-      }
-      .container {
-        padding: 0 15px;
-      }
+      h1 { font-size: 2.5rem; }
+      h2 { font-size: 2rem; }
+      .cta-button { padding: 12px 20px; font-size: 0.9rem; }
+      .play-button, .stop-button { width: 45px; height: 45px; }
+      .track-button { padding: 8px 10px; font-size: 0.8rem; }
+      .container { padding: 0 15px; }
     }
   </style>
 </head>
@@ -832,7 +726,6 @@
       <p>
         Download UPPERCOMP and experience the punch and character that will elevate your mixes.
       </p>
-      <!-- Shopify Buy Button Container (centered) -->
       <div id="product-component-1741049060913" style="margin: 0 auto;"></div>
       <div class="newsletter" style="margin-top: 50px;">
         <h3>Stay Updated</h3>
@@ -868,7 +761,7 @@
     </div>
   </footer>
 
-  <!-- Single merged script: sets up the plugin, routes audio through it, and manages the mobile menu & scaling. -->
+  <!-- Main Script -->
   <script type="module">
     import { createUppercompPatchConnection } from "./Uppercomp_WAM/cmaj_Uppercomp.js";
     import { createPatchView } from "./Uppercomp_WAM/cmaj_api/cmaj-patch-view.js";
@@ -879,7 +772,6 @@
       const mobileNav = document.querySelector('.mobile-nav');
       const closeMenuBtn = document.querySelector('.close-menu');
       const backdrop = document.querySelector('.backdrop');
-
       if (mobileMenuToggle && mobileNav && closeMenuBtn && backdrop) {
         mobileMenuToggle.addEventListener('click', () => {
           mobileNav.classList.add('active');
@@ -898,7 +790,7 @@
       // Create an AudioContext
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-      // Initialize the Uppercomp patch
+      // Initialize the Uppercomp patch connection
       let connection;
       try {
         connection = await createUppercompPatchConnection(audioContext, "uppercomp-worklet");
@@ -907,7 +799,7 @@
         return;
       }
 
-      // Identify the plugin node
+      // Find a connectable AudioNode from the connection
       let pluginNode = null;
       if (connection.node && typeof connection.node.connect === "function") {
         pluginNode = connection.node;
@@ -922,34 +814,29 @@
         return;
       }
 
-      // Master GainNode
+      // Create a master GainNode for overall volume control
       const gainNode = audioContext.createGain();
       gainNode.gain.value = 1;
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // Variables for track logic
+      // Variables for track playback
       let currentSource = null;
       let currentGain = null;
       let currentTrackName = 'Kick In';
 
-      // Stop function with scheduled fade using 100ms fade time
-      function stopCurrentTrack(fade = true) {
+      // stopCurrentTrack: fades out and stops the current track.
+      // fadeTime (in seconds) is passed as a parameter.
+      function stopCurrentTrack(fade = true, fadeTime = 0.01) {
         if (currentSource && currentGain) {
           if (fade) {
-            const fadeTime = 0.1; // 100ms fade
             currentGain.gain.setValueAtTime(currentGain.gain.value, audioContext.currentTime);
             currentGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + fadeTime);
-            // Schedule the source to stop at the end of the fade
+            // Schedule stopping the source at the end of the fade.
             currentSource.stop(audioContext.currentTime + fadeTime);
-            // Cleanup on end
             currentSource.onended = () => {
-              if (currentSource) {
-                currentSource.disconnect();
-              }
-              if (currentGain) {
-                currentGain.disconnect();
-              }
+              if (currentSource) currentSource.disconnect();
+              if (currentGain) currentGain.disconnect();
               currentSource = null;
               currentGain = null;
             };
@@ -963,11 +850,11 @@
         }
       }
 
-      // Play function
+      // playSample: stops current track (using a short fade for track switches)
+      // and then loads and plays the new audio sample.
       async function playSample(url, trackName) {
-        // Stop any existing track
-        stopCurrentTrack(true);
-
+        // For track switches, use a very short fade-out (10ms).
+        stopCurrentTrack(true, 0.01);
         try {
           const response = await fetch(url);
           if (!response.ok) {
@@ -976,35 +863,27 @@
           }
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-
-          // Create new source and gain node
           const source = audioContext.createBufferSource();
           source.buffer = audioBuffer;
           source.loop = true;
           const sampleGain = audioContext.createGain();
           sampleGain.gain.value = 1;
-
-          // Connect chain: source -> sampleGain -> pluginNode
           source.connect(sampleGain);
           sampleGain.connect(pluginNode);
-
           currentSource = source;
           currentGain = sampleGain;
           currentTrackName = trackName;
-
-          // Update UI
           const trackInfo = document.getElementById('trackInfo');
           if (trackInfo) {
             trackInfo.textContent = `${trackName} - "Now Playing"`;
           }
-          // Start playback immediately
           source.start();
         } catch (error) {
           console.error('Error playing sample:', error);
         }
       }
 
-      // Track button logic
+      // Track button event listeners
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -1019,31 +898,24 @@
           else if (text === 'Overheads') filePath = './Audio_Files/Overheads.wav';
           else if (text === 'Room') filePath = './Audio_Files/Room.wav';
           else if (text === 'Bass Line') filePath = './Audio_Files/Bass_Line.wav';
-
-          if (filePath) {
-            playSample(filePath, text);
-          }
+          if (filePath) playSample(filePath, text);
         });
       });
 
-      // Play button logic
+      // Play button: if nothing is playing, start default track.
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
-          if (audioContext.state === 'suspended') {
-            await audioContext.resume();
-          }
-          if (!currentSource) {
-            playSample('./Audio_Files/Kick_In.wav', 'Kick In');
-          }
+          if (audioContext.state === 'suspended') await audioContext.resume();
+          if (!currentSource) playSample('./Audio_Files/Kick_In.wav', 'Kick In');
         });
       }
 
-      // Stop button logic
+      // Stop button: use a 100ms fade-out for a smoother stop.
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
-          stopCurrentTrack(true);
+          stopCurrentTrack(true, 0.1);
           const trackInfo = document.getElementById('trackInfo');
           if (trackInfo) {
             trackInfo.textContent = `${currentTrackName} - "Stopped"`;
@@ -1051,7 +923,7 @@
         });
       }
 
-      // Volume slider logic
+      // Volume slider
       const volumeSlider = document.getElementById('volumeSlider');
       if (volumeSlider) {
         volumeSlider.addEventListener('input', () => {
@@ -1059,10 +931,9 @@
         });
       }
 
-      // Create the plugin's GUI
+      // Create and scale the plugin's GUI
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
-
       try {
         const patchView = await createPatchView(connection);
         innerContainer.innerHTML = "";
@@ -1073,31 +944,25 @@
       } catch (guiError) {
         console.error("Error creating patch view:", guiError);
       }
-
       function scalePatchView() {
         if (!outerContainer || !innerContainer) return;
-      
         const widthNative = 1200;
         const heightNative = 400;
         const outerWidth = outerContainer.clientWidth;
         const scaleFactor = outerWidth / widthNative;
-      
         innerContainer.style.position = "absolute";
         innerContainer.style.left = "49%";
         innerContainer.style.transformOrigin = "top left";
         innerContainer.style.transform = `translateX(-50%) scale(${scaleFactor})`;
-      
         outerContainer.style.position = "relative";
         outerContainer.style.height = `${heightNative * scaleFactor}px`;
       }
-
       let resizeTimeout;
       window.addEventListener("resize", () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(scalePatchView, 200);
       });
-
-      // Ensure scroll remains enabled
+      // Ensure scrolling remains enabled
       document.body.style.setProperty("overflow", "auto", "important");
       document.documentElement.style.setProperty("overflow", "auto", "important");
       const bodyObserver = new MutationObserver(mutations => {
@@ -1126,9 +991,7 @@
       try {
         const response = await fetch("https://mailerlite-proxy.vercel.app/api/subscribe", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
         if (!response.ok) {
