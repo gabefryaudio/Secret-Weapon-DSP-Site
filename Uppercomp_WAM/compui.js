@@ -321,10 +321,15 @@ class UpperCompGUI extends HTMLElement {
     this.waveformCanvas = this.querySelector('#waveform');
     if (!this.waveformCanvas) return;
     const rect = this.waveformCanvas.getBoundingClientRect();
-    this.waveformCanvas.width = rect.width;
-    this.waveformCanvas.height = rect.height;
+    const dpr = window.devicePixelRatio || 1;
+    this.waveformCanvas.width = rect.width * dpr;
+    this.waveformCanvas.height = rect.height * dpr;
+    this.waveformCanvas.style.width = `${rect.width}px`;
+    this.waveformCanvas.style.height = `${rect.height}px`;
     this.ctx = this.waveformCanvas.getContext('2d');
+    this.ctx.scale(dpr, dpr);
   }
+
 
   drawWaveform() {
     if (!this.ctx || !this.waveformCanvas) return;
