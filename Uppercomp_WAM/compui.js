@@ -1,8 +1,8 @@
 /**
  * UpperCompGUI.js
  *
- * Reverted to the original aspect ratio and removed extra margins,
- * but extended the dB range to -70..+12 so that -60 dB sits higher.
+ * Uses the original 3:1 aspect ratio, minDb = -60, maxDb = +12,
+ * and adds a small margin in dbToY() so nothing is clipped.
  */
 
 // --------------------------------------------------------------------
@@ -208,13 +208,11 @@ class UpperCompGUI extends HTMLElement {
 
   startKnobDrag(e, param) {
     e.preventDefault();
-    console.log(`Start dragging knob ${param} with mouse`);
     this.knobs[param].isDragging = true;
     this.knobs[param].lastY = e.clientY;
   }
 
   startKnobTouch(e, param) {
-    console.log(`Start dragging knob ${param} with touch`);
     this.knobs[param].isDragging = true;
     this.knobs[param].lastY = e.touches[0].clientY;
   }
@@ -224,7 +222,6 @@ class UpperCompGUI extends HTMLElement {
       const knob = this.knobs[param];
       if (knob.isDragging) {
         const deltaY = e.clientY - knob.lastY;
-        console.log(`Dragging knob ${param}: deltaY=${deltaY}`);
         knob.lastY = e.clientY;
         this.adjustKnobValue(param, deltaY);
       }
@@ -240,7 +237,6 @@ class UpperCompGUI extends HTMLElement {
       const knob = this.knobs[param];
       if (knob.isDragging && e.touches.length) {
         const deltaY = e.touches[0].clientY - knob.lastY;
-        console.log(`Touch dragging knob ${param}: deltaY=${deltaY}`);
         knob.lastY = e.touches[0].clientY;
         this.adjustKnobValue(param, deltaY);
       }
@@ -249,9 +245,6 @@ class UpperCompGUI extends HTMLElement {
 
   stopKnobDrag() {
     Object.keys(this.knobs).forEach(param => {
-      if (this.knobs[param].isDragging) {
-        console.log(`Stopped dragging knob ${param}`);
-      }
       this.knobs[param].isDragging = false;
     });
   }
@@ -260,9 +253,8 @@ class UpperCompGUI extends HTMLElement {
   adjustKnobValue(param, deltaY) {
     const knob = this.knobs[param];
     const range = knob.max - knob.min;
-    const sensitivity = 1.0; // Adjust sensitivity if needed
+    const sensitivity = 1.0; // Adjust if needed
     const change = (deltaY * sensitivity * range) / 100;
-    console.log(`Knob ${param} change calculated: ${change}`);
     knob.targetValue = Math.max(knob.min, Math.min(knob.max, knob.targetValue - change));
   }
 
@@ -339,7 +331,7 @@ class UpperCompGUI extends HTMLElement {
     const w = this.cssWidth;
     const h = this.cssHeight;
 
-    // Fill background
+    // Clear background
     ctx.fillStyle = '#1a1a1a';
     ctx.fillRect(0, 0, w, h);
 
@@ -399,11 +391,14 @@ class UpperCompGUI extends HTMLElement {
   }
 
   /**
-   * Adjusted the dB range so that -60 dB sits higher in the canvas.
-   * Now minDb is -70, meaning -60 is no longer at the bottom edge.
+   * Keeps the same -60..+12 range but adds margin so the extremes
+   * aren't clipped off-screen. Adjust topMargin/bottomMargin if needed.
    */
   dbToY(db, height) {
-    const minDb = -70; // was -60
+    const topMargin = 20;
+    const bottomMargin = 20;
+
+    const minDb = -60;
     const maxDb = 12;
     const dbRange = maxDb - minDb;
 
@@ -411,8 +406,10 @@ class UpperCompGUI extends HTMLElement {
     const clamped = Math.max(minDb, Math.min(maxDb, db));
     // map dB to [0..1]
     const norm = (clamped - minDb) / dbRange;
-    // invert so higher dB is near the top (y=0)
-    return height * (1 - norm);
+
+    // scale into [topMargin..(height - bottomMargin)]
+    const drawableHeight = height - topMargin - bottomMargin;
+    return topMargin + drawableHeight * (1 - norm);
   }
 
   // ------------------------------------------------------------------
@@ -473,10 +470,12 @@ class UpperCompGUI extends HTMLElement {
   // Animation Loop (implements meter clearing logic)
   // ------------------------------------------------------------------
   animate() {
+    // If input is very low, reset GR
     if (this.meters.inputLevel.value < -50) {
       this.meters.gainReduction.value = 0;
       this.meters.gainReduction.peak = 0;
     }
+    // Decay the meter peaks
     this.meters.inputLevel.peak = Math.max(
       this.meters.inputLevel.value,
       this.meters.inputLevel.peak - this.decayRate
@@ -485,13 +484,15 @@ class UpperCompGUI extends HTMLElement {
       this.meters.outputLevel.value,
       this.meters.outputLevel.peak - this.decayRate
     );
+    // Zero out GR if near zero
     if (Math.abs(this.meters.gainReduction.value) < 0.05) {
       this.meters.gainReduction.peak = 0;
       this.meters.gainReduction.value = 0;
     } else {
       this.meters.gainReduction.peak = this.meters.gainReduction.value;
     }
-    // Smooth knob transitions (easing multiplier = 0.5)
+
+    // Smooth knob transitions
     Object.keys(this.knobs).forEach(param => {
       const knob = this.knobs[param];
       const diff = knob.targetValue - knob.currentValue;
@@ -505,6 +506,8 @@ class UpperCompGUI extends HTMLElement {
         }
       }
     });
+
+    // Update waveform history
     this.frameCount++;
     if (this.frameCount >= this.historyUpdateRate) {
       this.frameCount = 0;
@@ -517,13 +520,15 @@ class UpperCompGUI extends HTMLElement {
         this.waveformHistory.shift();
       }
     }
+
+    // Redraw
     this.drawWaveform();
     this.updateMeters();
     this.animationFrameRequest = requestAnimationFrame(() => this.animate());
   }
 
   // ------------------------------------------------------------------
-  // Meter-LED Coloring (zero out GR if near zero)
+  // Meter-LED Coloring
   // ------------------------------------------------------------------
   updateMeters() {
     const meterMap = {
@@ -544,12 +549,18 @@ class UpperCompGUI extends HTMLElement {
       const dots = meterEl.querySelectorAll('.meter-dot');
       const valEl = meterEl.parentElement.querySelector('.meter-value');
       let meterValue = this.meters[param].peak;
+
+      // For GR near zero, set to 0
       if (param === 'gainReduction' && Math.abs(meterValue) < 0.05) {
         meterValue = 0.0;
       }
+
+      // Update numeric readout
       if (valEl) {
         valEl.textContent = `${meterValue.toFixed(1)} dB`;
       }
+
+      // LED activation
       const total = dots.length;
       const rng = Math.abs(cfg.maxDb - cfg.minDb);
       const dbStep = rng / (total - 1);
@@ -579,9 +590,13 @@ class UpperCompGUI extends HTMLElement {
           }
         }
         intensity = Math.max(0, Math.min(1, intensity));
+
+        // Choose color
         const activeColor = (param === 'gainReduction')
           ? redColor
           : (dotDb < -12 ? greenColor : (dotDb < 0 ? yellowColor : redColor));
+
+        // Apply color & glow
         const color = lerpColor(offColor, activeColor, intensity);
         dots[i].style.background = color;
         dots[i].classList.toggle('active', intensity > 0);
@@ -594,7 +609,7 @@ class UpperCompGUI extends HTMLElement {
   }
 
   // ------------------------------------------------------------------
-  // Position the Saturation LED between the Saturation and Saturation Mix knobs
+  // Position the Saturation LED
   // ------------------------------------------------------------------
   positionSaturationLed() {
     const satWrapper = this.querySelector('#satWrapper');
@@ -630,7 +645,7 @@ class UpperCompGUI extends HTMLElement {
       #compressor {
         position: relative;
         width: 100%;
-        /* Revert to original "wide" aspect ratio: */
+        /* Keep original wide aspect ratio: 3:1 */
         aspect-ratio: 3 / 1;
         max-width: 1200px;
         background: linear-gradient(145deg, #262626, #1e1e1e);
