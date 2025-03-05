@@ -940,7 +940,7 @@
         if (currentSource && currentGain) {
           if (fade) {
             // e.g. 10 ms fade
-            const fadeTime = 0.01;
+            const fadeTime = 0.1;
             currentGain.gain.setValueAtTime(currentGain.gain.value, audioContext.currentTime);
             currentGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + fadeTime);
             // Schedule the source to stop at the end of the fade
