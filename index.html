@@ -832,10 +832,8 @@
       <p>
         Download UPPERCOMP and experience the punch and character that will elevate your mixes.
       </p>
-
       <!-- Shopify Buy Button Container (centered) -->
       <div id="product-component-1741049060913" style="margin: 0 auto;"></div>
-
       <div class="newsletter" style="margin-top: 50px;">
         <h3>Stay Updated</h3>
         <p>
@@ -935,18 +933,16 @@
       let currentGain = null;
       let currentTrackName = 'Kick In';
 
-      // Stop function with scheduled fade
+      // Stop function with scheduled fade using 100ms fade time
       function stopCurrentTrack(fade = true) {
         if (currentSource && currentGain) {
           if (fade) {
-            // e.g. 10 ms fade
-            const fadeTime = 0.1;
+            const fadeTime = 0.1; // 100ms fade
             currentGain.gain.setValueAtTime(currentGain.gain.value, audioContext.currentTime);
             currentGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + fadeTime);
             // Schedule the source to stop at the end of the fade
             currentSource.stop(audioContext.currentTime + fadeTime);
-
-            // Once the audio ends, disconnect
+            // Cleanup on end
             currentSource.onended = () => {
               if (currentSource) {
                 currentSource.disconnect();
@@ -969,10 +965,9 @@
 
       // Play function
       async function playSample(url, trackName) {
-        // Stop any existing track quickly
+        // Stop any existing track
         stopCurrentTrack(true);
 
-        // Load the new sample
         try {
           const response = await fetch(url);
           if (!response.ok) {
@@ -982,14 +977,14 @@
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-          // Create a new source + gain
+          // Create new source and gain node
           const source = audioContext.createBufferSource();
           source.buffer = audioBuffer;
           source.loop = true;
           const sampleGain = audioContext.createGain();
           sampleGain.gain.value = 1;
 
-          // Connect the chain
+          // Connect chain: source -> sampleGain -> pluginNode
           source.connect(sampleGain);
           sampleGain.connect(pluginNode);
 
@@ -1002,8 +997,7 @@
           if (trackInfo) {
             trackInfo.textContent = `${trackName} - "Now Playing"`;
           }
-
-          // Start playback
+          // Start playback immediately
           source.start();
         } catch (error) {
           console.error('Error playing sample:', error);
@@ -1032,21 +1026,20 @@
         });
       });
 
-      // Play button
+      // Play button logic
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
           if (audioContext.state === 'suspended') {
             await audioContext.resume();
           }
-          // If nothing is playing, start default
           if (!currentSource) {
             playSample('./Audio_Files/Kick_In.wav', 'Kick In');
           }
         });
       }
 
-      // Stop button
+      // Stop button logic
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
@@ -1058,7 +1051,7 @@
         });
       }
 
-      // Volume slider
+      // Volume slider logic
       const volumeSlider = document.getElementById('volumeSlider');
       if (volumeSlider) {
         volumeSlider.addEventListener('input', () => {
@@ -1119,7 +1112,7 @@
     });
   </script>
 
-  <!-- Subscription Script for calling your Vercel endpoint -->
+  <!-- Subscription Script -->
   <script>
     document.querySelector('.email-form').addEventListener('submit', async (event) => {
       event.preventDefault();
