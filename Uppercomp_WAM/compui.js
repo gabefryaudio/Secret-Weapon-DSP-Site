@@ -6,7 +6,7 @@
  */
 
 // --------------------------------------------------------------------
-// Meter / Color / Easing Definitions (same as code A)
+// Meter / Color / Easing Definitions
 // --------------------------------------------------------------------
 const inputOutputDbMarkers = [-36, -30, -24, -18, -12, -6, 0, 6];
 const gainReductionDbMarkers = [0, -6, -12, -18, -24, -30, -36];
@@ -338,8 +338,12 @@ class UpperCompGUI extends HTMLElement {
     const ctx = this.ctx;
     const w = this.cssWidth;
     const h = this.cssHeight;
+
+    // Clear background
     ctx.fillStyle = '#1a1a1a';
     ctx.fillRect(0, 0, w, h);
+
+    // Draw horizontal dB lines
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 1;
     const dbLevels = [-60, -48, -36, -24, -12, 0, 12];
@@ -354,6 +358,8 @@ class UpperCompGUI extends HTMLElement {
       ctx.textAlign = 'right';
       ctx.fillText(`${db} dB`, w - 5, y - 5);
     });
+
+    // Draw vertical divisions
     const timeDiv = 5;
     for (let i = 1; i < timeDiv; i++) {
       const x = w * (i / timeDiv);
@@ -362,6 +368,8 @@ class UpperCompGUI extends HTMLElement {
       ctx.lineTo(x, h);
       ctx.stroke();
     }
+
+    // Draw waveform history bars
     if (this.waveformHistory.length > 0) {
       const barW = w / this.historyLength;
       ctx.fillStyle = '#4CAF50';
@@ -373,6 +381,8 @@ class UpperCompGUI extends HTMLElement {
         if (barH > 0) ctx.fillRect(x, y, barW - 1, barH);
       });
     }
+
+    // Draw threshold line
     const thrY = this.dbToY(this.currentThresholdDb, h);
     ctx.strokeStyle = 'rgba(255,255,255,0.7)';
     ctx.lineWidth = 2;
@@ -388,13 +398,25 @@ class UpperCompGUI extends HTMLElement {
     ctx.fillText(`Threshold: ${this.currentThresholdDb.toFixed(1)} dB`, 10, thrY - 5);
   }
 
+  /**
+   * Adds a small margin so that -60 dB and +12 dB lines
+   * aren't drawn right at the canvas edges.
+   */
   dbToY(db, height) {
+    const topMargin = 10;
+    const bottomMargin = 10;
+    const drawableHeight = height - topMargin - bottomMargin;
+
     const minDb = -60;
     const maxDb = 12;
     const dbRange = maxDb - minDb;
+
+    // clamp
     const clamped = Math.max(minDb, Math.min(maxDb, db));
+    // map dB to [0..1]
     const norm = (clamped - minDb) / dbRange;
-    return height * (1 - norm);
+    // invert so higher dB is closer to topMargin
+    return topMargin + drawableHeight * (1 - norm);
   }
 
   // ------------------------------------------------------------------
@@ -612,7 +634,8 @@ class UpperCompGUI extends HTMLElement {
       #compressor {
         position: relative;
         width: 100%;
-        aspect-ratio: 3 / 1;
+        /* Changed from 3/1 to 3/2 for more vertical space: */
+        aspect-ratio: 3 / 2;
         max-width: 1200px;
         background: linear-gradient(145deg, #262626, #1e1e1e);
         border-radius: 12px;
@@ -864,7 +887,7 @@ class UpperCompGUI extends HTMLElement {
                      src="https://rawcdn.githack.com/gabefryaudio/Uppercomp/5713865/White%20Knob.svg"
                      data-param="drive" data-min="0.1" data-max="10" data-value="1.0">
                 <div class="knob-label">Saturation</div>
-                <div class="knob-value">0.9</div>
+                <div class="knob-value">1.0</div>
               </div>
               <!-- satMixIn (Saturation Mix) -->
               <div class="knob-wrapper" id="satMixWrapper">
