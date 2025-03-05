@@ -1,8 +1,8 @@
 /**
  * UpperCompGUI.js
  *
- * A simplified version that uses pure CSS sizing with an aspect ratio,
- * rather than manual transform scaling or ResizeObservers.
+ * Reverted to the original aspect ratio and removed extra margins,
+ * but extended the dB range to -70..+12 so that -60 dB sits higher.
  */
 
 // --------------------------------------------------------------------
@@ -339,7 +339,7 @@ class UpperCompGUI extends HTMLElement {
     const w = this.cssWidth;
     const h = this.cssHeight;
 
-    // Clear background
+    // Fill background
     ctx.fillStyle = '#1a1a1a';
     ctx.fillRect(0, 0, w, h);
 
@@ -399,15 +399,11 @@ class UpperCompGUI extends HTMLElement {
   }
 
   /**
-   * Adds a small margin so that -60 dB and +12 dB lines
-   * aren't drawn right at the canvas edges.
+   * Adjusted the dB range so that -60 dB sits higher in the canvas.
+   * Now minDb is -70, meaning -60 is no longer at the bottom edge.
    */
   dbToY(db, height) {
-    const topMargin = 10;
-    const bottomMargin = 10;
-    const drawableHeight = height - topMargin - bottomMargin;
-
-    const minDb = -60;
+    const minDb = -70; // was -60
     const maxDb = 12;
     const dbRange = maxDb - minDb;
 
@@ -415,8 +411,8 @@ class UpperCompGUI extends HTMLElement {
     const clamped = Math.max(minDb, Math.min(maxDb, db));
     // map dB to [0..1]
     const norm = (clamped - minDb) / dbRange;
-    // invert so higher dB is closer to topMargin
-    return topMargin + drawableHeight * (1 - norm);
+    // invert so higher dB is near the top (y=0)
+    return height * (1 - norm);
   }
 
   // ------------------------------------------------------------------
@@ -495,7 +491,7 @@ class UpperCompGUI extends HTMLElement {
     } else {
       this.meters.gainReduction.peak = this.meters.gainReduction.value;
     }
-    // Smooth knob transitions (easing multiplier increased to 0.5)
+    // Smooth knob transitions (easing multiplier = 0.5)
     Object.keys(this.knobs).forEach(param => {
       const knob = this.knobs[param];
       const diff = knob.targetValue - knob.currentValue;
@@ -634,8 +630,8 @@ class UpperCompGUI extends HTMLElement {
       #compressor {
         position: relative;
         width: 100%;
-        /* Changed from 3/1 to 3/2 for more vertical space: */
-        aspect-ratio: 3 / 2;
+        /* Revert to original "wide" aspect ratio: */
+        aspect-ratio: 3 / 1;
         max-width: 1200px;
         background: linear-gradient(145deg, #262626, #1e1e1e);
         border-radius: 12px;
