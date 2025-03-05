@@ -321,6 +321,9 @@ class UpperCompGUI extends HTMLElement {
     this.waveformCanvas = this.querySelector('#waveform');
     if (!this.waveformCanvas) return;
     const rect = this.waveformCanvas.getBoundingClientRect();
+    // Store CSS dimensions for drawing calculations
+    this.cssWidth = rect.width;
+    this.cssHeight = rect.height;
     const dpr = window.devicePixelRatio || 1;
     this.waveformCanvas.width = rect.width * dpr;
     this.waveformCanvas.height = rect.height * dpr;
@@ -330,12 +333,11 @@ class UpperCompGUI extends HTMLElement {
     this.ctx.scale(dpr, dpr);
   }
 
-
   drawWaveform() {
     if (!this.ctx || !this.waveformCanvas) return;
     const ctx = this.ctx;
-    const w = this.waveformCanvas.width;
-    const h = this.waveformCanvas.height;
+    const w = this.cssWidth;
+    const h = this.cssHeight;
     ctx.fillStyle = '#1a1a1a';
     ctx.fillRect(0, 0, w, h);
     ctx.strokeStyle = '#333';
