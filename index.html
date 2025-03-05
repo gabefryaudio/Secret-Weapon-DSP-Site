@@ -4,26 +4,10 @@
   <meta charset="UTF-8" />
   <!-- Disable phone number detection on iOS -->
   <meta name="format-detection" content="telephone=no" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secret Weapon DSP - UPPERCOMP</title>
   
-  <!-- Content Security Policy:
-       This CSP allows:
-         - Default sources from 'self', data: and https:.
-         - Scripts from 'self', inline scripts ('unsafe-inline'), eval ('unsafe-eval'),
-           https: sources, and data URLs.
-         - Styles from 'self', inline styles ('unsafe-inline'), and https:.
-         - Images and fonts from 'self', data:, and https:.
-         - Worker scripts from 'self'.
-         - Connect sources from 'self', https://monorail-edge.shopifysvc.com,
-           https://vckhed-ia.myshopify.com, https://connect.mailerlite.com,
-           and your Vercel domains (below):
-           https://mailerlite-proxy.vercel.app,
-           https://mailerlite-proxy-git-main-secret-weapon-dsp.vercel.app,
-           https://mailerlite-proxy-bywgniqba-secret-weapon-dsp.vercel.app.
-         - Object sources are disallowed.
-  -->
+  <!-- Content Security Policy -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self' data: https:;
     script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:;
@@ -490,6 +474,7 @@
       flex-wrap: wrap;
       justify-content: center;
     }
+    /* Updated styling for consistent Play/Stop icons */
     .play-button,
     .stop-button {
       width: 50px;
@@ -503,8 +488,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #000;
-      font-weight: bold;
+      position: relative;
     }
     .play-button:hover,
     .stop-button:hover {
@@ -512,21 +496,20 @@
       box-shadow: 0 0 20px rgba(46,125,50,0.6);
     }
     .play-button::after {
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      border-top: 12px solid transparent;
-      border-bottom: 12px solid transparent;
-      border-left: 16px solid #000;
-      margin-left: 4px;
-    }
-    .stop-button::after {
-      content: '■';
+      content: "\f04b"; /* Font Awesome 'Play' icon */
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
       font-size: 1.2rem;
-      margin-left: 0;
       color: #000;
     }
+    .stop-button::after {
+      content: "\f04d"; /* Font Awesome 'Stop' icon */
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: #000;
+    }
+
     .track-info-container {
       text-align: center;
       margin: 10px 0;
@@ -954,12 +937,19 @@
       pluginNode.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // 5) Track playback logic with fade out for manual stop.
+      // 5) Handle track playback logic with fade out and a timeout guard
       let currentSource = null;
       let currentGain = null; // per-track gain node for fadeout
       let currentTrackName = 'Kick In';
+      let playTimeout = null; // used to ensure only the latest track starts
 
       function stopCurrentTrack(fade = true) {
+        // Clear any pending playback from a previous call
+        if (playTimeout) {
+          clearTimeout(playTimeout);
+          playTimeout = null;
+        }
+
         if (currentSource && currentGain) {
           if (fade) {
             const fadeTime = 1.0;
@@ -983,9 +973,12 @@
       }
 
       async function playSample(url, trackName) {
+        // Stop current track (with fade) and clear any old timeouts
         stopCurrentTrack(true);
-        // Wait for fade-out duration before starting the new track
-        setTimeout(async () => {
+
+        // Set up a new timeout for starting the track after fade-out
+        playTimeout = setTimeout(async () => {
+          playTimeout = null; // we've started playback now
           try {
             const response = await fetch(url);
             if (!response.ok) {
@@ -1019,6 +1012,7 @@
         }, 1000); // fade duration of 1 second
       }
 
+      // Track-button logic
       const trackButtons = document.querySelectorAll('.track-button');
       trackButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -1040,18 +1034,21 @@
         });
       });
 
+      // Play button logic
       const playBtn = document.querySelector('.play-button');
       if (playBtn) {
         playBtn.addEventListener('click', async () => {
           if (audioContext.state === 'suspended') {
             await audioContext.resume();
           }
+          // If nothing is currently playing, default to Kick In
           if (!currentSource) {
             playSample('./Audio_Files/Kick_In.wav', 'Kick In');
           }
         });
       }
 
+      // Stop button logic
       const stopBtn = document.querySelector('.stop-button');
       if (stopBtn) {
         stopBtn.addEventListener('click', () => {
@@ -1063,6 +1060,7 @@
         });
       }
 
+      // Volume slider
       const volumeSlider = document.getElementById('volumeSlider');
       if (volumeSlider) {
         volumeSlider.addEventListener('input', () => {
@@ -1070,6 +1068,7 @@
         });
       }
 
+      // Create the plugin's GUI
       const outerContainer = document.getElementById("patchViewOuterContainer");
       const innerContainer = document.getElementById("patchViewInnerContainer");
 
@@ -1107,6 +1106,7 @@
         resizeTimeout = setTimeout(scalePatchView, 200);
       });
 
+      // Ensure scroll remains enabled
       document.body.style.setProperty("overflow", "auto", "important");
       document.documentElement.style.setProperty("overflow", "auto", "important");
       const bodyObserver = new MutationObserver(mutations => {
